@@ -1,1 +1,1 @@
-一个测试文件
+A repository is used to record smart_car code.
