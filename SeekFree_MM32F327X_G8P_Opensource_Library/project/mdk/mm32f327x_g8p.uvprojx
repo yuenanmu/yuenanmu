@@ -432,12 +432,22 @@
             <File>
               <FileName>motor.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\motor.c</FilePath>
+              <FilePath>..\code\motor.c</FilePath>
             </File>
             <File>
               <FileName>motor.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\motor.h</FilePath>
+              <FilePath>..\code\motor.h</FilePath>
+            </File>
+            <File>
+              <FileName>img_handle.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\img_handle.c</FilePath>
+            </File>
+            <File>
+              <FileName>img_handle.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\img_handle.h</FilePath>
             </File>
           </Files>
         </Group>
