@@ -69,6 +69,12 @@ void menu_tail_t(line *pr,line *li,int x,int y,int z){ //添加新菜单到链�
    (pr->prior)->next=ps; //将链表的最后一个节点的后继指针指向新节点  
    ps->prior=(pr->prior)->next; //将链表的最后一个节点指向新节点
 }
-line *list_Init(void){
-    
-}
+//line *list_Init(void){
+//    line* l1=line_Init(); //创建链表头节点
+//    line_tail(l1,fl);
+//    line_tail(l1,sl);
+//    line_tail(l1,tl);
+//    menu_tail(l1,l1,1,0,0); //创建菜单
+//    line*pz=l1->next;
+//    
+//}

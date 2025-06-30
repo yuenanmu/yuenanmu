@@ -410,14 +410,44 @@
           <GroupName>code</GroupName>
           <Files>
             <File>
-              <FileName>menu.h</FileName>
+              <FileName>All_Init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\All_Init.c</FilePath>
+            </File>
+            <File>
+              <FileName>All_Init.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\menu.h</FilePath>
+              <FilePath>..\code\All_Init.h</FilePath>
             </File>
             <File>
               <FileName>menu.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\menu.c</FilePath>
+              <FilePath>..\code\menu.c</FilePath>
+            </File>
+            <File>
+              <FileName>menu.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\menu.h</FilePath>
+            </File>
+            <File>
+              <FileName>motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\motor.c</FilePath>
+            </File>
+            <File>
+              <FileName>motor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\motor.h</FilePath>
+            </File>
+            <File>
+              <FileName>img_handle.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\img_handle.c</FilePath>
+            </File>
+            <File>
+              <FileName>img_handle.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\img_handle.h</FilePath>
             </File>
           </Files>
         </Group>
