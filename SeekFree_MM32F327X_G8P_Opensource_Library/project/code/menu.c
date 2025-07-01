@@ -4,7 +4,7 @@
 //一级菜单：0/1 ：确认，返回  3/4：上，下
 //二级菜单：0/1 ：确认，返回  3/4：加，减
 int8 cursor,delta;
-void menu_act(){
+int menu_act(){
     if(key1_flag){
         return cursor;
         key1_flag=0;
@@ -23,7 +23,7 @@ void menu_act(){
         key4_flag=0;
     }
 }
-void menu2_act(){
+int  menu2_act(){
     if(key1_flag){
         return cursor;
         key1_flag=0;
@@ -145,7 +145,6 @@ void show_image()
 
 
 
-/*
 /*
 typedef struct line {
     struct line* prior; // 前驱指针

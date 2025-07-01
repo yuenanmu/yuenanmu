@@ -27,33 +27,13 @@ Project File Date:  07/01/2025
 <h2>Output:</h2>
 *** Using Compiler 'V6.18', folder: 'D:\Stm32Software\Keil5 MDK\keygen_new2032\Keil5\ARM\ARMCLANG\Bin'
 Build target 'mm32f327x_g8p_project'
-compiling img_handle.c...
-compiling zf_device_camera.c...
-compiling motor.c...
-compiling zf_device_mt9v03x.c...
-compiling All_Init.c...
-compiling main.c...
-compiling encoder.c...
-../code/menu.c(9): error: void function 'menu_act' should not return a value [-Wreturn-type]
-        return cursor;
-        ^      ~~~~~~
-../code/menu.c(14): error: void function 'menu_act' should not return a value [-Wreturn-type]
-        return 0;
-        ^      ~
-../code/menu.c(28): error: void function 'menu2_act' should not return a value [-Wreturn-type]
-        return cursor;
-        ^      ~~~~~~
-../code/menu.c(33): error: void function 'menu2_act' should not return a value [-Wreturn-type]
-        return 0;
-        ^      ~
-../code/menu.c(143): warning: '/*' within block comment [-Wcomment]
-/*
-^
-1 warning and 4 errors generated.
-compiling menu.c...
-compiling PID_Feedback.c...
-compiling isr.c...
-".\Objects\MM32F327X_G8P.axf" - 4 Error(s), 1 Warning(s).
+linking...
+.\Objects\MM32F327X_G8P.axf: Error: L6218E: Undefined symbol menu (referred from main.o).
+.\Objects\MM32F327X_G8P.axf: Error: L6218E: Undefined symbol image_copy (referred from menu.o).
+Not enough information to list image symbols.
+Not enough information to list load addresses in the image map.
+Finished: 2 information, 0 warning and 2 error messages.
+".\Objects\MM32F327X_G8P.axf" - 2 Error(s), 0 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -67,7 +47,7 @@ Package Vendor: MindMotion
 
 <h2>Collection of Component Files used:</h2>
 Target not created.
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:01
 </pre>
 </body>
 </html>
