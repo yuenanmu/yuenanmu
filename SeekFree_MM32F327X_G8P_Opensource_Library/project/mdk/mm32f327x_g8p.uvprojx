@@ -440,6 +440,26 @@
               <FilePath>..\code\motor.h</FilePath>
             </File>
             <File>
+              <FileName>PID_Feedback.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\PID_Feedback.c</FilePath>
+            </File>
+            <File>
+              <FileName>PID_Feedback.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\PID_Feedback.h</FilePath>
+            </File>
+            <File>
+              <FileName>encoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\encoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>encoder.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\encoder.h</FilePath>
+            </File>
+            <File>
               <FileName>img_handle.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\code\img_handle.c</FilePath>
@@ -448,16 +468,6 @@
               <FileName>img_handle.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\code\img_handle.h</FilePath>
-            </File>
-            <File>
-              <FileName>encoder.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\encoder.c</FilePath>
-            </File>
-            <File>
-              <FileName>encoder.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\encoder.h</FilePath>
             </File>
           </Files>
         </Group>
