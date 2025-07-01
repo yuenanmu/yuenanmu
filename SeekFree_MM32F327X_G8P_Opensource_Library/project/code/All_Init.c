@@ -33,7 +33,7 @@ void all_init(void)
 	//外设初始化
 	ips200_init(IPS200_TYPE_SPI);                   //ips200 初始化 SPI 驱动
 	Key_init();                                                         // 初始化按键 GPIO
-//    while(1)
+// 	 while(1)
 //    {
 //        if(mt9v03x_init())
 //        {

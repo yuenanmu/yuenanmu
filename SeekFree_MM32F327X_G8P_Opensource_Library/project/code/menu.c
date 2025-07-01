@@ -1,24 +1,100 @@
 #include "zf_common_headfile.h"
 // ips200_x_max            = 240;
 // ips200_y_max            = 320;
+//一级菜单：0/1 ：确认，返回  3/4：上，下
+//二级菜单：0/1 ：确认，返回  3/4：加，减
+int8 cursor,delta;
+void menu_act(){
+    if(key1_flag){
+        return cursor;
+        key1_flag=0;
+    }
+    if(key2_flag){
+        cursor=1;
+        return 0;
+        key2_flag=0;
+    }
+    if(key3_flag){
+        cursor++;
+        key3_flag=0;
+    }
+    if(key4_flag){
+        cursor--;
+        key4_flag=0;
+    }
+}
+void menu2_act(){
+    if(key1_flag){
+        return cursor;
+        key1_flag=0;
+    }
+    if(key2_flag){
+        cursor=1;
+        return 0;
+        key2_flag=0;
+    }
+    if(key3_flag){
+        delta=1;
+        key3_flag=0;
+    }
+    if(key4_flag){
+        delta=-1;
+        key4_flag=0;
+    }
+}
+
 void menu_Init(){
 
 }
-void menu()
+/*--------------------------------------------------------------一级菜单列表--------------------------------------------------------------------------------------------------------------*/
+void main_menu()
 {
-	
+    while(1){
+    menu_act();
+	switch (cursor)
+    {
+    case 1:
+        show_image();
+        break;
+    default:
+        break;
+    }
+    }
 }
-
+/*--------------------------------------------------------------二级图像菜单---------------------------------------------------------------------------------------------------*/
 void show_image()
 {
-    //ips200_init(IPS200_TYPE_SPI);
-    //ips200_clear();
+    ips200_clear();
     ips200_show_string(5, 2, "Img_Parameter");
+        while(1)
+    {
+        if(mt9v03x_init())
+        {
+            ips200_show_string(0, 16, "mt9v03x reinit.");
+        }
+        else
+        {
+            break;
+        }
+        system_delay_ms(500);                                                   // 短延时快速闪灯表示异常
+    }
+        ips200_show_string(0, 16, "init success.");
+    while(1){
+        menu_act();
+        	if(mt9v03x_finish_flag)
+		{
+			memcpy(image_copy, mt9v03x_image, MT9V03X_H*MT9V03X_W);
+			//ips200_show_gray_image(0, 0, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 1);
+			ips200_show_gray_image(0, 0, (const uint8 *)image_copy, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 0);
+			mt9v03x_finish_flag=0;
+		}
+        
+    }
 }
 
 
 
-
+/*--------------------------------------------------------------二级电机菜单---------------------------------------------------------------------------------------------------*/
 
 
 
