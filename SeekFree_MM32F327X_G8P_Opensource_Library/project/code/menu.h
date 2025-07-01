@@ -7,4 +7,7 @@ typedef enum{
     tl=3,
 } line_num; //定义菜单行号   
 
+void show_image();
+void menu();
+
 #endif 

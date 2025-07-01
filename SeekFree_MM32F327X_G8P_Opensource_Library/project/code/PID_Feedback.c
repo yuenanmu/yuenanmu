@@ -18,9 +18,9 @@ float IncrementalPI_Contrl(IncrementalPI *pi, float current_speed) {        //�
     if (pi->output < -max_output) pi->output = -max_output; 
     return pi->output; // 返回当前输出
 }
-int32 PD_Contrl(){
-    
-}
+//int32 PD_Contrl(){
+//    
+//}
 int32 PositionPID_Contrl(PositionPID*pid ,float target,float current ){     //车身角度控制
     float error = target-current; // 计算误差
     //积分项计算(带限幅)
