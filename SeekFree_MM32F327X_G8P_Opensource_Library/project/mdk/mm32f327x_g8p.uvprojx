@@ -410,16 +410,6 @@
           <GroupName>code</GroupName>
           <Files>
             <File>
-              <FileName>All_Init.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\code\All_Init.c</FilePath>
-            </File>
-            <File>
-              <FileName>All_Init.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\code\All_Init.h</FilePath>
-            </File>
-            <File>
               <FileName>menu.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\code\menu.c</FilePath>
@@ -468,6 +458,26 @@
               <FileName>img_handle.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\code\img_handle.h</FilePath>
+            </File>
+            <File>
+              <FileName>all_Init.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\all_Init.h</FilePath>
+            </File>
+            <File>
+              <FileName>all_Init.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\all_Init.c</FilePath>
+            </File>
+            <File>
+              <FileName>key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\key.c</FilePath>
+            </File>
+            <File>
+              <FileName>key.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\key.h</FilePath>
             </File>
           </Files>
         </Group>

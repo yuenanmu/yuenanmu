@@ -17,5 +17,6 @@ typedef struct
     float integral_max; // 积分最大值
 } PositionPID; // 位置PID控制器
 
-
+void IncrementalPI_Init(IncrementalPI *pi);
+float IncrementalPI_Contrl(IncrementalPI *pi, float current_speed);
 #endif 

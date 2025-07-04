@@ -25,5 +25,5 @@ extern uint8  key3_flag;
 extern uint8  key4_flag;
 extern uint32 count_time;
 void all_init();
-
+void Key_Scan(void);
 #endif 

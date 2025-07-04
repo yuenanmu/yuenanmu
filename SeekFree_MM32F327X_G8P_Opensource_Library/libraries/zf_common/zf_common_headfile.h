@@ -130,11 +130,12 @@
 
 //===================================================用户自定义文件===================================================
 #include "menu.h"
-#include "All_Init.h"
+#include "all_Init.h"
 #include "motor.h"
 #include "encoder.h"
 #include "PID_Feedback.h"
 #include "img_handle.h"
+#include "key.h"
 //===================================================用户自定义文件===================================================
 
 #endif

@@ -41,67 +41,11 @@
 //-------------------------------------------------------------------------------------------------------------------
 void TIM1_UP_IRQHandler (void)
 {
-    uint32 Tim1_count_time;                                                // 定时器分时复用
-    Tim1_count_time++;
     // 此处编写用户代码
-    if( KEY_1 == gpio_get_level(KEY1))          // 如果 KEY1 被按下
-    {
-        key1_count++;                                                            // KEY1 按键计数加一
-        if(key1_count >= count_time)                                             // 如果 KEY1 按键计数大于等于 1000
-        {
-            key1_flag = 1;                                                       // 设置 KEY1 按键标志位
-            key1_count = 0;                                                      // 重置 KEY1 按键计数
-        }
-    }
-    else
-    {
-        key1_count = 0;                                                          // 重置 KEY1 按键计数
-
-    }
-
-    if (KEY_2 == gpio_get_level(KEY2))          // 如果 KEY2 被按下
-    {
-        key2_count++;                                                            // KEY2 按键计数加一
-        if(key2_count >= count_time)                                             // 如果 KEY2 按键计数大于等于 1000
-        {
-            key2_flag = 1;                                                       // 设置 KEY2 按键标志位
-            key2_count = 0;                                                      // 重置 KEY2 按键计数
-        }
-    }
-    else
-    {
-        key2_count = 0;                                                          // 重置 KEY2 按键计数
-
-    }
-    
-    if (KEY_3 == gpio_get_level(KEY3))          // 如果 KEY2 被按下
-    {
-        key3_count++;                                                            // KEY2 按键计数加一
-        if(key3_count >= count_time)                                             // 如果 KEY2 按键计数大于等于 1000
-        {
-            key3_flag = 1;                                                       // 设置 KEY2 按键标志位
-            key3_count = 0;                                                      // 重置 KEY2 按键计数
-        }
-    }
-    else
-    {
-        key3_count = 0;                                                          // 重置 KEY2 按键计数
-
-    }
-    if (KEY_4 == gpio_get_level(KEY4))          // 如果 KEY2 被按下
-    {
-        key4_count++;                                                            // KEY2 按键计数加一
-        if(key4_count >= count_time)                                             // 如果 KEY2 按键计数大于等于 1000
-        {
-            key4_flag = 1;                                                       // 设置 KEY2 按键标志位
-            key4_count = 0;                                                      // 重置 KEY2 按键计数
-        }
-    }
-    else
-    {
-        key4_count = 0;                                                          // 重置 KEY2 按键计数
-
-    }
+//		encoder1=encoder_get_count(TIM3_ENCODER);
+//		 encoder_clear_count(TIM3_ENCODER);
+//		 encoder2=encoder_get_count(TIM4_ENCODER);
+//		 encoder_clear_count(TIM4_ENCODER);
     // 此处编写用户代码
     TIM1->SR &= ~TIM1->SR;                                                      // 清空中断状态
 }
@@ -113,7 +57,80 @@ void TIM1_UP_IRQHandler (void)
 void TIM2_IRQHandler (void)
 {
     // 此处编写用户代码
+	uint32 Tim1_count_time;                                                // 定时器分时复用
+    Tim1_count_time++;
+    // 此处编写用户代码
+	 //key_scanner();
+	if(Tim1_count_time%10==0){
+    if(!gpio_get_level(KEY1))          // 如果 KEY1 被按下
+    {
+        key1_count++;                                                            // KEY1 按键计数加一
+        if(key1_count > count_time)                                             // 如果 KEY1 按键计数大于等于 1000
+        {
+            //key1_flag = (1+key1_flag)%2;                                                       // 设置 KEY1 按键标志位
+					  key1_flag=1;  
+            key1_count = 0;                                                      // 重置 KEY1 按键计数
+        }
+    }
+    else
+    {
+        key1_count = 0;                                                          // 重置 KEY1 按键计数
 
+    }
+
+    if (!gpio_get_level(KEY2))          // 如果 KEY2 被按下
+    {
+        key2_count++;                                                            // KEY2 按键计数加一
+        if(key2_count > count_time)                                             // 如果 KEY2 按键计数大于等于 1000
+        {
+            key2_flag = 1;                                                       // 设置 KEY2 按键标志位
+            key2_count = 0;                                                      // 重置 KEY2 按键计数
+        }
+    }
+    else
+    {
+        key2_count = 0;                                                          // 重置 KEY2 按键计数
+
+    }
+    
+    if (!gpio_get_level(KEY3))          // 如果 KEY2 被按下
+    {
+        key3_count++;                                                            // KEY2 按键计数加一
+        if(key3_count > count_time)                                             // 如果 KEY2 按键计数大于等于 1000
+        {
+            key3_flag = 1;                                                       // 设置 KEY2 按键标志位
+            key3_count = 0;                                                      // 重置 KEY2 按键计数
+        }
+    }
+    else
+    {
+        key3_count = 0;                                                          // 重置 KEY2 按键计数
+
+    }
+    if (!gpio_get_level(KEY4))          // 如果 KEY2 被按下
+    {
+        key4_count++;                                                            // KEY2 按键计数加一
+        if(key4_count > count_time)                                             // 如果 KEY2 按键计数大于等于 1000
+        {
+            key4_flag = 1;                                                       // 设置 KEY2 按键标志位
+            key4_count = 0;                                                      // 重置 KEY2 按键计数
+        }
+    }
+    else
+    {
+        key4_count = 0;                                                          // 重置 KEY2 按键计数
+
+    }
+	}
+		 //Key_Scan();
+		//分时复用，减少硬件资源浪费
+		 if(count_time%100==0)
+		 {
+				 encoder1=encoder_get_count(TIM3_ENCODER);
+				 encoder_clear_count(TIM3_ENCODER);
+				 encoder2=encoder_get_count(TIM4_ENCODER);
+				 encoder_clear_count(TIM4_ENCODER);
+		 }
     // 此处编写用户代码
     TIM2->SR &= ~TIM2->SR;                                                      // 清空中断状态
 }
@@ -137,7 +154,7 @@ void TIM3_IRQHandler (void)
 void TIM4_IRQHandler (void)
 {
     // 此处编写用户代码
-
+		
     // 此处编写用户代码
     TIM4->SR &= ~TIM4->SR;                                                      // 清空中断状态
 }
@@ -149,10 +166,7 @@ void TIM4_IRQHandler (void)
 void TIM5_IRQHandler (void)
 {
     // 此处编写用户代码
-		 encoder1=encoder_get_count(TIM3_ENCODER);
-		 encoder_clear_count(TIM3_ENCODER);
-		 encoder2=encoder_get_count(TIM4_ENCODER);
-		 encoder_clear_count(TIM4_ENCODER);
+		 
     // 此处编写用户代码
     TIM5->SR &= ~TIM5->SR;                                                      // 清空中断状态
 }
