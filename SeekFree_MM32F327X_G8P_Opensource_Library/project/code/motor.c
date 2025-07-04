@@ -1,5 +1,6 @@
 #include "zf_common_headfile.h"
 #define max_speed 90  // 定义最大速度，保护电机
+uint8_t start_flag=1;
 //电机初始化，驱动
 void motor_init (void)  // 电机初始化
 {

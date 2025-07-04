@@ -7,10 +7,10 @@ uint32 key1_count;
 uint32 key2_count;
 uint32 key3_count;
 uint32 key4_count;
-uint8  key1_flag;
-uint8  key2_flag;
-uint8  key3_flag;
-uint8  key4_flag;
+//uint8  key1_flag;
+//uint8  key2_flag;
+//uint8  key3_flag;
+//uint8  key4_flag;
 uint32 count_time;
 void Key_init(void)
 {

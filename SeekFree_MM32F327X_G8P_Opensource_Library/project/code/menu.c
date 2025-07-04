@@ -4,6 +4,7 @@
 // ips200_y_max            = 320;
 //一级菜单：0/1 ：确认，返回  3/4：上，下
 //二级菜单：0/1 ：确认，返回  3/4：加，减
+uint8_t cls_flag;
 char Start_Flag=0,Stop_Flag=0; //结构体
 int8 cursor=1,delta;
 int menu_act(int MAX_ITEMS) {

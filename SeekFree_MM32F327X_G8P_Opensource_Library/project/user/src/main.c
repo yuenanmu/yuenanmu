@@ -47,7 +47,13 @@ int main(void)
     all_init();                                                         // 初始化所有外设
     while(1)
     {
-			
+			key();
+			ips200_show_int(0,0,key1_flag,3);
+			ips200_show_int(0,16,key2_flag,3);
+			ips200_show_int(0,32,key3_flag,3);
+			ips200_show_int(0,48,key4_flag,3);
+			ips200_show_int(0,64,key5_flag,3);
+			ips200_show_int(0,80,key6_flag,3);
     }
 }
 // **************************** 代码区域 ****************************

@@ -57,7 +57,7 @@ void TIM1_UP_IRQHandler (void)
 void TIM2_IRQHandler (void)
 {
     // 此处编写用户代码
-	uint32 Tim1_count_time;                                                // 定时器分时复用
+	
     Tim1_count_time++;
     // 此处编写用户代码
 	 //key_scanner();

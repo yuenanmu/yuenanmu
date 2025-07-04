@@ -5,7 +5,7 @@
 
 #define  RPWM TIM5_PWM_CH4_A3    // 定义右电机 PWM 通道
 #define  RDIR (A2)
-
+extern uint8_t start_flag;
 void motor_init();
 void Set_motor_speed(int32 L_Speed,int32 R_Speed);
 

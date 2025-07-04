@@ -30,6 +30,7 @@ enum Module {
 
 // } Car_Status;
 extern int8 cursor;
+extern uint8_t cls_flag;
 void show_start();
 void show_image();
 void show_pid();
