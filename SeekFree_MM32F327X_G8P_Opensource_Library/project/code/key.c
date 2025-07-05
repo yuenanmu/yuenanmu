@@ -1,7 +1,7 @@
 #include "zf_common_headfile.h"
 #include "key.h"
 //待增加函数
-void Duct_start(){}
+void Duct_start(){};
 	
 //获取时间
 uint32 Tim1_count_time;                                                // 定时器分时复用
