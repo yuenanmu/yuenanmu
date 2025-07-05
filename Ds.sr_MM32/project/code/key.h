@@ -30,5 +30,5 @@ extern uint8  key6_flag;
 extern uint8  key_flag;
 
 void key(void);
-void 	ParameterExchange();
+void ParameterExchange(void);
 #endif

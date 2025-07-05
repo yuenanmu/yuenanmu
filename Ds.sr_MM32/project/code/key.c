@@ -1,9 +1,9 @@
 #include "zf_common_headfile.h"
 #include "key.h"
 //
-uint8 cls_flag=0;
+uint8 cls_flag=0;//菜单栏
 Duct_start(){}	
-
+uint8 start=0;//电机
 
 //多了一个switch2转换，替代理想中的KEY5,KEY6
 #define menu_item 20
@@ -26,18 +26,18 @@ uint8 offsetx=8;
 uint8 offsety=16;
 uint8 Model=1;          //光标上下移动标志位
 uint8 grade_flag=0;     //确认标志位
-uint8 ips114_show_flag=0; //二级菜单标志
+uint8 ips200_show_flag=0; //二级菜单标志
 uint8 lose=0;           //减
 uint8 plus=0;           //加
 uint8 return_flag=0;    //返回
 
-uint8 Augle_flag=0; //二级菜单标志
+uint8 Angle_flag=0; //二级菜单标志
 
 uint8 key_flag=0;
 uint8 data_buff[85]={0};
 
-uint8 ips114_show_element_flag=0;
-uint8 ips114_show_ring_flag=0;
+uint8 ips200_show_element_flag=0;
+uint8 ips200_show_ring_flag=0;
 
 
 void key(void)
@@ -122,7 +122,7 @@ void key(void)
 		lose++;  //减
 	}
 }
-void 	ParameterExchange(){
+void ParameterExchange(void){
 	//光标
 	ips200_show_string(0,((Model-1+menu_item)%menu_item)*offsety,">");
 	ips200_show_string(0,((Model-2+menu_item)%menu_item)*offsety," ");
@@ -134,12 +134,99 @@ void 	ParameterExchange(){
 	{
 		switch(Model)
 		{
-			case 1: ips114_show_flag=100;grade_flag=2; Model=0; cls_flag=0;Duct_start();    break; //发车标志位 ;
-			case 2: ips114_show_flag=1; grade_flag=2; Model=0; cls_flag=0;   break;								//PID
-			case 3: ips114_show_flag=2; grade_flag=2; Model=0; cls_flag=0;   break;								//阈值调整
-			case 4: ips114_show_flag=3; grade_flag=2; Model=0; cls_flag=0;   break;								//元素选择
+			case 1: ips200_show_flag=100;grade_flag=2; Model=0; cls_flag=0;Duct_start();    break; //发车标志位 ;
+			case 2: ips200_show_flag=1; grade_flag=2; Model=0; cls_flag=0;   break;								//PID
+			case 3: ips200_show_flag=2; grade_flag=2; Model=0; cls_flag=0;   break;								//阈值调整
+			case 4: ips200_show_flag=3; grade_flag=2; Model=0; cls_flag=0;   break;								//元素选择
 			default:Model=1;break;
 		}
 	}
-	//if(ips)
+/*------------------------发车二级---------------------------------------*/
+	if(ips200_show_flag==100){  
+		if(grade_flag==3){
+			start=1;
+			Angle_flag=1;
+			key_flag=key_flag;
+		}
+		if(return_flag==1){
+			return_flag=0;
+			Model=1;
+			cls_flag=0;
+			ips200_show_flag=0;
+			grade_flag=0;
+		}
+	}
+/*------------------------pid二级(包含三级调参逻辑实现)---------------------------------------*/
+	if(ips200_show_flag==1){
+		if(plus==1){
+			switch (Model) 
+			{
+			case 1:
+				
+				break;
+			
+			default:
+				break;
+			}
+			/*---------------flash保存--------------------*/
+			plus=0;
+		}
+		if(lose==1){
+			switch (Model) 
+			{
+			case 1:
+				
+				break;
+			
+			default:
+				break;
+			}
+			/*---------------flash保存--------------------*/
+			lose=0;
+		}
+		if(return_flag==1){
+			return_flag=0;
+			Model=1;	//光标
+			cls_flag=0;//清屏
+			ips200_show_flag=0;	// 返回到主菜单
+			grade_flag=0;		// 重置菜单层级
+		}
+	}
+/*------------------------阈值二级---------------------------------------*/
+	if(ips200_show_flag==2){
+		if(plus==1){
+			switch (Model) 
+			{
+			case 1:
+				
+				break;
+			
+			default:
+				break;
+			}
+			/*---------------flash保存--------------------*/
+			plus=0;
+		}
+		if(lose==1){
+			switch (Model) 
+			{
+			case 1:
+				
+				break;
+			
+			default:
+				break;
+			}
+			/*---------------flash保存--------------------*/
+			lose=0;
+		}
+		if(return_flag==1){
+			return_flag=0;
+			Model=1;	//光标
+			cls_flag=0;//清屏
+			ips200_show_flag=0;	// 返回到主菜单
+			grade_flag=0;		// 重置菜单层级
+		}
+	}
+	
 }
