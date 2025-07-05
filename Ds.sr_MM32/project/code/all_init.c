@@ -10,12 +10,11 @@ void all_init(void){
 	
 	//系统初始化
 	clock_init(SYSTEM_CLOCK_120M);                                              // 初始化芯片时钟 工作频率为 120MHz
-  debug_init();   
+  	debug_init();   
 	system_delay_ms(300);
 	
 	//外设初始化
-	ips200_init(IPS200_TYPE_SPI);
-	system_delay_ms(100);
+	ds_ips200_init();
 	ds_key_init();
 	
 	

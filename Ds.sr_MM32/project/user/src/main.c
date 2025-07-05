@@ -53,11 +53,11 @@ int main(void)
 		{
 			key();
 			ParameterExchange();
-			//ips200_show();
+			ds_main_menu();
 		}
 			if(mt9v03x_finish_flag==1)
 		{
-			img_handle();//ccd的图象处理
+			img_handle();//图象处理
 			//ccd_send_data(UART_1, ccd_data_ch1);
 			mt9v03x_finish_flag = 0;	
 		}

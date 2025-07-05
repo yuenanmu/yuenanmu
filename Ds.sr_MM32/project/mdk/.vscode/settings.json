@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "zf_common_headfile.h": "c",
+        "zf_device_bluetooth_ch9141.h": "c",
+        "key.h": "c"
+    }
+}

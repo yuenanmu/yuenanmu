@@ -1,8 +1,7 @@
 #include "zf_common_headfile.h"
 #include "key.h"
 //
-uint8 cls_flag=0;//菜单栏
-Duct_start(){}	
+void Duct_start(){}	
 uint8 start=0;//电机
 
 //多了一个switch2转换，替代理想中的KEY5,KEY6
@@ -24,7 +23,7 @@ uint32 count_time=1000;
 
 uint8 offsetx=8;
 uint8 offsety=16;
-uint8 Model=1;          //光标上下移动标志位
+uint8 Model=1;          //光标上下移动标志位  Model:1~20
 uint8 grade_flag=0;     //确认标志位
 uint8 ips200_show_flag=0; //二级菜单标志
 uint8 lose=0;           //减
@@ -103,12 +102,16 @@ void key(void)
 	{
 		key3_flag = 0;//使用按键之后，应该清除标志位
 
-		Model++;  //光标++
+		Model--;  //光标--（上移）
+		//Model=(Model+menu_item)%menu_item+1;
+		//Model == 16 ? 1 : Model;
+		
 	}
 	if(key4_flag==1)   
 	{
 		key4_flag = 0;//使用按键之后，应该清除标志位
-		Model--;  //光标--
+		Model++;  //光标++(下移)
+		//Model=Model%menu_item+1;
 		
 	}
 	if(key5_flag==1)   
@@ -129,15 +132,15 @@ void ParameterExchange(void){
 	ips200_show_string(0,((Model+menu_item)%menu_item)*offsety," ");
 	//补充：model范围限定，否则将发生断言错误：Assert error
 	//Model
-	//ips200_show_string(0,Model*offsety == 16*offsety ? 1*offsety : Model*offsety," ");
+	//ips200_show_string(0,Model*offsety == 20*offsety ? 1*offsety : Model*offsety," ");
 	if(grade_flag==1)                  
 	{
 		switch(Model)
 		{
-			case 1: ips200_show_flag=100;grade_flag=2; Model=0; cls_flag=0;Duct_start();    break; //发车标志位 ;
-			case 2: ips200_show_flag=1; grade_flag=2; Model=0; cls_flag=0;   break;								//PID
-			case 3: ips200_show_flag=2; grade_flag=2; Model=0; cls_flag=0;   break;								//阈值调整
-			case 4: ips200_show_flag=3; grade_flag=2; Model=0; cls_flag=0;   break;								//元素选择
+			case 1: ips200_show_flag=100;grade_flag=2; Model=1; cls_flag=0;Duct_start();    break; //发车标志位 ;
+			case 2: ips200_show_flag=1; grade_flag=2; Model=1; cls_flag=0;   break;								//PID
+			case 3: ips200_show_flag=2; grade_flag=2; Model=1; cls_flag=0;   break;								//阈值调整
+			case 4: ips200_show_flag=3; grade_flag=2; Model=1; cls_flag=0;   break;								//元素选择
 			default:Model=1;break;
 		}
 	}
