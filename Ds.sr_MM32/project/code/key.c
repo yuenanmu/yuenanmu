@@ -24,6 +24,7 @@ uint32 count_time=1000;
 uint8 offsetx=8;
 uint8 offsety=16;
 uint8 Model=1;          //光标上下移动标志位  Model:1~20
+uint8 last_model;
 uint8 grade_flag=0;     //确认标志位
 uint8 ips200_show_flag=0; //二级菜单标志
 uint8 lose=0;           //减
@@ -105,14 +106,14 @@ void key(void)
 		Model--;  //光标--（上移）
 		//Model=(Model+menu_item)%menu_item+1;
 		//Model == 16 ? 1 : Model;
-		
+		//Model = (Model == 1) ? menu_item : Model - 1;  // 环形处理
 	}
 	if(key4_flag==1)   
 	{
 		key4_flag = 0;//使用按键之后，应该清除标志位
 		Model++;  //光标++(下移)
 		//Model=Model%menu_item+1;
-		
+		//Model = (Model == menu_item) ? 1 : Model + 1;  // 环形处理
 	}
 	if(key5_flag==1)   
 	{
@@ -127,12 +128,18 @@ void key(void)
 }
 void ParameterExchange(void){
 	//光标
+//	if (offsety > 0) {
+//    ips200_show_string(0, (last_model - 1) * offsety, " ");  // 清除旧光标
+//    ips200_show_string(0, (Model - 1) * offsety, ">");       // 显示新光标
+//    last_model = Model;  // 更新记录
+//	}
 	ips200_show_string(0,((Model-1+menu_item)%menu_item)*offsety,">");//1
 	ips200_show_string(0,((Model-2+menu_item)%menu_item)*offsety," ");//
 	ips200_show_string(0,((Model+menu_item)%menu_item)*offsety," ");//
-	//补充：model范围限定，否则将发生断言错误：Assert error
+	
+//补充：model范围限定，否则将发生断言错误：Assert error
 	//Model
-	//ips200_show_string(0,Model*offsety == 20*offsety ? 1*offsety : Model*offsety," ");
+	ips200_show_string(0,(Model=Model == 20 ? 1 : Model)*offsety," ");
 	if(grade_flag==1)                  
 	{
 		switch(Model)
