@@ -29,10 +29,10 @@ extern uint8  key5_flag;
 extern uint8  key6_flag;
 extern uint8  key_flag;
 
-//开放接口给菜单显示函数
+//寮�鏀炬帴鍙ｇ粰鑿滃崟鏄剧ず鍑芥暟
 extern uint8 offsetx;
 extern uint8 offsety;
-extern uint8 ips200_show_flag; //菜单显示标志
+extern uint8 ips200_show_flag; //鑿滃崟鏄剧ず鏍囧織
 extern uint8 ips200_show_element_flag;
 extern uint8 ips200_show_ring_flag;
 

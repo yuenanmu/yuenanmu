@@ -127,9 +127,9 @@ void key(void)
 }
 void ParameterExchange(void){
 	//光标
-	ips200_show_string(0,((Model-1+menu_item)%menu_item)*offsety,">");
-	ips200_show_string(0,((Model-2+menu_item)%menu_item)*offsety," ");
-	ips200_show_string(0,((Model+menu_item)%menu_item)*offsety," ");
+	ips200_show_string(0,((Model-1+menu_item)%menu_item)*offsety,">");//1
+	ips200_show_string(0,((Model-2+menu_item)%menu_item)*offsety," ");//
+	ips200_show_string(0,((Model+menu_item)%menu_item)*offsety," ");//
 	//补充：model范围限定，否则将发生断言错误：Assert error
 	//Model
 	//ips200_show_string(0,Model*offsety == 20*offsety ? 1*offsety : Model*offsety," ");
