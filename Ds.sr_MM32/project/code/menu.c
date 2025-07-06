@@ -31,7 +31,7 @@ void ds_main_menu(void){
     if(ips200_show_element_flag==1)ips200_show_Ring();
     if(ips200_show_element_flag==2)ips200_show_Ramp();
     if(ips200_show_element_flag==3)ips200_show_Cross();
-
+    
     if(ips200_show_flag==100)ips200_show_CarGo();
 }
 void ips200_show_CarGo(void){

@@ -1,6 +1,8 @@
 #include "zf_common_headfile.h"
 #include "key.h"
 //
+int16 Threshold_multiple;
+int16 Threshold;   
 void Duct_start(){}	
 //多了一个switch2转换，替代理想中的KEY5,KEY6
 #define menu_item 20
@@ -32,7 +34,7 @@ uint8 return_flag=0;    //返回
 uint8 Angle_flag=0; //二级菜单标志
 
 uint8 key_flag=0;
-uint8 data_buff[85]={0};
+uint32 data_buff[85]={0};
 
 uint8 ips200_show_element_flag=0;
 uint8 ips200_show_ring_flag=0;
@@ -169,10 +171,23 @@ void ParameterExchange(void){
 		if(plus==1){
 			switch (Model) 
 			{
-			case 1:
-				
-				break;
-			
+			// case 1: int16 Pid_Kp+=10; break;//预计转向的pid
+			// case 2: int16 Pid_Kd+=100; break;	
+				case 1:Motor_Pid_speed_Z+=5;
+					if(Motor_Pid_speed_Z==180){
+						Motor_Pid_Dif_P=4;
+					}else if(Motor_Pid_speed_Z==200){
+						Motor_Pid_Dif_P=5;
+					}
+					break;
+				case 2: Motor_Pid_Dif_P       -=1; break;
+				case 3:Linear_speed+=5;break;
+				case 4:Curve_speed+=5;break;
+
+				case 5:Motor_Pid_Z_L_Ki+=10;break;
+				case 6:Motor_Pid_Z_L_Kp+=10;break;
+				case 7:Motor_Pid_Z_R_Ki+=10;break;
+				case 8:Motor_Pid_Z_R_Kp+=10;break;
 			default:
 				break;
 			}
@@ -182,9 +197,22 @@ void ParameterExchange(void){
 		if(lose==1){
 			switch (Model) 
 			{
-			case 1:
-				
-				break;
+			case 1:Motor_Pid_speed_Z-=5;
+					if(Motor_Pid_speed_Z==180){
+						Motor_Pid_Dif_P=4;
+					}else if(Motor_Pid_speed_Z==200){
+						Motor_Pid_Dif_P=5;
+					}
+					break;
+			case 2: Motor_Pid_Dif_P       -=1; break;
+			case 3:Linear_speed-=5;break;
+			case 4:Curve_speed-=5;break;
+
+			case 5:Motor_Pid_Z_L_Ki-=10;break;
+			case 6:Motor_Pid_Z_L_Kp-=10;break;
+
+			case 7:Motor_Pid_Z_R_Ki-=10;break;
+			case 8:Motor_Pid_Z_R_Kp-=10;break;
 			
 			default:
 				break;
@@ -205,10 +233,8 @@ void ParameterExchange(void){
 		if(plus==1){
 			switch (Model) 
 			{
-			case 1:
-				
-				break;
-			
+			case 1:Threshold_multiple+=5;break;
+			case 2:Threshold+=5;   	break;
 			default:
 				break;
 			}
@@ -218,10 +244,8 @@ void ParameterExchange(void){
 		if(lose==1){
 			switch (Model) 
 			{
-			case 1:
-				
-				break;
-			
+			case 1:Threshold_multiple=5;break;
+			case 2:Threshold-=5;   	break;
 			default:
 				break;
 			}
@@ -236,5 +260,27 @@ void ParameterExchange(void){
 			grade_flag=0;		// 重置菜单层级
 		}
 	}
+	
+}
+
+/*---------------flash函数--------------------*/
+void EepromWrite(void){
+	data_buff[0]=Motor_Pid_speed_Z;
+	data_buff[1]=Motor_Pid_Dif_P;
+	data_buff[2]=Motor_Pid_Z_L_Ki;
+	data_buff[3]=Motor_Pid_Z_L_Kp;
+	data_buff[4]=Motor_Pid_Z_R_Ki;
+	data_buff[5]=Motor_Pid_Z_R_Kp;
+
+	data_buff[6]=Motor_Pid_Dif_P;
+
+	data_buff[7] = Threshold_multiple;
+	data_buff[8] = Threshold;
+
+	//元素ui
+	data_buff[9]=
+}
+
+void EepromRead(void){
 	
 }
