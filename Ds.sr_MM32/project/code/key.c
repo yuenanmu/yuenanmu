@@ -2,8 +2,6 @@
 #include "key.h"
 //
 void Duct_start(){}	
-uint8 start=0;//电机
-
 //多了一个switch2转换，替代理想中的KEY5,KEY6
 #define menu_item 20
 uint32 key1_count;

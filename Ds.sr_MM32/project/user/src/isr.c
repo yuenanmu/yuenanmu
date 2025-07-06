@@ -42,7 +42,7 @@
 void TIM1_UP_IRQHandler (void)
 {
     // 此处编写用户代码
-
+    
     // 此处编写用户代码
     TIM1->SR &= ~TIM1->SR;                                                      // 清空中断状态
 }
@@ -53,61 +53,12 @@ void TIM1_UP_IRQHandler (void)
 //-------------------------------------------------------------------------------------------------------------------
 void TIM2_IRQHandler (void)
 {
+    count_time++;
     // 此处编写用户代码
-		if(key1_flag)
-	{
-		key1_count++;
-		if(key1_count>count_time)
-		{
-			key1_count=0;
-			key1_flag=0;
-		}
-	}
-	if(key2_flag)
-	{
-		key2_count++;
-		if(key2_count>count_time)
-		{
-			key2_count=0;
-			key2_flag=0;
-		}
-	}
-	if(key3_flag)
-	{
-		key3_count++;
-		if(key3_count>count_time)
-		{
-			key3_count=0;
-			key3_flag=0;
-		}
-	}
-	if(key4_flag)
-	{
-		key4_count++;
-		if(key4_count>count_time)
-		{
-			key4_count=0;
-			key4_flag=0;
-		}
-	}
-	if(key5_flag)
-	{
-		key5_count++;
-		if(key5_count>count_time)
-		{
-			key5_count=0;
-			key5_flag=0;
-		}
-	}
-	if(key6_flag)
-	{
-		key6_count++;
-		if(key6_count>count_time)
-		{
-			key6_count=0;
-			key6_flag=0;
-		}
-	}
+    if(count_time%2==0){
+        ds_encoderCount();
+    }
+	
 	
     // 此处编写用户代码
     TIM2->SR &= ~TIM2->SR;                                                      // 清空中断状态

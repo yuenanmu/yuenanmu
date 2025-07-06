@@ -46,7 +46,7 @@ void ips200_show(){}
 int main(void)
 {
                                                                 // 初始化默认 Debug UART
-		all_init();
+	  all_init();
     while(1)
     {
 			if(key_flag==0)//按键ui屏幕显示
@@ -58,7 +58,7 @@ int main(void)
 			if(mt9v03x_finish_flag==1)
 		{
 			img_handle();//图象处理
-			//ccd_send_data(UART_1, ccd_data_ch1);
+			//mt9v03x_send_data(UART_1, mt9v03x_data_ch1);
 			mt9v03x_finish_flag = 0;	
 		}
 //			key();
