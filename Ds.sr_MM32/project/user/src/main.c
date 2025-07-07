@@ -55,12 +55,14 @@ int main(void)
 			ParameterExchange();
 			ds_main_menu();
 		}
-			if(mt9v03x_finish_flag==1)
-		{
-			img_handle();//图象处理
-			//mt9v03x_send_data(UART_1, mt9v03x_data_ch1);
-			mt9v03x_finish_flag = 0;	
-		}
+		//Motor_Control_L(1);
+		//Motor_Control_R(int16 OUT_R_SPEED);
+//			if(mt9v03x_finish_flag==1)
+//		{
+//			img_handle();//图象处理
+//			//mt9v03x_send_data(UART_1, mt9v03x_data_ch1);
+//			mt9v03x_finish_flag = 0;	
+//		}
 //			key();
 //		  system_delay_ms(100);
         // 此处编写需要循环执行的代码

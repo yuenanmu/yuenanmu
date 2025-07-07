@@ -69,12 +69,19 @@ void Motor_Pid_init()
 	Motor_Pid.speed_L=0.0;
 	Motor_Pid.speed_R=0.0;
 
-	Motor_Pid.L_Ki=0.0;    
-	Motor_Pid.L_Kp=0.0;  
-	Motor_Pid.R_Ki=0.0;  
-	Motor_Pid.R_Kp=0.0;  
+	Motor_Pid.L_Ki=1.0;    
+	Motor_Pid.L_Kp=1.0;  
+	Motor_Pid.R_Ki=1.0;  
+	Motor_Pid.R_Kp=1.0;  
 	
 	Motor_Pid.Dif_Speed=0.0;
+}
+void ds_motor_init(void){
+	gpio_init(LDIR,GPO,GPIO_HIGH, GPI_PULL_UP);
+  pwm_init        (LPWM, 17000, 0);  // 初始化左电机 TIM5_CH3_A2  // 初始化 PWM 通道 频率 17KHz 初始占空比 0%
+	
+	gpio_init(RDIR,GPO,GPIO_HIGH, GPI_PULL_UP);
+  pwm_init        (RPWM, 17000, 0);  // 初始化右电机 TIM5_CH3_A3                       // 设置初始速度为0
 }
 void Motor_Control()
 {

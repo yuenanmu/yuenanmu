@@ -22,6 +22,27 @@ void ds_main_menu(void){
         //状态参数显示
         //ips200_show_float((1-1)*offsetx,(1-1)*offsety,data,int_part_len,2);
         //ips200_show_int((1-1)*offsetx,(1-1)*offsety,data,len);
+			
+        ips200_show_string(1*offsetx,(5-1)*offsety,"Status");
+        ips200_show_string((2-1)*offsetx,(6-1)*offsety,"encoder_L:");
+        ips200_show_float((12-1)*offsetx,(6-1)*offsety,encoder_L,2,1);
+        ips200_show_string((16-1)*offsetx,(6-1)*offsety,"encoder_R:");
+        ips200_show_float((26-1)*offsetx,(6-1)*offsety,encoder_R,2,1);
+
+//        ips200_show_string((1-1)*offsetx,(7-1)*offsety,"Desire_Speed:");
+//        ips200_show_float((10-1)*offsetx,(7-1)*offsety,Desire_Speed,2,1);
+
+//        ips200_show_string((1-1)*offsetx,(8-1)*offsety,"Motor_Pid.speed_L");
+//        ips200_show_float((10-1)*offsetx,(8-1)*offsety,Motor_Pid.speed_L,2,1);
+//        ips200_show_string((15-1)*offsetx,(8-1)*offsety,"Motor_Pid.speed_R");
+//        ips200_show_float((25-1)*offsetx,(8-1)*offsety,Motor_Pid.speed_R,2,1);
+				
+//        if(mt9v03x_finish_flag)
+//		{
+//			memcpy(image_copy, mt9v03x_image, MT9V03X_H*MT9V03X_W);
+//			ips200_show_gray_image((1-1)*offsetx,(10-1)*offsety, (const uint8 *)image_copy, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 0);
+//			mt9v03x_finish_flag=0;
+//		}
     }
     if(ips200_show_flag==100)ips200_show_CarGo();
     if(ips200_show_flag==1)ips200_show_Pid();
@@ -36,24 +57,31 @@ void ds_main_menu(void){
 }
 void ips200_show_CarGo(void){
     ips200_show_string(1*offsetx,(1-1)*offsety,"CarGo");
+    ips200_show_int((10-1)*offsetx,(1-1)*offsety,start,1);
 }
 void ips200_show_Pid(void){
-    ips200_show_string(1*offsetx,(1-1)*offsety,"Kp");
-    ips200_show_string(1*offsetx,(2-1)*offsety,"Kd");
-    ips200_show_string(1*offsetx,(3-1)*offsety,"Sd");
-    ips200_show_string(1*offsetx,(4-1)*offsety,"Cs");
-
-    ips200_show_string(1*offsetx,(5-1)*offsety,"Duty");
-    ips200_show_string(1*offsetx,(6-1)*offsety,"Duer");
+    ips200_show_string(1*offsetx,(1-1)*offsety,"Sd");
+    ips200_show_string(1*offsetx,(2-1)*offsety,"Cs");
     
-    ips200_show_string(1*offsetx,(7-1)*offsety,"Line_SP");
-    ips200_show_string(1*offsetx,(8-1)*offsety,"Curve_SP");
+    ips200_show_string(1*offsetx,(3-1)*offsety,"Line_SP");
+    ips200_show_string(1*offsetx,(4-1)*offsety,"Curve_SP");
 
-    ips200_show_string(1*offsetx,(9-1)*offsety,"M_LP");
-    ips200_show_string(1*offsetx,(10-1)*offsety,"M_LI");
-    ips200_show_string(1*offsetx,(11-1)*offsety,"M_RP");
-    ips200_show_string(1*offsetx,(12-1)*offsety,"M_RI");
+    ips200_show_string(1*offsetx,(5-1)*offsety,"M_LI");
+    ips200_show_string(1*offsetx,(6-1)*offsety,"M_LP");
+    ips200_show_string(1*offsetx,(7-1)*offsety,"M_RI");
+    ips200_show_string(1*offsetx,(8-1)*offsety,"M_RP");
     //ips200_show_float((1-1)*offsetx,(1-1)*offsety,data,int_part_len,2);
+    ips200_show_float((10-1)*offsetx,(1-1)*offsety,Motor_Pid_speed_Z,3,2);
+    ips200_show_float((10-1)*offsetx,(2-1)*offsety,Motor_Pid.Dif_P,3,2);
+
+    ips200_show_float((10-1)*offsetx,(3-1)*offsety,Linear_speed,3,1);
+		ips200_show_float((10-1)*offsetx,(4-1)*offsety,Curve_speed,3,1);
+		
+		ips200_show_float((10-1)*offsetx,(5-1)*offsety,Motor_Pid.L_Ki,2,3);
+		ips200_show_float((10-1)*offsetx,(6-1)*offsety,Motor_Pid.L_Kp,3,3);
+		ips200_show_float((10-1)*offsetx,(7-1)*offsety,Motor_Pid.R_Ki,2,3);
+		ips200_show_float((10-1)*offsetx,(8-1)*offsety,Motor_Pid.R_Kp,3,3);
+
 }
 void ips200_show_Img(void){
     

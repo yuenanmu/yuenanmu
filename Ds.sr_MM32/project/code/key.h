@@ -38,4 +38,6 @@ extern uint8 ips200_show_ring_flag;
 
 void key(void);
 void ParameterExchange(void);
+void EepromWrite(void);
+void EepromRead(void);
 #endif

@@ -168,7 +168,7 @@ void ParameterExchange(void){
 	}
 /*------------------------pid二级(包含三级调参逻辑实现)---------------------------------------*/
 	if(ips200_show_flag==1){
-		if(plus==1){
+		if(plus){
 			switch (Model) 
 			{
 			// case 1: int16 Pid_Kp+=10; break;//预计转向的pid
@@ -192,9 +192,11 @@ void ParameterExchange(void){
 				break;
 			}
 			/*---------------flash保存--------------------*/
+			EepromWrite();
+			Motor_PID_subsection();
 			plus=0;
 		}
-		if(lose==1){
+		if(lose){
 			switch (Model) 
 			{
 			case 1:Motor_Pid_speed_Z-=5;
@@ -218,6 +220,8 @@ void ParameterExchange(void){
 				break;
 			}
 			/*---------------flash保存--------------------*/
+			EepromWrite();
+			Motor_PID_subsection();
 			lose=0;
 		}
 		if(return_flag==1){
@@ -230,7 +234,7 @@ void ParameterExchange(void){
 	}
 /*------------------------阈值二级---------------------------------------*/
 	if(ips200_show_flag==2){
-		if(plus==1){
+		if(plus){
 			switch (Model) 
 			{
 			case 1:Threshold_multiple+=5;break;
@@ -239,9 +243,10 @@ void ParameterExchange(void){
 				break;
 			}
 			/*---------------flash保存--------------------*/
+			EepromWrite();
 			plus=0;
 		}
-		if(lose==1){
+		if(lose){
 			switch (Model) 
 			{
 			case 1:Threshold_multiple=5;break;
@@ -250,6 +255,7 @@ void ParameterExchange(void){
 				break;
 			}
 			/*---------------flash保存--------------------*/
+			EepromWrite();
 			lose=0;
 		}
 		if(return_flag==1){
@@ -265,6 +271,7 @@ void ParameterExchange(void){
 
 /*---------------flash函数--------------------*/
 void EepromWrite(void){
+	flash_erase_page (0,0);
 	data_buff[0]=Motor_Pid_speed_Z;
 	data_buff[1]=Motor_Pid_Dif_P;
 	data_buff[2]=Motor_Pid_Z_L_Ki;
@@ -276,11 +283,21 @@ void EepromWrite(void){
 
 	data_buff[7] = Threshold_multiple;
 	data_buff[8] = Threshold;
-
+	flash_write_page(0,0,data_buff,50);
 	//元素ui
-	data_buff[9]=
 }
 
 void EepromRead(void){
-	
+	flash_read_page(0, 0, data_buff, 50);
+	Motor_Pid_speed_Z=data_buff[0];
+	Motor_Pid_Dif_P=data_buff[1];
+	Motor_Pid_Z_L_Ki=data_buff[2];
+	Motor_Pid_Z_L_Kp=data_buff[3];
+	Motor_Pid_Z_R_Ki=data_buff[4];
+	Motor_Pid_Z_R_Kp=data_buff[5];
+
+	Motor_Pid_Dif_P=data_buff[6];
+
+	Threshold_multiple=data_buff[7];
+	Threshold=data_buff[8];
 }
