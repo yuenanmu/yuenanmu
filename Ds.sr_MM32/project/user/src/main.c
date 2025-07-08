@@ -38,8 +38,8 @@
 // 打开新的工程或者工程移动了位置务必执行以下操作
 // 第一步 关闭上面所有打开的文件
 // 第二步 project->clean  等待下方进度条走完
-void img_handle(){}//图象处理
-void ips200_show(){}
+//void img_handle(){}//图象处理
+//void ips200_show(){}
 // 本例程是开源库移植用空工程
 
 // **************************** 代码区域 ****************************
@@ -49,20 +49,20 @@ int main(void)
 	  all_init();
     while(1)
     {
-			if(key_flag==0)//按键ui屏幕显示
-		{
-			key();
-			ParameterExchange();
-			ds_main_menu();
-		}
+//			if(key_flag==0)//按键ui屏幕显示
+//		{
+//			key();
+//			ParameterExchange();
+//			ds_main_menu();
+//		}
 		//Motor_Control_L(1);
 		//Motor_Control_R(int16 OUT_R_SPEED);
 //			if(mt9v03x_finish_flag==1)
 //		{
-//			img_handle();//图象处理
-//			//mt9v03x_send_data(UART_1, mt9v03x_data_ch1);
-//			mt9v03x_finish_flag = 0;	
-//		}
+			Img_handle();//图象处理
+			//mt9v03x_send_data(UART_1, mt9v03x_data_ch1);
+		//	mt9v03x_finish_flag = 0;	
+		//}
 //			key();
 //		  system_delay_ms(100);
         // 此处编写需要循环执行的代码

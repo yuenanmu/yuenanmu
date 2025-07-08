@@ -4,6 +4,7 @@
 #define DIR_1 (A0)
 #define PWM_2 TIM5_PWM_CH4_A3
 #define DIR_2 (A2)
+#define MAX_DUTY 10000
 //
 uint8_t black_area=0;
 uint8_t Straight,Ramp_flag,Cross_flag,Ring_state,Ring_left,Ring_right,curve,Angle;
@@ -165,9 +166,9 @@ void Motor_Control_L(int16 OUT_L_SPEED){
 	}
 	if(0<=PWM_L) //电机1   正转 设置占空比为 百分之 (9900/GTM_ATOM0_PWM_DUTY_MAX*100)
 	{
-		if(PWM_L>9900)
+		if(PWM_L>MAX_DUTY*0.5)
 		{
-			PWM_L=9900;
+			PWM_L=MAX_DUTY*0.5;
 		}
 		gpio_set_level(DIR_2,0);
 		//DIR_2 = 0;
@@ -175,9 +176,9 @@ void Motor_Control_L(int16 OUT_L_SPEED){
 	}
 	else                //电机1   反转
 	{
-		if(PWM_L<-9900)
+		if(PWM_L<-MAX_DUTY*0.5)
 		{
-			PWM_L=-9900;
+			PWM_L=-MAX_DUTY*0.5;
 		}
 		gpio_set_level(DIR_2,1);
 		//DIR_2 = 1;
@@ -197,9 +198,9 @@ void Motor_Control_R(int16 OUT_R_SPEED){
 	}
 	if(0<=PWM_R) //电机2   正转 设置占空比为 百分之 (9900/GTM_ATOM0_PWM_DUTY_MAX*100)
 	{
-		if(PWM_R>9900)
+		if(PWM_R>MAX_DUTY*0.5)
 		{
-			PWM_R=9900;
+			PWM_R=MAX_DUTY*0.5;
 		}
 		gpio_set_level(DIR_1,0);
 		//DIR_2 = 0;
@@ -207,9 +208,9 @@ void Motor_Control_R(int16 OUT_R_SPEED){
 	}
 	else                //电机2   反转
 	{
-		if(PWM_R<-9900)
+		if(PWM_R<-MAX_DUTY*0.5)
 		{
-			PWM_R=-9900;
+			PWM_R=-MAX_DUTY*0.5;
 		}
 		gpio_set_level(DIR_1,1);
 		//DIR_2 = 1;
