@@ -1,10 +1,7 @@
 #include "zf_common_headfile.h"
 #include "motor.h"
-#define PWM_1 TIM5_PWM_CH2_A1
-#define DIR_1 (A0)
-#define PWM_2 TIM5_PWM_CH4_A3
-#define DIR_2 (A2)
-#define MAX_DUTY 10000
+
+#define MAX_DUTY 4000
 //
 uint8_t black_area=0;
 uint8_t Straight,Ramp_flag,Cross_flag,Ring_state,Ring_left,Ring_right,curve,Angle;
@@ -78,11 +75,12 @@ void Motor_Pid_init()
 	Motor_Pid.Dif_Speed=0.0;
 }
 void ds_motor_init(void){
-	gpio_init(LDIR,GPO,GPIO_HIGH, GPI_PULL_UP);
-  pwm_init        (LPWM, 17000, 0);  // 初始化左电机 TIM5_CH3_A2  // 初始化 PWM 通道 频率 17KHz 初始占空比 0%
+	//gpio_init(DIR_1,GPO,GPIO_HIGH, GPI_PULL_UP);
+	gpio_init(DIR_1,GPO,GPIO_HIGH, GPO_PUSH_PULL);
+  pwm_init        (PWM_1, 17000, 0);  // 初始化左电机 TIM5_CH3_A2  // 初始化 PWM 通道 频率 17KHz 初始占空比 0%
 	
-	gpio_init(RDIR,GPO,GPIO_HIGH, GPI_PULL_UP);
-  pwm_init        (RPWM, 17000, 0);  // 初始化右电机 TIM5_CH3_A3                       // 设置初始速度为0
+	gpio_init(DIR_2,GPO,GPIO_HIGH, GPO_PUSH_PULL);
+  pwm_init        (PWM_2, 17000, 0);  // 初始化右电机 TIM5_CH3_A3                       // 设置初始速度为0
 }
 void Motor_Control()
 {
@@ -166,23 +164,25 @@ void Motor_Control_L(int16 OUT_L_SPEED){
 	}
 	if(0<=PWM_L) //电机1   正转 设置占空比为 百分之 (9900/GTM_ATOM0_PWM_DUTY_MAX*100)
 	{
-		if(PWM_L>MAX_DUTY*0.5)
+		if(PWM_L>MAX_DUTY)
 		{
-			PWM_L=MAX_DUTY*0.5;
+			PWM_L=MAX_DUTY;
 		}
-		gpio_set_level(DIR_2,0);
+		//gpio_set_level(DIR_2,0);
+		gpio_set_level(DIR_1,GPIO_HIGH);
 		//DIR_2 = 0;
-		pwm_set_duty(PWM_2, PWM_L);
+		pwm_set_duty(PWM_1, PWM_L);
 	}
 	else                //电机1   反转
 	{
-		if(PWM_L<-MAX_DUTY*0.5)
+		if(PWM_L<-MAX_DUTY)
 		{
-			PWM_L=-MAX_DUTY*0.5;
+			PWM_L=-MAX_DUTY;
 		}
-		gpio_set_level(DIR_2,1);
+		//gpio_set_level(DIR_2,1);
+		gpio_set_level(DIR_1, GPIO_LOW);
 		//DIR_2 = 1;
-		pwm_set_duty(PWM_2, -PWM_L);
+		pwm_set_duty(PWM_1, -PWM_L);
 	}
 }
 
@@ -198,26 +198,23 @@ void Motor_Control_R(int16 OUT_R_SPEED){
 	}
 	if(0<=PWM_R) //电机2   正转 设置占空比为 百分之 (9900/GTM_ATOM0_PWM_DUTY_MAX*100)
 	{
-		if(PWM_R>MAX_DUTY*0.5)
+		if(PWM_R>MAX_DUTY)
 		{
-			PWM_R=MAX_DUTY*0.5;
+			PWM_R=MAX_DUTY;
 		}
-		gpio_set_level(DIR_1,0);
-		//DIR_2 = 0;
-		pwm_set_duty(PWM_1, PWM_R);
+		gpio_set_level(DIR_2,GPIO_HIGH);
+		pwm_set_duty(PWM_2, PWM_R);
 	}
 	else                //电机2   反转
 	{
-		if(PWM_R<-MAX_DUTY*0.5)
+		if(PWM_R<-MAX_DUTY)
 		{
-			PWM_R=-MAX_DUTY*0.5;
+			PWM_R=-MAX_DUTY;
 		}
-		gpio_set_level(DIR_1,1);
-		//DIR_2 = 1;
-		pwm_set_duty(PWM_1, -PWM_R);
+		gpio_set_level(DIR_2,GPIO_LOW);
+		pwm_set_duty(PWM_2, -PWM_R);
 	}
 }
-
 
 void Incremental_PI_L (int encoder_L,int Target_L)  //速度环
 {		

@@ -7,6 +7,7 @@
 ".\objects\element.o"
 ".\objects\menu.o"
 ".\objects\motor.o"
+".\objects\serial.o"
 ".\objects\zf_common_clock.o"
 ".\objects\zf_common_debug.o"
 ".\objects\zf_common_fifo.o"

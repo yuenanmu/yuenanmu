@@ -25,9 +25,27 @@ void ds_main_menu(void){
 			
         ips200_show_string(1*offsetx,(5-1)*offsety,"Status");
         ips200_show_string((2-1)*offsetx,(6-1)*offsety,"encoder_L:");
-        ips200_show_float((12-1)*offsetx,(6-1)*offsety,encoder_L,2,1);
-        ips200_show_string((16-1)*offsetx,(6-1)*offsety,"encoder_R:");
-        ips200_show_float((26-1)*offsetx,(6-1)*offsety,encoder_R,2,1);
+        ips200_show_int((12-1)*offsetx,(6-1)*offsety,encoder_L,5);
+				
+			ips200_show_string((2-1)*offsetx,(10-1)*offsety,"return_flag:");
+			  ips200_show_int((15-1)*offsetx,(10-1)*offsety,return_flag,4);
+			
+			ips200_show_string((2-1)*offsetx,(11-1)*offsety,"grade_flag:");
+			  ips200_show_int((15-1)*offsetx,(11-1)*offsety,grade_flag,4);
+			
+			ips200_show_string((2-1)*offsetx,(12-1)*offsety,"lose:");
+			  ips200_show_int((15-1)*offsetx,(12-1)*offsety,lose,4);
+				
+			ips200_show_string((2-1)*offsetx,(13-1)*offsety,"plus");
+			  ips200_show_int((15-1)*offsetx,(13-1)*offsety,plus,4);
+				
+				ips200_show_string((2-1)*offsetx,(14-1)*offsety,"Model:");
+				ips200_show_int((12-1)*offsetx,(14-1)*offsety,Model,4);
+				
+				ips200_show_string((2-1)*offsetx,(15-1)*offsety,"ips200_show_flag:");
+				ips200_show_int((24-1)*offsetx,(15-1)*offsety,ips200_show_flag,4);
+//        ips200_show_string((16-1)*offsetx,(6-1)*offsety,"encoder_R:");
+//        ips200_show_int((26-1)*offsetx,(6-1)*offsety,encoder_R,4);
 
 //        ips200_show_string((1-1)*offsetx,(7-1)*offsety,"Desire_Speed:");
 //        ips200_show_float((10-1)*offsetx,(7-1)*offsety,Desire_Speed,2,1);
@@ -81,6 +99,24 @@ void ips200_show_Pid(void){
 		ips200_show_float((10-1)*offsetx,(6-1)*offsety,Motor_Pid.L_Kp,3,3);
 		ips200_show_float((10-1)*offsetx,(7-1)*offsety,Motor_Pid.R_Ki,2,3);
 		ips200_show_float((10-1)*offsetx,(8-1)*offsety,Motor_Pid.R_Kp,3,3);
+		
+		ips200_show_string((2-1)*offsetx,(10-1)*offsety,"return_flag:");
+			  ips200_show_int((15-1)*offsetx,(10-1)*offsety,return_flag,4);
+			
+			ips200_show_string((2-1)*offsetx,(11-1)*offsety,"grade_flag:");
+			  ips200_show_int((15-1)*offsetx,(11-1)*offsety,grade_flag,4);
+			
+			ips200_show_string((2-1)*offsetx,(12-1)*offsety,"lose:");
+			  ips200_show_int((15-1)*offsetx,(12-1)*offsety,lose,4);
+				
+			ips200_show_string((2-1)*offsetx,(13-1)*offsety,"plus");
+			  ips200_show_int((15-1)*offsetx,(13-1)*offsety,plus,4);
+				
+				ips200_show_string((2-1)*offsetx,(14-1)*offsety,"Model:");
+				ips200_show_int((12-1)*offsetx,(14-1)*offsety,Model,4);
+				
+				ips200_show_string((2-1)*offsetx,(15-1)*offsety,"ips200_show_flag:");
+				ips200_show_int((24-1)*offsetx,(15-1)*offsety,ips200_show_flag,4);
 
 }
 void ips200_show_Img(void){
@@ -92,6 +128,12 @@ void ips200_show_Element(void){
     ips200_show_string(1*offsetx,(3-1)*offsety,"Cross");
 
     //ips200_show_float((1-1)*offsetx,(1-1)*offsety,data,int_part_len,2);
+	ips200_show_int((12-1)*offsetx,(10-1)*offsety,return_flag,4);
+			  ips200_show_int((12-1)*offsetx,(11-1)*offsety,grade_flag,4);
+			  ips200_show_int((12-1)*offsetx,(12-1)*offsety,lose,4);
+			  ips200_show_int((12-1)*offsetx,(13-1)*offsety,plus,4);
+				ips200_show_int((12-1)*offsetx,(14-1)*offsety,Model,4);
+				ips200_show_int((12-1)*offsetx,(15-1)*offsety,ips200_show_flag,4);
 }
 void ips200_show_Ring(void){
     

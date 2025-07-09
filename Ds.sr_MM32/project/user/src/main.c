@@ -47,19 +47,25 @@ int main(void)
 {
                                                                 // 初始化默认 Debug UART
 	  all_init();
+	  //gpio_set_level(DIR_2, GPIO_LOW);
+		//gpio_set_level(DIR_2,GPIO_HIGH);
+		//pwm_set_duty(PWM_1, 1500);
+	debug_assert_disable();
     while(1)
     {
-//			if(key_flag==0)//按键ui屏幕显示
-//		{
-//			key();
-//			ParameterExchange();
-//			ds_main_menu();
-//		}
-		//Motor_Control_L(1);
+			if(key_flag==0)//按键ui屏幕显示
+		{
+			key();
+			ParameterExchange();
+			ds_main_menu();
+		}
+		//Motor_Control_L(5);
+		//Motor_Control_R(-1000);
+		Motor_Control_L(50);
 		//Motor_Control_R(int16 OUT_R_SPEED);
 //			if(mt9v03x_finish_flag==1)
 //		{
-			Img_handle();//图象处理
+//			Img_handle();//图象处理
 			//mt9v03x_send_data(UART_1, mt9v03x_data_ch1);
 		//	mt9v03x_finish_flag = 0;	
 		//}

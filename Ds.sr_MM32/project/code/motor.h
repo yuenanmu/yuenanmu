@@ -2,11 +2,16 @@
 #define _motor_h
 
 #include "zf_common_headfile.h"
-#define  LPWM TIM5_PWM_CH2_A1    // 定义左电机 PWM 通道
-#define  LDIR (A0)
+//#define  LPWM TIM5_PWM_CH2_A1    // 定义左电机 PWM 通道
+//#define  LDIR (A0)
 
-#define  RPWM TIM5_PWM_CH4_A3    // 定义右电机 PWM 通道
-#define  RDIR (A2)
+//#define  RPWM TIM5_PWM_CH4_A3    // 定义右电机 PWM 通道
+//#define  RDIR (A2)
+#define PWM_2 TIM5_PWM_CH4_A3
+#define DIR_2 (A2)
+
+#define PWM_1 TIM5_PWM_CH2_A1
+#define DIR_1 (A0)
 typedef struct
 {
 	float speed;

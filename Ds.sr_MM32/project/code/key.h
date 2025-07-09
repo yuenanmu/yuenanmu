@@ -35,6 +35,13 @@ extern uint8 offsety;
 extern uint8 ips200_show_flag; //菜单显示标志
 extern uint8 ips200_show_element_flag;
 extern uint8 ips200_show_ring_flag;
+extern uint8  return_flag;
+extern uint8	Model;	//光标
+extern uint8	cls_flag;//清屏
+extern uint8	ips200_show_flag;	// 返回到主菜单
+extern uint8	grade_flag;		// 重置菜单层级
+extern uint8	lose;	// 返回到主菜单
+extern uint8	plus;		// 重置菜单层级
 
 void key(void);
 void ParameterExchange(void);

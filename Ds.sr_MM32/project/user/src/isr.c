@@ -57,9 +57,20 @@ void TIM2_IRQHandler (void)
     // 此处编写用户代码
     if(count_time%2==0){
         ds_encoderCount();
+			//ds_serial();
     }
-	
-	
+		 if(count_time%50==0){
+			//ds_serial();
+			//ds_wireless_uart();
+    }
+		 if(return_flag==1){
+			return_flag=0;
+			Model=1;
+			cls_flag=0;
+			ips200_show_flag=0;
+			grade_flag=0;
+		}
+//	  ds_serial();
     // 此处编写用户代码
     TIM2->SR &= ~TIM2->SR;                                                      // 清空中断状态
 }
