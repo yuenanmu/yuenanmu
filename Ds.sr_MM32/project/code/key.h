@@ -42,7 +42,7 @@ extern uint8	ips200_show_flag;	// 返回到主菜单
 extern uint8	grade_flag;		// 重置菜单层级
 extern uint8	lose;	// 返回到主菜单
 extern uint8	plus;		// 重置菜单层级
-
+//test dev
 void key(void);
 void ParameterExchange(void);
 void EepromWrite(void);
