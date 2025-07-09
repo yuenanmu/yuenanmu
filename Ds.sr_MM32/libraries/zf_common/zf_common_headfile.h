@@ -133,6 +133,8 @@
 #include "all_init.h"
 #include "menu.h"
 #include "motor.h"
+#include "img_handle.h"
+#include "Serial.h"
 //===================================================用户自定义文件===================================================
 
 #endif

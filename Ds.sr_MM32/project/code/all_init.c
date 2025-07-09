@@ -9,9 +9,9 @@ void ds_encoder_init(void){
 }
 void  ds_encoderCount(void)
 {	encoder_L=encoder_get_count(TIM3_ENCODER);
-    encoder_clear_count(TIM3_ENCODER);
-    encoder_R=encoder_get_count(TIM4_ENCODER);
-    encoder_clear_count(TIM4_ENCODER);
+	encoder_clear_count(TIM3_ENCODER);
+	encoder_R=-encoder_get_count(TIM4_ENCODER);
+	//encoder_clear_count(TIM4_ENCODER);
 	
 	encoder=(encoder_L+encoder_R)*0.5;
 	encoder_integral+=encoder*0.02;
@@ -27,14 +27,17 @@ void all_init(void){
 	
 	//系统初始化
 	clock_init(SYSTEM_CLOCK_120M);                                              // 初始化芯片时钟 工作频率为 120MHz
-  	debug_init();   
+  debug_init();   
 	system_delay_ms(300);
 	
 	//外设初始化
+	wireless_uart_init();
 	ds_ips200_init();
 	ds_key_init();
 	ds_encoder_init();
-	
+	ds_motor_init();
+	Motor_Pid_init();
+	EepromRead();
 	
 	//片上资源初始化
 	pit_ms_init(TIM2_PIT, 1);  //分时复用定时器

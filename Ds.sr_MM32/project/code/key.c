@@ -47,33 +47,25 @@ void key(void)
 	static uint8 key2_status = 1;
 	static uint8 key3_status = 1;
 	static uint8 key4_status = 1;
-//	static uint8 key5_status = 1;
-//	static uint8 key6_status = 1;
-	//ï¿½ï¿½Ò»ï¿½Î¿ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½ï¿½ï¿½
+	//ÉÏÒ»´Î¿ª¹Ø×´Ì¬±äÁ¿
 	static uint8 key1_last_status;
 	static uint8 key2_last_status;
 	static uint8 key3_last_status;
 	static uint8 key4_last_status;
-//	static uint8 key5_last_status;
-//	static uint8 key6_last_status;
-	//Ê¹ï¿½Ã´Ë·ï¿½ï¿½ï¿½ï¿½Åµï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ÒªÊ¹ï¿½ï¿½while(1) ï¿½È´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½â´¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½Ë·ï¿½
-	//ï¿½ï¿½ï¿½æ°´ï¿½ï¿½×´Ì¬
+	//Ê¹ÓÃ´Ë·½·¨ÓÅµãÔÚÓÚ£¬²»ÐèÒªÊ¹ÓÃwhile(1) µÈ´ý£¬±ÜÃâ´¦ÀíÆ÷×ÊÔ´ÀË·Ñ
+	//±£´æ°´¼ü×´Ì¬
 	key1_last_status = key1_status;
 	key2_last_status = key2_status;
 	key3_last_status = key3_status;
 	key4_last_status = key4_status;
-//	key5_last_status = key5_status;
-//	key6_last_status = key6_status;
-	//ï¿½ï¿½È¡ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½×´Ì¬
+	//¶ÁÈ¡µ±Ç°°´¼ü×´Ì¬
 	key1_status = gpio_get_level(KEY1);
 	key2_status = gpio_get_level(KEY2);
 	key3_status = gpio_get_level(KEY3);
 	key4_status = gpio_get_level(KEY4);
-//	key5_status = KEY5;
-//	key6_status = KEY6;
-	//ï¿½ï¿½âµ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö®ï¿½ï¿½  ï¿½ï¿½ï¿½Å¿ï¿½ï¿½ï¿½Î»ï¿½ï¿½Ö¾Î»
-	if(key1_status && !key1_last_status)    key1_flag = 1;//ï¿½ï¿½ï¿½ï¿½
-	if(key2_status && !key2_last_status)    key2_flag = 1;//ï¿½ï¿½
+	//¼ì²âµ½°´¼ü°´ÏÂÖ®ºó  ²¢·Å¿ªÖÃÎ»±êÖ¾Î»
+	if(key1_status && !key1_last_status)    key1_flag = 1;//·µ»Ø
+	if(key2_status && !key2_last_status)    key2_flag = 1;//ÉÏ
 	if(key3_status && !key3_last_status){   
 		if(!gpio_get_level(SWITCH2))
 		key3_flag = 1;//ï¿½ï¿½
@@ -86,9 +78,7 @@ void key(void)
 		else
 		key6_flag = 1;	
 	}
-//	if(key5_status && !key5_last_status)    key5_flag = 1;//ï¿½ï¿½
-//	if(key6_status && !key6_last_status)    key6_flag = 1;//È·ï¿½ï¿½
-	//ï¿½ï¿½Ö¾Î»ï¿½ï¿½Î»Ö®ï¿½ó£¬¿ï¿½ï¿½ï¿½Ê¹ï¿½Ã±ï¿½Ö¾Î»Ö´ï¿½ï¿½ï¿½Ô¼ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½â²¿ï¿½ï¿½Ê¾ï¿½ï¿½Ö¾Î»ï¿½ï¿½Îª0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¼ï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ó¡ï¿½ï¿½Å»ï¿½ï¿½ï¿½
+	//±êÖ¾Î»ÖÃÎ»Ö®ºó£¬¿ÉÒÔÊ¹ÓÃ±êÖ¾Î»Ö´ÐÐ×Ô¼ºÏëÒª×öµÄÊÂ¼þ¡£Íâ²¿ÏÔÊ¾±êÖ¾Î»»áÎª0£¬ÕâÀïÖÐ¼ä±äÁ¿Ö±½Ó¡±ÓÅ»¯¡°
 	if(key1_flag==1)   
 	{
 		key1_flag = 0;//Ê¹ï¿½Ã°ï¿½ï¿½ï¿½Ö®ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾Î»
@@ -96,24 +86,22 @@ void key(void)
 	}
 	if(key2_flag==1)   
 	{
-		key2_flag = 0;//Ê¹ï¿½Ã°ï¿½ï¿½ï¿½Ö®ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾Î»
-		grade_flag++;	//È·ï¿½ï¿½
+		key2_flag = 0;//Ê¹ÓÃ°´¼üÖ®ºó£¬Ó¦¸ÃÇå³ý±êÖ¾Î»
+		//grade_flag++;	//È·¶¨
+		grade_flag=grade_flag%3+1;
 	}
 	if(key3_flag==1)   
 	{
 		key3_flag = 0;//Ê¹ï¿½Ã°ï¿½ï¿½ï¿½Ö®ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾Î»
 
-		Model--;  //ï¿½ï¿½ï¿½--ï¿½ï¿½ï¿½ï¿½ï¿½Æ£ï¿½
-		//Model=(Model+menu_item)%menu_item+1;
-		//Model == 16 ? 1 : Model;
-		//Model = (Model == 1) ? menu_item : Model - 1;  // ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½
+		Model--;  //¹â±ê--£¨ÉÏÒÆ£©
+		Model = (Model < 1) ? menu_item : (Model > menu_item) ? 1 : Model;
 	}
 	if(key4_flag==1)   
 	{
-		key4_flag = 0;//Ê¹ï¿½Ã°ï¿½ï¿½ï¿½Ö®ï¿½ï¿½Ó¦ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö¾Î»
-		Model++;  //ï¿½ï¿½ï¿½++(ï¿½ï¿½ï¿½ï¿½)
-		//Model=Model%menu_item+1;
-		//Model = (Model == menu_item) ? 1 : Model + 1;  // ï¿½ï¿½ï¿½Î´ï¿½ï¿½ï¿½
+		key4_flag = 0;//Ê¹ÓÃ°´¼üÖ®ºó£¬Ó¦¸ÃÇå³ý±êÖ¾Î»
+		Model++;  //¹â±ê++(ÏÂÒÆ)
+		Model = (Model < 1) ? menu_item : (Model > menu_item) ? 1 : Model;
 	}
 	if(key5_flag==1)   
 	{
@@ -168,17 +156,17 @@ void ParameterExchange(void){
 	}
 /*------------------------pidï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß¼ï¿½Êµï¿½ï¿½)---------------------------------------*/
 	if(ips200_show_flag==1){
-		if(plus==1){
+		if(plus){
 			switch (Model) 
 			{
 			// case 1: int16 Pid_Kp+=10; break;//Ô¤ï¿½ï¿½×ªï¿½ï¿½ï¿½pid
 			// case 2: int16 Pid_Kd+=100; break;	
 				case 1:Motor_Pid_speed_Z+=5;
-					if(Motor_Pid_speed_Z==180){
-						Motor_Pid_Dif_P=4;
-					}else if(Motor_Pid_speed_Z==200){
-						Motor_Pid_Dif_P=5;
-					}
+//					if(Motor_Pid_speed_Z==180){
+//						Motor_Pid_Dif_P=4;
+//					}else if(Motor_Pid_speed_Z==200){
+//						Motor_Pid_Dif_P=5;
+//					}
 					break;
 				case 2: Motor_Pid_Dif_P       -=1; break;
 				case 3:Linear_speed+=5;break;
@@ -191,18 +179,20 @@ void ParameterExchange(void){
 			default:
 				break;
 			}
-			/*---------------flashï¿½ï¿½ï¿½ï¿½--------------------*/
+			/*---------------flash±£´æ--------------------*/
+			EepromWrite();
+			Motor_PID_subsection();
 			plus=0;
 		}
-		if(lose==1){
+		if(lose){
 			switch (Model) 
 			{
 			case 1:Motor_Pid_speed_Z-=5;
-					if(Motor_Pid_speed_Z==180){
-						Motor_Pid_Dif_P=4;
-					}else if(Motor_Pid_speed_Z==200){
-						Motor_Pid_Dif_P=5;
-					}
+//					if(Motor_Pid_speed_Z==180){
+//						Motor_Pid_Dif_P=4;
+//					}else if(Motor_Pid_speed_Z==200){
+//						Motor_Pid_Dif_P=5;
+//					}
 					break;
 			case 2: Motor_Pid_Dif_P       -=1; break;
 			case 3:Linear_speed-=5;break;
@@ -217,7 +207,9 @@ void ParameterExchange(void){
 			default:
 				break;
 			}
-			/*---------------flashï¿½ï¿½ï¿½ï¿½--------------------*/
+			/*---------------flash±£´æ--------------------*/
+			EepromWrite();
+			Motor_PID_subsection();
 			lose=0;
 		}
 		if(return_flag==1){
@@ -230,7 +222,7 @@ void ParameterExchange(void){
 	}
 /*------------------------ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½---------------------------------------*/
 	if(ips200_show_flag==2){
-		if(plus==1){
+		if(plus){
 			switch (Model) 
 			{
 			case 1:Threshold_multiple+=5;break;
@@ -238,10 +230,11 @@ void ParameterExchange(void){
 			default:
 				break;
 			}
-			/*---------------flashï¿½ï¿½ï¿½ï¿½--------------------*/
+			/*---------------flash±£´æ--------------------*/
+			EepromWrite();
 			plus=0;
 		}
-		if(lose==1){
+		if(lose){
 			switch (Model) 
 			{
 			case 1:Threshold_multiple=5;break;
@@ -249,7 +242,8 @@ void ParameterExchange(void){
 			default:
 				break;
 			}
-			/*---------------flashï¿½ï¿½ï¿½ï¿½--------------------*/
+			/*---------------flash±£´æ--------------------*/
+			EepromWrite();
 			lose=0;
 		}
 		if(return_flag==1){
@@ -265,7 +259,7 @@ void ParameterExchange(void){
 
 /*---------------flashï¿½ï¿½ï¿½ï¿½--------------------*/
 void EepromWrite(void){
-	flash_erase_page(0, 0);
+	flash_erase_page (0,0);
 	data_buff[0]=Motor_Pid_speed_Z;
 	data_buff[1]=Motor_Pid_Dif_P;
 	data_buff[2]=Motor_Pid_Z_L_Ki;
@@ -277,15 +271,12 @@ void EepromWrite(void){
 
 	data_buff[7] = Threshold_multiple;
 	data_buff[8] = Threshold;
-
-	//Ôªï¿½ï¿½ui
-	data_buff[9] = Linear_speed;
-	data_buff[10] = Curve_speed;
-	flash_write_page(0, 0,data_buff, 50);
+	flash_write_page(0,0,data_buff,50);
+	//ÔªËØui
 }
 
 void EepromRead(void){
-	 flash_read_page (0, 0,data_buff, 30);
+	flash_read_page(0, 0, data_buff, 50);
 	Motor_Pid_speed_Z=data_buff[0];
 	Motor_Pid_Dif_P=data_buff[1];
 	Motor_Pid_Z_L_Ki=data_buff[2];
@@ -295,11 +286,6 @@ void EepromRead(void){
 
 	Motor_Pid_Dif_P=data_buff[6];
 
-	Threshold_multiple=data_buff[7] ;
-	Threshold=data_buff[8] ;
-
-	//Ôªï¿½ï¿½ui
-	Linear_speed=data_buff[9];
-	Curve_speed=data_buff[10];
-	flash_write_page(0, 0,data_buff, 50);
+	Threshold_multiple=data_buff[7];
+	Threshold=data_buff[8];
 }
