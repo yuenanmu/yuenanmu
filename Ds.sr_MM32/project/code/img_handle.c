@@ -1,28 +1,10 @@
 #include "zf_common_headfile.h"
 #include "img_handle.h"
-typedef struct 
-{
-    uint16 max;
-    uint16 min;
-    uint16 threshold;
-    uint16 aver;
-    uint16 bin_thrd;
-}ImgInformation;
-typedef struct{
-    uint8_t left_sideline;
-    uint8_t right_sideline;
-    
-    uint16_t midline;
-    uint16_t Width;
-    uint16_t left_qulu;
-    uint16_t right_qulu;
 
-}TrackInformation;
-ImgInformation imginformation;
-TrackInformation Trk;
 // MT9V03X_W               ( 188 )     
 // MT9V03X_H               ( 120 ) 
-uint8  image_twovalue[MT9V03X_H][MT9V03X_W];
+ImgInformation imginformation;
+TrackInformation Trk;
 //uint8  center_line[row][center_col]={0};
 uint8  center_line[MT9V03X_H][MT9V03X_W];
 uint8 left_flag=0;
@@ -30,7 +12,7 @@ uint8 right_flag=0;
 
 uint8 black_write=0;
 
-int calculate_threshold(uint8 mt9v03x_image[MT9V03X_H][MT9V03X_W]){
+int calculate_threshold(uint8 image_copy[MT9V03X_H][MT9V03X_W]){
     signed short i, j;
     unsigned long Amount = 0;
     unsigned long PixelBack = 0;
@@ -94,7 +76,7 @@ int calculate_threshold(uint8 mt9v03x_image[MT9V03X_H][MT9V03X_W]){
 void binarize_image(int threshold){
     for(int nr=0;nr<MT9V03X_H;nr++){
         for(int nc=0;nc<MT9V03X_W;nc++){
-            if(mt9v03x_image[nr][nc]>threshold)
+            if(image_copy[nr][nc]>threshold)
                 image_twovalue[nr][nc]=1;
             else 
                 image_twovalue[nr][nc]=0;
@@ -140,14 +122,15 @@ void Bin_Image_Filter(void){
 		}
 }
 void Img_handle(void){
-//	  imginformation.threshold=calculate_threshold(mt9v03x_image);
-//    binarize_image(imginformation.threshold);
-    if(mt9v03x_finish_flag)
-		{
-			memcpy(image_copy, mt9v03x_image, MT9V03X_H*MT9V03X_W);
-			ips200_show_gray_image((1-1)*offsetx,(10-1)*offsety, (const uint8 *)image_copy, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 0);
-			//ips200_show_binary_image((1-1)*offsetx,(10-1)*offsety, (const uint8 *)image_twovalue, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H);
-      mt9v03x_finish_flag=0;
-      //
-		}
+	  memcpy(image_copy, mt9v03x_image, MT9V03X_H*MT9V03X_W);
+	  imginformation.threshold=calculate_threshold(image_copy);
+    binarize_image(imginformation.threshold);
+//    if(mt9v03x_finish_flag)
+//		{
+//			memcpy(image_copy, mt9v03x_image, MT9V03X_H*MT9V03X_W);
+//			ips200_show_gray_image((1-1)*offsetx,(10-1)*offsety, (const uint8 *)image_copy, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 0);
+//			//ips200_show_binary_image((1-1)*offsetx,(10-1)*offsety, (const uint8 *)image_twovalue, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H);
+//      mt9v03x_finish_flag=0;
+//      //
+//		}
 }
