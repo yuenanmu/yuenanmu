@@ -258,34 +258,74 @@ void ParameterExchange(void){
 }
 
 /*---------------flash函数--------------------*/
+//void EepromWrite(void){
+//	flash_erase_page (FLASH_SECTION_INDEX,FLASH_PAGE_INDEX);
+//	data_buff[0]=Motor_Pid_speed_Z;
+//	data_buff[1]=Motor_Pid_Dif_P;
+//	data_buff[2]=Motor_Pid_Z_L_Ki;
+//	data_buff[3]=Motor_Pid_Z_L_Kp;
+//	data_buff[4]=Motor_Pid_Z_R_Ki;
+//	data_buff[5]=Motor_Pid_Z_R_Kp;
+
+//	data_buff[6]=Motor_Pid_Dif_P;
+
+//	data_buff[7] = Threshold_multiple;
+//	data_buff[8] = Threshold;
+//	flash_write_page(FLASH_SECTION_INDEX,FLASH_PAGE_INDEX,data_buff,50);
+//}
+
+//void EepromRead(void){
+//	flash_read_page(FLASH_SECTION_INDEX, FLASH_PAGE_INDEX, data_buff, 50);
+//	Motor_Pid_speed_Z=data_buff[0];
+//	Motor_Pid_Dif_P=data_buff[1];
+//	Motor_Pid_Z_L_Ki=data_buff[2];
+//	Motor_Pid_Z_L_Kp=data_buff[3];
+//	Motor_Pid_Z_R_Ki=data_buff[4];
+//	Motor_Pid_Z_R_Kp=data_buff[5];
+
+//	Motor_Pid_Dif_P=data_buff[6];
+
+//	Threshold_multiple=data_buff[7];
+//	Threshold=data_buff[8];
+//}
 void EepromWrite(void){
-	flash_erase_page (0,0);
-	data_buff[0]=Motor_Pid_speed_Z;
-	data_buff[1]=Motor_Pid_Dif_P;
-	data_buff[2]=Motor_Pid_Z_L_Ki;
-	data_buff[3]=Motor_Pid_Z_L_Kp;
-	data_buff[4]=Motor_Pid_Z_R_Ki;
-	data_buff[5]=Motor_Pid_Z_R_Kp;
+	if(flash_check(FLASH_SECTION_INDEX, FLASH_PAGE_INDEX))                      // 判断是否有数据
+    {
+        flash_erase_page(FLASH_SECTION_INDEX, FLASH_PAGE_INDEX);                // 擦除这一页
+    }
+	flash_buffer_clear();    
+	flash_union_buffer[0].int16_type=Motor_Pid_speed_Z;
+	flash_union_buffer[1].int16_type=Motor_Pid_Dif_P;
+	flash_union_buffer[2].int16_type=Motor_Pid_Z_L_Ki;
+	flash_union_buffer[3].int16_type=Motor_Pid_Z_L_Kp;
+	flash_union_buffer[4].int16_type=Motor_Pid_Z_R_Ki;
+	flash_union_buffer[5].int16_type=Motor_Pid_Z_R_Kp;
 
-	data_buff[6]=Motor_Pid_Dif_P;
+	flash_union_buffer[6].int16_type=Motor_Pid_Dif_P;
 
-	data_buff[7] = Threshold_multiple;
-	data_buff[8] = Threshold;
-	flash_write_page(0,0,data_buff,50);
+	flash_union_buffer[7].int16_type= Threshold_multiple;
+	flash_union_buffer[8].int16_type= Threshold;
 	//元素ui
+		
+  //最后
+	flash_write_page_from_buffer(FLASH_SECTION_INDEX, FLASH_PAGE_INDEX);
 }
 
 void EepromRead(void){
-	flash_read_page(0, 0, data_buff, 50);
-	Motor_Pid_speed_Z=data_buff[0];
-	Motor_Pid_Dif_P=data_buff[1];
-	Motor_Pid_Z_L_Ki=data_buff[2];
-	Motor_Pid_Z_L_Kp=data_buff[3];
-	Motor_Pid_Z_R_Ki=data_buff[4];
-	Motor_Pid_Z_R_Kp=data_buff[5];
+	flash_read_page_to_buffer(FLASH_SECTION_INDEX, FLASH_PAGE_INDEX);
+	Motor_Pid_speed_Z=flash_union_buffer[0].int16_type;
+	Motor_Pid_Dif_P=flash_union_buffer[1].int16_type;
+	Motor_Pid_Z_L_Ki=flash_union_buffer[2].int16_type;
+	Motor_Pid_Z_L_Kp=flash_union_buffer[3].int16_type;
+	Motor_Pid_Z_R_Ki=flash_union_buffer[4].int16_type;
+	Motor_Pid_Z_R_Kp=flash_union_buffer[5].int16_type;
 
-	Motor_Pid_Dif_P=data_buff[6];
+	Motor_Pid_Dif_P=flash_union_buffer[6].int16_type;
 
-	Threshold_multiple=data_buff[7];
-	Threshold=data_buff[8];
+	Threshold_multiple=flash_union_buffer[7].int16_type;
+	Threshold=flash_union_buffer[8].int16_type;
+	
+	//最后
+	Motor_PID_subsection();
+	
 }

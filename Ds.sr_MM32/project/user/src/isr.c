@@ -56,11 +56,13 @@ void TIM2_IRQHandler (void)
     count_time++;
     // 此处编写用户代码
     if(count_time%2==0){
-        ds_encoderCount();
+       ds_encoderCount();
+			 //Motor_Control_L(Motor_Pid_speed_Z);
+			 Motor_Control();
 			//ds_serial();
     }
 		 if(count_time%50==0){
-			//ds_serial();
+			ds_serial();
 			//ds_wireless_uart();
     }
 		 if(return_flag==1){

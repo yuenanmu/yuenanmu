@@ -61,7 +61,7 @@ int main(void)
 		}
 		//Motor_Control_L(5);
 		//Motor_Control_R(-1000);
-		Motor_Control_L(50);
+		//Motor_Control_L(Motor_Pid_speed_Z);
 		//Motor_Control_R(int16 OUT_R_SPEED);
 //			if(mt9v03x_finish_flag==1)
 //		{

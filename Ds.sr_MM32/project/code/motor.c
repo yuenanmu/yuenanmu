@@ -91,7 +91,7 @@ void Motor_Control()
     }else{stop_time=0;}
 
     //电机不转但pid疯狂加电流，防止堵转
-    if((encoder_L<=5&&PWM_L>9300)||(encoder_R<=5&&PWM_R>9300)&&start==1)
+    if((encoder_L<=5&&PWM_L>7000)||(encoder_R<=5&&PWM_R>7000)&&start==1)
     {
         block_time++;
     }else{ block_time=0; }
@@ -143,7 +143,8 @@ void Motor_Control()
 	if(Angle>=0)  //右转
 	{
 		Motor_Pid.speed_L=Motor_Pid.speed;
-		Motor_Pid.speed_R=Motor_Pid.speed-Motor_Pid.Dif_Speed*Motor_Pid.Dif_P;
+		Motor_Pid.speed_L=Motor_Pid.speed;
+		//Motor_Pid.speed_R=Motor_Pid.speed-Motor_Pid.Dif_Speed*Motor_Pid.Dif_P;
 	}
 	if(Angle<0)
 	{
