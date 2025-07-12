@@ -31,6 +31,18 @@ void all_init(void){
 	system_delay_ms(300);
 	
 	//外设初始化
+	while(1)
+  {
+        if(mt9v03x_init())
+        {
+            ips200_show_string(0, 16, "mt9v03x reinit.");
+        }
+        else
+        {
+            break;
+        }
+        system_delay_ms(500);                                                   // 短延时快速闪灯表示异常
+  }
 	wireless_uart_init();
 	ds_ips200_init();
 	ds_key_init();
@@ -38,11 +50,17 @@ void all_init(void){
 	ds_motor_init();
 	Motor_Pid_init();
 	EepromRead();
-	
+	ips200_show_string(0, 16, "init success.");
+	system_delay_ms(1000); 
+	ips200_clear();
 	//片上资源初始化
-	pit_ms_init(TIM2_PIT, 1);  //分时复用定时器
-	pit_ms_init(TIM1_PIT, 100);
+	//pit_ms_init(TIM2_PIT, 1);  //分时复用定时器
+	//pit_ms_init(TIM1_PIT, 100);
+	//interrupt_set_priority(TIM2_IRQn, 0);
+	//interrupt_set_priority(TIM1_UP_IRQn, 1);
+	pit_ms_init(TIM2_PIT, 1); 
+	pit_ms_init(TIM7_PIT, 100);
 	interrupt_set_priority(TIM2_IRQn, 0);
-	interrupt_set_priority(TIM1_UP_IRQn, 1);
+	interrupt_set_priority(TIM7_IRQn, 1);
 	
 }

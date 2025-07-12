@@ -13,6 +13,9 @@
 #define KEY5 SWITCH1
 #define KEY6 SWITCH2
 
+#define FLASH_SECTION_INDEX       (127)    // 存储数据用的扇区 倒数第一个扇区
+#define FLASH_PAGE_INDEX          (3)      // 存储数据用的页码 倒数第一个页码
+
 extern uint32 key1_count;
 extern uint32 key2_count;
 extern uint32 key3_count;
