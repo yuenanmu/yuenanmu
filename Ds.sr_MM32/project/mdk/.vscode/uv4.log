@@ -1,30 +1,3 @@
-<html>
-<body>
-<pre>
-<h1>µVision Build Log</h1>
-<h2>Tool Versions:</h2>
-IDE-Version: ¦ÌVision V5.25.2.0
-Copyright (C) 2018 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: 1 PC, 1, LIC=----
- 
-Tool Versions:
-Toolchain:       MDK-Lite  Version: 5.25.2.0
-Toolchain Path:  D:\Keil_v5\ARM\ARMCLANG\Bin
-C Compiler:      ArmClang.exe V6.9
-Assembler:       Armasm.exe V6.9
-Linker/Locator:  ArmLink.exe V6.9
-Library Manager: ArmAr.exe V6.9
-Hex Converter:   FromElf.exe V6.9
-CPU DLL:         SARMCM3.DLL V5.25.2.0
-Dialog DLL:      DCM.DLL V1.17.1.0
-Target DLL:      CMSIS_AGDI.dll V1.29.10.0
-Dialog DLL:      TCM.DLL V1.35.1.0
- 
-<h2>Project:</h2>
-d:\Git\yuenanmu\yuenanmu\Ds.sr_MM32\project\mdk\mm32f327x_g8p.uvprojx
-Project File Date:  07/10/2025
-
-<h2>Output:</h2>
 *** Using Compiler 'V6.9', folder: 'D:\Keil_v5\ARM\ARMCLANG\Bin'
 Build target 'mm32f327x_g8p_project'
 compiling zf_common_clock.c...
@@ -128,21 +101,5 @@ linking...
 .\Objects\MM32F327X_G8P.axf: error: L6050U: The code size of this image (37540 bytes) exceeds the maximum allowed for this version of the linker.
 Finished: 0 information, 0 warning, 0 error and 1 fatal error messages.
 ".\Objects\MM32F327X_G8P.axf" - 1 Error(s), 3 Warning(s).
-
-<h2>Software Packages used:</h2>
-
-Package Vendor: MindMotion
-                http://www.mindmotion.com.cn/Download/MDK_KEIL/MindMotion.MM32F3270_DFP.1.0.5.pack
-                MindMotion.MM32F3270_DFP.1.0.5
-                MindMotion MM32F3270 Series Device Support, Drivers and Examples
-
-<h2>Collection of Component include folders:</h2>
-  .\RTE\_mm32f327x_g8p_project
-  D:\Keil_v5\ARM\PACK\MindMotion\MM32F3270_DFP\1.0.5\Device\MM32F327x\Include
-
-<h2>Collection of Component Files used:</h2>
 Target not created.
 Build Time Elapsed:  00:00:12
-</pre>
-</body>
-</html>

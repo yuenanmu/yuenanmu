@@ -1,28 +1,11 @@
 #include "zf_common_headfile.h"
 #include "img_handle.h"
-typedef struct 
-{
-    uint16 max;
-    uint16 min;
-    uint16 threshold;
-    uint16 aver;
-    uint16 bin_thrd;
-}ImgInformation;
-typedef struct{
-    uint8_t left_sideline;
-    uint8_t right_sideline;
-    
-    uint16_t midline;
-    uint16_t Width;
-    uint16_t left_qulu;
-    uint16_t right_qulu;
-
-}TrackInformation;
-ImgInformation imginformation;
-TrackInformation Trk;
+#define BLACK 0x00
+#define WHITE 0xff
 // MT9V03X_W               ( 188 )     
 // MT9V03X_H               ( 120 ) 
-uint8  image_twovalue[MT9V03X_H][MT9V03X_W];
+ImgInformation imginformation;
+TrackInformation Trk;
 //uint8  center_line[row][center_col]={0};
 uint8  center_line[MT9V03X_H][MT9V03X_W];
 uint8 left_flag=0;
@@ -30,7 +13,7 @@ uint8 right_flag=0;
 
 uint8 black_write=0;
 
-int calculate_threshold(uint8 mt9v03x_image[MT9V03X_H][MT9V03X_W]){
+int calculate_threshold(uint8 image_copy[MT9V03X_H][MT9V03X_W]){
     signed short i, j;
     unsigned long Amount = 0;
     unsigned long PixelBack = 0;
@@ -89,15 +72,69 @@ int calculate_threshold(uint8 mt9v03x_image[MT9V03X_H][MT9V03X_W]){
         }
     }
     return Threshold;     
+}
 
+void lq_sobelAutoThreshold (unsigned char imageIn[MT9V03X_H][MT9V03X_W], unsigned char imageOut[MT9V03X_H][MT9V03X_W])
+{
+    /**卷积核大小**/
+    short KERNEL_SIZE = 3;
+    short xStart = KERNEL_SIZE / 2;
+    short xEnd = MT9V03X_W - KERNEL_SIZE / 2;
+    short yStart = KERNEL_SIZE / 2;
+    short yEnd = MT9V03X_H - KERNEL_SIZE / 2;
+    short i, j, k;
+    short temp[4];
+    for (i = yStart; i < yEnd; i++)
+    {
+        for (j = xStart; j < xEnd; j++)
+        {
+            /* 计算不同方向梯度幅值  */
+            temp[0] = -(short) imageIn[i - 1][j - 1] + (short) imageIn[i - 1][j + 1]//{{-1, 0, 1},
+            - (short) imageIn[i][j - 1] + (short) imageIn[i][j + 1]                 // {-1, 0, 1},
+            - (short) imageIn[i + 1][j - 1] + (short) imageIn[i + 1][j + 1];        // {-1, 0, 1}};
+            
+            temp[2] = -(short) imageIn[i - 1][j] + (short) imageIn[i][j - 1]        //{{0, -1, -1}
+            - (short) imageIn[i][j + 1] + (short) imageIn[i + 1][j]                 // {1,  0, -1}
+            - (short) imageIn[i - 1][j + 1] + (short) imageIn[i + 1][j - 1];        // {1,  1,  0}};
+ 
+            temp[3] = -(short) imageIn[i - 1][j] + (short) imageIn[i][j + 1]        //{{-1, -1,  0}
+            - (short) imageIn[i][j - 1] + (short) imageIn[i + 1][j]                 // {-1,  0,  1}
+            - (short) imageIn[i - 1][j - 1] + (short) imageIn[i + 1][j + 1];        // { 0,  1,  1}};
+            temp[0] = abs(temp[0]);
+            temp[1] = abs(temp[1]);
+            temp[2] = abs(temp[2]);
+            temp[3] = abs(temp[3]);
+            /* 找出梯度幅值最大值  */
+            for (k = 1; k < 4; k++)
+            {
+                if (temp[0] < temp[k])
+                {
+                    temp[0] = temp[k];
+                }
+            }
+            /* 使用像素点邻域内像素点之和的一定比例    作为阈值  */
+            temp[3] = (short) imageIn[i - 1][j - 1] + (short) imageIn[i - 1][j] + (short) imageIn[i - 1][j + 1]
+                    + (short) imageIn[  i  ][j - 1] + (short) imageIn[  i  ][j] + (short) imageIn[  i  ][j + 1]
+                    + (short) imageIn[i + 1][j - 1] + (short) imageIn[i + 1][j] + (short) imageIn[i + 1][j + 1];
+ 
+            if (temp[0] > temp[3] / 12.0f)
+            {
+                imageOut[i][j] = 0;
+            }
+            else
+            {
+                imageOut[i][j] = 0xff;
+            }
+        }
+    }
 }
 void binarize_image(int threshold){
     for(int nr=0;nr<MT9V03X_H;nr++){
         for(int nc=0;nc<MT9V03X_W;nc++){
-            if(mt9v03x_image[nr][nc]>threshold)
-                image_twovalue[nr][nc]=1;
+            if(image_copy[nr][nc]>threshold)
+                image_twovalue[nr][nc]=WHITE;
             else 
-                image_twovalue[nr][nc]=0;
+                image_twovalue[nr][nc]=BLACK;
         }
     }
     // for(int i=0;i<MT9V03X_W*MT9V03X_H;i++){
@@ -107,7 +144,23 @@ void binarize_image(int threshold){
     //     mt9v03x_image[i/MT9V03X_W][i%MT9V03X_W]=1; //小于阈值]
     // }
 }
-
+void Get_double_whitest_columns(uint8_t image[MT9V03X_H][MT9V03X_W],int cols[MT9V03X_H][2]){
+    for(int row=0;row<MT9V03X_H;row++){
+        int first =-1,second=-1;
+        for (int col = 0; col <MT9V03X_W; col++)
+        {
+            if(image[row][col]==WHITE){
+                if(first==-1){
+                    first=col;
+                }else if(second==-1){
+                    second=col;
+                }
+            }
+        }
+        cols[row][0]=first;
+        cols[row][1]=second;
+    }
+}
 void Get_sideline(){
 
 }
@@ -140,14 +193,15 @@ void Bin_Image_Filter(void){
 		}
 }
 void Img_handle(void){
-//	  imginformation.threshold=calculate_threshold(mt9v03x_image);
-//    binarize_image(imginformation.threshold);
-    if(mt9v03x_finish_flag)
-		{
-			memcpy(image_copy, mt9v03x_image, MT9V03X_H*MT9V03X_W);
-			ips200_show_gray_image((1-1)*offsetx,(10-1)*offsety, (const uint8 *)image_copy, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 0);
-			//ips200_show_binary_image((1-1)*offsetx,(10-1)*offsety, (const uint8 *)image_twovalue, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H);
-      mt9v03x_finish_flag=0;
-      //
-		}
+    memcpy(image_copy, mt9v03x_image, MT9V03X_H*MT9V03X_W);
+    imginformation.threshold=calculate_threshold(image_copy);
+    binarize_image(imginformation.threshold);
+//    if(mt9v03x_finish_flag)
+//		{
+//			memcpy(image_copy, mt9v03x_image, MT9V03X_H*MT9V03X_W);
+//			ips200_show_gray_image((1-1)*offsetx,(10-1)*offsety, (const uint8 *)image_copy, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 0);
+//			//ips200_show_binary_image((1-1)*offsetx,(10-1)*offsety, (const uint8 *)image_twovalue, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H);
+//      mt9v03x_finish_flag=0;
+//      //
+//		}
 }

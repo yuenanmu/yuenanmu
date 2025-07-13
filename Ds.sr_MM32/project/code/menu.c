@@ -120,7 +120,9 @@ void ips200_show_Pid(void){
 
 }
 void ips200_show_Img(void){
-    
+    ips200_show_int((5-1)*offsetx,(1-1)*offsety,imginformation.threshold,3);
+		ips200_show_gray_image((2-1)*offsetx,(2-1)*offsety, (const uint8 *)image_copy, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 1);
+		ips200_show_binary_image((2-1)*offsetx,(10-1)*offsety, (const uint8 *)image_twovalue, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H);
 }
 void ips200_show_Element(void){
     ips200_show_string(1*offsetx,(1-1)*offsety,"Ring");
@@ -128,12 +130,12 @@ void ips200_show_Element(void){
     ips200_show_string(1*offsetx,(3-1)*offsety,"Cross");
 
     //ips200_show_float((1-1)*offsetx,(1-1)*offsety,data,int_part_len,2);
-	ips200_show_int((12-1)*offsetx,(10-1)*offsety,return_flag,4);
-			  ips200_show_int((12-1)*offsetx,(11-1)*offsety,grade_flag,4);
-			  ips200_show_int((12-1)*offsetx,(12-1)*offsety,lose,4);
-			  ips200_show_int((12-1)*offsetx,(13-1)*offsety,plus,4);
-				ips200_show_int((12-1)*offsetx,(14-1)*offsety,Model,4);
-				ips200_show_int((12-1)*offsetx,(15-1)*offsety,ips200_show_flag,4);
+	  ips200_show_int((12-1)*offsetx,(10-1)*offsety,return_flag,4);
+		ips200_show_int((12-1)*offsetx,(11-1)*offsety,grade_flag,4);
+		ips200_show_int((12-1)*offsetx,(12-1)*offsety,lose,4);
+		ips200_show_int((12-1)*offsetx,(13-1)*offsety,plus,4);
+		ips200_show_int((12-1)*offsetx,(14-1)*offsety,Model,4);
+		ips200_show_int((12-1)*offsetx,(15-1)*offsety,ips200_show_flag,4);
 }
 void ips200_show_Ring(void){
     
