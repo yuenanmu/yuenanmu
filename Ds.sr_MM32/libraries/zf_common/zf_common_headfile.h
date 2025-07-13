@@ -39,7 +39,7 @@
 #include "stdio.h"
 #include "stdint.h"
 #include "string.h"
-
+#include "math.h"
 //===================================================芯片 SDK 底层===================================================
 #include "hal_device_registers.h"
 #include "hal_common.h"

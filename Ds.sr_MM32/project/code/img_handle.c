@@ -12,8 +12,15 @@ uint8 left_flag=0;
 uint8 right_flag=0;
 
 uint8 black_write=0;
-
-int calculate_threshold(uint8 image_copy[MT9V03X_H][MT9V03X_W]){
+/*----------------------------------------------图像处理部分------------------------------------------------*/
+/*-------------------------------------------------------------------------------------------------------------------
+  @brief     计算阈值
+  @param     起始行，终止行
+  @return    返回角点所在的行数，找不到返回0
+  Sample     calculate_threshold(*image_copy,MT9V03X_H,MT9V03X_W);
+  @note      用ips200_show_gray_image();函数显示图像
+-------------------------------------------------------------------------------------------------------------------*/
+uint8 calculate_threshold(uint8 *image,uint8 H, uint8 W){
     signed short i, j;
     unsigned long Amount = 0;
     unsigned long PixelBack = 0;
@@ -25,15 +32,15 @@ int calculate_threshold(uint8 image_copy[MT9V03X_H][MT9V03X_W]){
     signed short MinValue, MaxValue;
     signed short Threshold = 0;
     unsigned char HistoGram[256];              //
-
+		static uint8 last_Threshold;
     for (j = 0; j < 256; j++)
         HistoGram[j] = 0; //初始化灰度直方图
 
-    for (j = 0; j <MT9V03X_H; j++)
+    for (j = 0; j <H; j++)
     {
-        for (i = 0; i < MT9V03X_W; i++)
+        for (i = 0; i < W; i++)
         {
-            HistoGram[mt9v03x_image[j][i]]++; //统计灰度级中每个像素在整幅图像中的个数
+           HistoGram[image[j * W + i]]++;//统计灰度级中每个像素在整幅图像中的个数
         }
     }
 
@@ -71,9 +78,61 @@ int calculate_threshold(uint8 image_copy[MT9V03X_H][MT9V03X_W]){
             Threshold = j;
         }
     }
+		//
+		if(abs(last_Threshold-Threshold)<=1){
+			return last_Threshold;
+		}
+		last_Threshold=Threshold;
     return Threshold;     
 }
+uint8 otsuThreshold_less(uint8 *image, uint16 width, uint16 height)
+{
+    #define GrayScale 256
+    int pixel_count[GrayScale] = {0};//每个灰度值所占像素个数
+    float pixel_account[GrayScale] = {0};//每个灰度值所占总像素比例
+    int i,j;   
+    int pixel_sum = width * height;   //总像素点
+    uint8 threshold = 0;
+    uint8* pixel_data = image;  //指向像素数据的指针
 
+
+    //统计灰度级中每个像素在整幅图像中的个数  
+    for (i = 0; i < height; i++)
+    {
+        for (j = 0; j < width; j++)
+        {
+            pixel_count[(int)pixel_data[i * width + j]]++;  //将像素值作为计数数组的下标
+
+        }
+    }
+    float u = 0;  
+    for (i = 0; i < GrayScale; i++)
+    {
+        pixel_account[i] = (float)pixel_count[i] / pixel_sum;   //计算每个像素在整幅图像中的比例  
+        u += i * pixel_account[i];  //总平均灰度
+    }
+
+      
+    float variance_max=0.0;  //最大类间方差
+	float variance;
+    float w0 = 0, avgValue  = 0;  //w0 前景比例 ，avgValue 前景平均灰度
+    for(int i = 0; i < 256; i++)     //每一次循环都是一次完整类间方差计算 (两个for叠加为1个)
+    {  
+        w0 += pixel_account[i];  //假设当前灰度i为阈值, 0~i 灰度像素所占整幅图像的比例即前景比例
+        avgValue  += i * pixel_account[i];        
+        if (w0 <= 0 || w0 >= 1)
+			continue;
+        variance = pow((avgValue/w0 - u), 2) * w0 /(1 - w0);    //类间方差   
+        if(variance > variance_max) 
+        {  
+            variance_max = variance;  
+            threshold = i;  
+        }  
+    } 
+
+    return threshold;
+
+}
 void lq_sobelAutoThreshold (unsigned char imageIn[MT9V03X_H][MT9V03X_W], unsigned char imageOut[MT9V03X_H][MT9V03X_W])
 {
     /**卷积核大小**/
@@ -128,22 +187,46 @@ void lq_sobelAutoThreshold (unsigned char imageIn[MT9V03X_H][MT9V03X_W], unsigne
         }
     }
 }
-void binarize_image(int threshold){
-    for(int nr=0;nr<MT9V03X_H;nr++){
-        for(int nc=0;nc<MT9V03X_W;nc++){
-            if(image_copy[nr][nc]>threshold)
-                image_twovalue[nr][nc]=WHITE;
-            else 
-                image_twovalue[nr][nc]=BLACK;
-        }
-    }
-    // for(int i=0;i<MT9V03X_W*MT9V03X_H;i++){
-    //     if(mt9v03x_image[i/MT9V03X_W][i%MT9V03X_W]>YUZHI){ //大于阈值
-    //         mt9v03x_image[i/MT9V03X_W][i%MT9V03X_W]=0; //黑色
-    // }else{
-    //     mt9v03x_image[i/MT9V03X_W][i%MT9V03X_W]=1; //小于阈值]
-    // }
+void binarize_image(int threshold){		
+     for(int i=0;i<MT9V03X_W*MT9V03X_H;i++){
+         if(image_copy[i/MT9V03X_W][i%MT9V03X_W]>threshold){ //大于阈值
+             image_twovalue[i/MT9V03X_W][i%MT9V03X_W]=WHITE;
+     }else{
+         image_twovalue[i/MT9V03X_W][i%MT9V03X_W]=BLACK; //小于阈值
+     }
+	 }
 }
+
+void Bin_Image_Filter(uint8 *image,uint16 H,uint16 W){
+    for(int nr=1;nr<H-1;nr++){
+        for(int nc=1;nc<W-1;nc++){
+					int index=nr*W+nc;
+					int sum=image[(nr+1)*W+nc]+image[(nr-1)*W+nc]+image[nr*W+(nc+1)]+image[nr*W+(nc-1)];
+            if(image[index]==0 && sum>2){
+                image[index]=1;
+            }else if(image[index]==1 && sum<2){
+                image[index]=0;
+         }
+			}
+		}
+}
+
+void car_emergency_stop(void){
+	uint8 nc,nr;
+	uint8 black_pixel;
+	for(nr=MT9V03X_H-1;nr<MT9V03X_H-5;nr--)
+	{
+		for(nc=1;nc<MT9V03X_W;nc++)
+		{
+			black_pixel++;
+		}
+	}	
+	if(black_pixel>=4*MT9V03X_W*0.7)
+	{
+		start=0;
+	}
+}
+/*------------------------------------边线提取----------------------------------------------------*/
 void Get_double_whitest_columns(uint8_t image[MT9V03X_H][MT9V03X_W],int cols[MT9V03X_H][2]){
     for(int row=0;row<MT9V03X_H;row++){
         int first =-1,second=-1;
@@ -181,27 +264,28 @@ void Get_midline(){
         }
     }
 }
-void Bin_Image_Filter(void){
-    for(int nr=1;nr<MT9V03X_H-1;nr++){
-        for(int nc=1;nc<MT9V03X_W-1;nc++){
-            if(mt9v03x_image[nr][nc]==0 && (mt9v03x_image[nr+1][nc]+mt9v03x_image[nr-1][nc]+mt9v03x_image[nr][nc+1]+mt9v03x_image[nr][nc-1])>2){
-                mt9v03x_image[nr][nc]=1;
-            }else if(mt9v03x_image[nr][nc]==1 && (mt9v03x_image[nr+1][nc]+mt9v03x_image[nr-1][nc]+mt9v03x_image[nr][nc+1]+mt9v03x_image[nr][nc-1])<2){
-            mt9v03x_image[nr][nc]=0;
-         }
-			}
-		}
-}
+/*-------------------------------------找四个点------------------------------------------*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*-------------------------------------补线，画线------------------------------------------*/
+
 void Img_handle(void){
     memcpy(image_copy, mt9v03x_image, MT9V03X_H*MT9V03X_W);
-    imginformation.threshold=calculate_threshold(image_copy);
+    imginformation.threshold=calculate_threshold(*image_copy,MT9V03X_H,MT9V03X_W);
+		//imginformation.threshold=otsuThreshold_less(*image_copy,MT9V03X_H,MT9V03X_W);
     binarize_image(imginformation.threshold);
-//    if(mt9v03x_finish_flag)
-//		{
-//			memcpy(image_copy, mt9v03x_image, MT9V03X_H*MT9V03X_W);
-//			ips200_show_gray_image((1-1)*offsetx,(10-1)*offsety, (const uint8 *)image_copy, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 0);
-//			//ips200_show_binary_image((1-1)*offsetx,(10-1)*offsety, (const uint8 *)image_twovalue, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H);
-//      mt9v03x_finish_flag=0;
-//      //
-//		}
+		Bin_Image_Filter(*image_twovalue,MT9V03X_H,MT9V03X_W);
 }
