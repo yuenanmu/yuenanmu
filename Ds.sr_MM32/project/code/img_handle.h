@@ -25,5 +25,5 @@ extern ImgInformation imginformation;
 extern TrackInformation Trk;
 
 void Img_handle(void);
-
+void car_emergency_stop(void);
 #endif

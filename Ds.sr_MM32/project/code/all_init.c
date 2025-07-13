@@ -44,7 +44,7 @@ void all_init(void){
         system_delay_ms(500);                                                   // 短延时快速闪灯表示异常
   }
 	wireless_uart_init();
-	ds_ips200_init();
+    ds_ips200_init();
 	ds_key_init();
 	ds_encoder_init();
 	ds_motor_init();
@@ -54,10 +54,6 @@ void all_init(void){
 	system_delay_ms(1000); 
 	ips200_clear();
 	//片上资源初始化
-	//pit_ms_init(TIM2_PIT, 1);  //分时复用定时器
-	//pit_ms_init(TIM1_PIT, 100);
-	//interrupt_set_priority(TIM2_IRQn, 0);
-	//interrupt_set_priority(TIM1_UP_IRQn, 1);
 	pit_ms_init(TIM2_PIT, 1); 
 	pit_ms_init(TIM7_PIT, 100);
 	interrupt_set_priority(TIM2_IRQn, 0);
