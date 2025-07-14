@@ -227,42 +227,76 @@ void car_emergency_stop(void){
 	}
 }
 /*------------------------------------边线提取----------------------------------------------------*/
-void Get_double_whitest_columns(uint8_t image[MT9V03X_H][MT9V03X_W],int cols[MT9V03X_H][2]){
-    for(int row=0;row<MT9V03X_H;row++){
-        int first =-1,second=-1;
-        for (int col = 0; col <MT9V03X_W; col++)
-        {
-            if(image[row][col]==WHITE){
-                if(first==-1){
-                    first=col;
-                }else if(second==-1){
-                    second=col;
-                }
-            }
-        }
-        cols[row][0]=first;
-        cols[row][1]=second;
-    }
+uint8 start_left,start_right;
+uint8 longest_line_col,longest_line_row,longest_line_len;//白线定位和定长
+void Get_whitest_columns(void){
+	uint8 nc,nr;
+	longest_line_col=MT9V03X_W/2;
+	longest_line_row=MT9V03X_H-1;
+	longest_line_len=0;
+	for(nc=MT9V03X_W/2; nc>1;nc--)
+	{
+	if(image_twovalue[MT9V03X_H - 1][nc]==WHITE&&image_twovalue[MT9V03X_H - 1][nc-1]!= WHITE&&image_twovalue[MT9V03X_H - 1][nc-2]!= WHITE||nc==2)
+	{start_left=nc;break;}
+	}
+	for(nc=MT9V03X_W/2; nc<MT9V03X_W-2;nc++)
+	{	
+		if(image_twovalue[MT9V03X_H - 1][nc]==WHITE&&image_twovalue[MT9V03X_H - 1][nc+1]!= WHITE&&image_twovalue[MT9V03X_H - 1][nc+2]!= WHITE||nc==186)
+		{start_right=nc;break;}
+	}
+	for(nc=start_left;nc<start_right;nc++){
+		uint8 tmp_row=0,tmp_maxlen=0;
+		//最底下（MT9V03X_H-1）往上搜线
+		for(nr=MT9V03X_H-1;nr>0;nr--){
+			if(image_twovalue[nr][nc]==WHITE&&
+				image_twovalue[nr-1][nc]==BLACK){
+					tmp_row=nr;
+					tmp_maxlen=MT9V03X_H-tmp_row;
+					break;
+				}
+		}
+		//简单边界处理
+		if(nr==0&&
+			image_twovalue[0][nc]==WHITE)
+		{tmp_row=2;tmp_maxlen=MT9V03X_H - 2;}
+		if(tmp_maxlen>longest_line_len)
+		{
+			longest_line_len=tmp_maxlen;
+			longest_line_col=nc;
+			longest_line_row=tmp_row;//高度定位，y值
+		}
+	}
 }
-void Get_sideline(){
+uint8 left_sideline[120],right_sideline[120];
 
-}
-void Get_midline(){
-    for (int row = 0; row < MT9V03X_H; row++) {
-        int left = -1, right = -1;
-        for (int col = 0; col < MT9V03X_W; col++) {
-            if (mt9v03x_image[row][col] == 0) { // 黑色像素
-                if (left == -1) {
-                    left = col; // 记录左边界
-                }
-                right = col; // 更新右边界,在白列跳变的那一下
-            }
-        }
-        if (left != -1 && right != -1) {
-            int center_col = (left + right) / 2; // 计算中心列
-            center_line[row][center_col] = 1; // 标记中心线
-        }
-    }
+uint8 left_breakpoints[6][2],right_breakpoints[6][2];
+uint8 left_breakpoint_count,right_breakpoint_count;
+uint8 left_breakpoint_detected,right_breakpoint_detected;
+uint8 left_lost,right_lost;
+
+void Find_Boundry(void){
+	uint8 nc,nr;
+	memset(left_sideline,0,sizeof(left_sideline));
+	memset(right_sideline,0,sizeof(right_sideline));
+	for(nr=MT9V03X_H - 1;nr>longest_line_row;nr--)
+	{
+		for(nc=longest_line_col;nc>1;nc--){
+			if(image_twovalue[nr][nc]==WHITE&&image_twovalue[nr][nc-1]==BLACK)//||nc==2
+			{
+				left_sideline[nr]=nc;
+				if(left_sideline[nr]<=2)left_lost++;	//搜到了最左边
+				break;//该行的点找到，下一行
+			}
+		}
+		for(nc=longest_line_col;nc<MT9V03X_W - 2;nc++){
+			if(image_twovalue[nr][nc]==WHITE&&image_twovalue[nr][nc+1]==BLACK)//||nc==186
+			{
+				right_sideline[nr]=nc;
+				if(right_sideline[nr]==186)right_lost++;//搜到了最右边
+				break;//该行的点找到，下一行
+			}
+		}
+	}
 }
 /*-------------------------------------找四个点------------------------------------------*/
 
@@ -282,15 +316,193 @@ void Get_midline(){
 
 /*-------------------------------------补线，画线------------------------------------------*/
 void Img_draw(void){
-
+	ips200_show_gray_image((2-1)*offsetx,(10-1)*offsety, (const uint8 *)image_twovalue, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H,0);
+	//画的所有的点和线都要偏移
+	for(uint8 nr=MT9V03X_H-1;nr>0;nr--){
+		ips200_draw_point(longest_line_col, nr+(10-1)*offsety,RGB565_YELLOW);
+	}
+	for(uint8 nr=MT9V03X_H-1;nr>longest_line_row;nr--){
+		ips200_draw_point(left_sideline[nr]+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_GREEN);
+		ips200_draw_point(right_sideline[nr]+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_BLUE);
+		ips200_draw_point((left_sideline[nr]+right_sideline[nr])/2+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_RED);
+	}
+	
+//	for(uint8 nr=0;nr< MT9V03X_H;nr++){
+//		ips200_draw_point(longest_line_col, nr+(10-1)*offsety,RGB565_YELLOW);
+//	}
+//	for(uint8 nr=longest_line_row;nr<MT9V03X_H-1;nr++){
+//		ips200_draw_point(left_sideline[nr]+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_GREEN);
+//		ips200_draw_point(right_sideline[nr]+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_BLUE);
+//		ips200_draw_point((left_sideline[nr]+right_sideline[nr])/2+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_RED);
+//	}
+	Img_draw_clear();
 }
 void Img_draw_clear(void){
-
+//	for (int i = 0; i < 120; i++) {
+//   left_sideline[i] = 0;
+//   right_sideline[i] = 0;
+//}
 }
 void Img_handle(void){
     memcpy(image_copy, mt9v03x_image, MT9V03X_H*MT9V03X_W);
     imginformation.threshold=calculate_threshold(*image_copy,MT9V03X_H,MT9V03X_W);
-		//imginformation.threshold=otsuThreshold_less(*image_copy,MT9V03X_H,MT9V03X_W);
     binarize_image(imginformation.threshold);
-		Bin_Image_Filter(*image_twovalue,MT9V03X_H,MT9V03X_W);
+    Bin_Image_Filter(*image_twovalue,MT9V03X_H,MT9V03X_W);
+    Get_whitest_columns();
+		Find_Boundry();
 }
+
+
+
+//void Get_double_whitest_columns(uint8_t image[MT9V03X_H][MT9V03X_W],int cols[MT9V03X_H][2]){
+//    for(int row=0;row<MT9V03X_H;row++){
+//        int first =-1,second=-1;
+//        for (int col = 0; col <MT9V03X_W; col++)
+//        {
+//            if(image[row][col]==WHITE){
+//                if(first==-1){
+//                    first=col;
+//                }else if(second==-1){
+//                    second=col;
+//                }
+//            }
+//        }
+//        cols[row][0]=first;
+//        cols[row][1]=second;
+//    }
+//}
+//void Get_sideline(){
+
+//}
+//void Get_midline(){
+//    for (int row = 0; row < MT9V03X_H; row++) {
+//        int left = -1, right = -1;
+//        for (int col = 0; col < MT9V03X_W; col++) {
+//            if (mt9v03x_image[row][col] == 0) { // 黑色像素
+//                if (left == -1) {
+//                    left = col; // 记录左边界
+//                }
+//                right = col; // 更新右边界,在白列跳变的那一下
+//            }
+//        }
+//        if (left != -1 && right != -1) {
+//            int center_col = (left + right) / 2; // 计算中心列
+//            center_line[row][center_col] = 1; // 标记中心线
+//        }
+//    }
+//}
+
+// // 跟踪边线模块结构体 + 主函数封装
+// #include <stdint.h>
+// #include <string.h>
+
+// #define MT9V03X_W 188
+// #define MT9V03X_H 120
+// #define IMG_BLACK 0x00
+// #define IMG_WHITE 0xFF
+
+// // ========================== 结构体定义 ===========================
+// typedef struct {
+//     uint8_t left[MT9V03X_H];            // 左边线每一行的位置
+//     uint8_t right[MT9V03X_H];           // 右边线每一行的位置
+//     uint8_t width[MT9V03X_H];           // 每一行赛道宽度
+//     uint8_t left_lost_flag[MT9V03X_H];  // 左边是否丢线
+//     uint8_t right_lost_flag[MT9V03X_H]; // 右边是否丢线
+//     uint8_t both_lost_time;             // 同时丢线的行数
+//     uint8_t left_lost_time;             // 左边丢线行数
+//     uint8_t right_lost_time;            // 右边丢线行数
+//     uint8_t left_start_row;             // 左边第一个未丢线行
+//     uint8_t right_start_row;            // 右边第一个未丢线行
+//     uint8_t longest_white_column;       // 白列最长的列编号
+//     uint8_t longest_white_length;       // 该列长度
+// } TrackBoundary;
+
+// // ======================== 辅助变量（可替换为参数） ========================
+// static uint8_t White_Column[MT9V03X_W];
+
+// // ========================= 主函数封装 =============================
+// void TrackBoundary_Extract(const uint8_t image[MT9V03X_H][MT9V03X_W], TrackBoundary *result) {
+//     memset(result, 0, sizeof(TrackBoundary));
+//     memset(White_Column, 0, sizeof(White_Column));
+
+//     int start_column = 20, end_column = MT9V03X_W - 20;
+//     int i, j;
+
+//     // Step 1: 统计每列白色长度
+//     for (j = start_column; j <= end_column; j++) {
+//         for (i = MT9V03X_H - 1; i >= 0; i--) {
+//             if (image[i][j] == IMG_BLACK) break;
+//             White_Column[j]++;
+//         }
+//     }
+
+//     // Step 2: 找到最长白列
+//     for (i = start_column; i <= end_column; i++) {
+//         if (White_Column[i] > result->longest_white_length) {
+//             result->longest_white_length = White_Column[i];
+//             result->longest_white_column = i;
+//         }
+//     }
+
+//     int search_stop_row = MT9V03X_H - result->longest_white_length;
+
+//     // Step 3: 从下往上扫描每行边界
+//     for (i = MT9V03X_H - 1; i >= search_stop_row; i--) {
+//         // 扫右边
+//         for (j = result->longest_white_column; j < MT9V03X_W - 3; j++) {
+//             if (image[i][j] == IMG_WHITE && image[i][j + 1] == IMG_BLACK && image[i][j + 2] == IMG_BLACK) {
+//                 result->right[i] = j;
+//                 result->right_lost_flag[i] = 0;
+//                 break;
+//             } else {
+//                 result->right[i] = MT9V03X_W - 1;
+//                 result->right_lost_flag[i] = 1;
+//             }
+//         }
+
+//         // 扫左边
+//         for (j = result->longest_white_column; j > 2; j--) {
+//             if (image[i][j] == IMG_WHITE && image[i][j - 1] == IMG_BLACK && image[i][j - 2] == IMG_BLACK) {
+//                 result->left[i] = j;
+//                 result->left_lost_flag[i] = 0;
+//                 break;
+//             } else {
+//                 result->left[i] = 0;
+//                 result->left_lost_flag[i] = 1;
+//             }
+//         }
+
+//         result->width[i] = result->right[i] - result->left[i];
+
+//         // 统计丢线
+//         result->left_lost_time += result->left_lost_flag[i];
+//         result->right_lost_time += result->right_lost_flag[i];
+//         if (result->left_lost_flag[i] && result->right_lost_flag[i]) {
+//             result->both_lost_time++;
+//         }
+
+//         // 记录起始行
+//         if (result->left_start_row == 0 && !result->left_lost_flag[i]) {
+//             result->left_start_row = i;
+//         }
+//         if (result->right_start_row == 0 && !result->right_lost_flag[i]) {
+//             result->right_start_row = i;
+//         }
+//     }
+// }
+
+// // ========================== 调试输出宏（可选） =============================
+// #include <stdio.h>
+// void PrintTrackBoundary(const TrackBoundary *tb) {
+//     printf("Longest column: %d (len=%d)\n", tb->longest_white_column, tb->longest_white_length);
+//     printf("Left lost: %d, Right lost: %d, Both lost: %d\n", tb->left_lost_time, tb->right_lost_time, tb->both_lost_time);
+//     printf("Start row left: %d, right: %d\n", tb->left_start_row, tb->right_start_row);
+// }
+
+// // ========================== 示例调用方式 =============================
+// /*
+// uint8_t image_bin[MT9V03X_H][MT9V03X_W];
+// TrackBoundary tb;
+// TrackBoundary_Extract(image_bin, &tb);
+// PrintTrackBoundary(&tb);
+// */

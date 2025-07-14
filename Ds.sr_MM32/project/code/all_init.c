@@ -28,7 +28,7 @@ void all_init(void){
 	//系统初始化
 	clock_init(SYSTEM_CLOCK_120M);                                              // 初始化芯片时钟 工作频率为 120MHz
   debug_init();   
-	system_delay_ms(300);
+	system_delay_ms(100);
 	
 	//外设初始化
 	while(1)
@@ -44,14 +44,14 @@ void all_init(void){
         system_delay_ms(500);                                                   // 短延时快速闪灯表示异常
   }
 	wireless_uart_init();
-    ds_ips200_init();
+  ds_ips200_init();
 	ds_key_init();
 	ds_encoder_init();
 	ds_motor_init();
 	Motor_Pid_init();
 	EepromRead();
 	ips200_show_string(0, 16, "init success.");
-	system_delay_ms(1000); 
+	system_delay_ms(100); 
 	ips200_clear();
 	//片上资源初始化
 	pit_ms_init(TIM2_PIT, 1); 

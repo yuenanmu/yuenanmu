@@ -63,6 +63,7 @@ void TIM2_IRQHandler (void)
 			//ds_serial();
     }
 		 if(count_time%50==0){
+			 ds_serial();
 			 if(start){
 			 ds_serial();
 			 }

@@ -23,7 +23,14 @@ typedef struct{
 }TrackInformation;
 extern ImgInformation imginformation;
 extern TrackInformation Trk;
-
+extern uint8 left_sideline[120];
+extern uint8 right_sideline[120];
+extern uint8 longest_line_row;
+extern uint8 longest_line_col;
+extern uint8 longest_line_len;
+extern uint8 start_left,start_right; 
 void Img_handle(void);
 void car_emergency_stop(void);
+void Img_draw(void);
+void Img_draw_clear(void);
 #endif
