@@ -227,6 +227,45 @@ void car_emergency_stop(void){
 	}
 }
 /*------------------------------------边线提取----------------------------------------------------*/
+void Get_whitest_columns(void){
+  uint8 start_left,start_right;
+	uint8 nc,nr;
+	uint8 line_col,line_row,line_len;//白线定位和定长
+	for(nc=MT9V03X_W/2; nc>1;nr--)
+	{
+	if(image_twovalue[MT9V03X_H - 1][nc]==WHITE&&image_twovalue[MT9V03X_H - 1][nc-1]==BLACK)
+	{start_left=nc;break;}else{start_left=2;}
+	}
+	for(nc=MT9V03X_W/2; nc<MT9V03X_W-2;nr++)
+	{	
+		if(image_twovalue[MT9V03X_H - 1][nc]==WHITE&&image_twovalue[MT9V03X_H - 1][nc+1]==BLACK)
+		{start_right=nc;break;}else{start_right=185;}
+	}
+	
+	for(nc=start_left;nc<start_right;nc++){
+		uint8 tmp_row,tmp_maxlen;
+		//最底下（MT9V03X_H-1）往上搜线
+		for(nr=MT9V03X_H-1;nr>0;nr--){
+			if(image_twovalue[nr][nc]==WHITE&&
+				image_twovalue[nr+1][nc]==BLACK){
+					tmp_row=nr;
+					tmp_maxlen=MT9V03X_H-tmp_row;
+					break;
+				}
+		}
+		//简单边界处理
+		if(nr==0&&
+			image_twovalue[0][nc]==WHITE)
+		{tmp_row=2;tmp_maxlen=MT9V03X_H - 2;}
+		if(tmp_maxlen>line_len)
+		{
+			line_len=tmp_maxlen;
+			line_col=nc;
+			line_row=tmp_row;//高度定位，y值
+		}
+	}
+}
+
 void Get_double_whitest_columns(uint8_t image[MT9V03X_H][MT9V03X_W],int cols[MT9V03X_H][2]){
     for(int row=0;row<MT9V03X_H;row++){
         int first =-1,second=-1;
