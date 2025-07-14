@@ -281,7 +281,12 @@ void Get_midline(){
 
 
 /*-------------------------------------补线，画线------------------------------------------*/
+void Img_draw(void){
 
+}
+void Img_draw_clear(void){
+
+}
 void Img_handle(void){
     memcpy(image_copy, mt9v03x_image, MT9V03X_H*MT9V03X_W);
     imginformation.threshold=calculate_threshold(*image_copy,MT9V03X_H,MT9V03X_W);
