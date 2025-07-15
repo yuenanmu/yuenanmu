@@ -251,7 +251,7 @@ void Get_whitest_columns(void){
 		longest_line_row= 60;
 		return;
 	}
-	for(nc=start_left;nc<start_right;nc++){
+	for(nc=20;nc<start_right;nc++){
 		uint8 tmp_row=0,tmp_maxlen=0;
 		//最底下（MT9V03X_H-1）往上搜线
 		for(nr=MT9V03X_H-1;nr>0;nr--){
@@ -353,7 +353,7 @@ void Img_draw_clear(void){
 void Img_handle(void){
     memcpy(image_copy, mt9v03x_image, MT9V03X_H*MT9V03X_W);
     imginformation.threshold=calculate_threshold(*image_copy,MT9V03X_H,MT9V03X_W);
-    binarize_image(imginformation.threshold);
+    binarize_image(imginformation.threshold+10);
     Bin_Image_Filter(*image_twovalue,MT9V03X_H,MT9V03X_W);
     Get_whitest_columns();
 		Find_Boundry();
