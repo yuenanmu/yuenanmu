@@ -52,7 +52,8 @@ int main(void)
 		{
 			Img_handle();//图象处理
 			//mt9v03x_send_data(UART_1, mt9v03x_data_ch1);
-		  ips200_show_Img();
+			//Img_draw();
+		  //ips200_show_Img();
 			mt9v03x_finish_flag = 0;	
 		}
     }

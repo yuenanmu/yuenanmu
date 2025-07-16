@@ -357,7 +357,7 @@ void Img_handle(void){
     Bin_Image_Filter(*image_twovalue,MT9V03X_H,MT9V03X_W);
     Get_whitest_columns();
 		Find_Boundry();
-		Img_draw();
+		//Img_draw();
 }
 
 
