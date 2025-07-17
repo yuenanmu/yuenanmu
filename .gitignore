@@ -64,6 +64,7 @@ MDK/Listings/
 *.axf
 *.bin
 *.hex
+*.html
 
 # VSCode 设置
 .vscode/
@@ -71,3 +72,5 @@ MDK/Listings/
 # 日志、临时脚本
 *.log
 *.bat
+
+#文件夹
