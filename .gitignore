@@ -74,3 +74,15 @@ MDK/Listings/
 *.bat
 
 #文件夹
+
+
+# 编译中间产物
+*.dep
+*.ewd
+*.ewt
+*.dnx
+build_log.htm
+
+
+ExtDll.iex
+*.htm  # 除非需要共享HTML文档,否则忽略编译日志类htm文件
