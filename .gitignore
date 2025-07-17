@@ -48,3 +48,29 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# KEIL 相关临时文件
+*.uvguix.*
+*.uvoptx
+*.bak
+*.uvgui.*
+
+# 构建输出
+MDK/Objects/
+MDK/Listings/
+*.o
+*.d
+*.map
+*.axf
+*.bin
+*.hex
+*.html
+
+# VSCode 设置
+.vscode/
+
+# 日志、临时脚本
+*.log
+*.bat
+
+#文件夹

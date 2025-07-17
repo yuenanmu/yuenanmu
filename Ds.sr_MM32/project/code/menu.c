@@ -121,12 +121,8 @@ void ips200_show_Pid(void){
 void ips200_show_Img(void){
     ips200_show_int((5-1)*offsetx,(1-1)*offsety,imginformation.threshold,3);
 		ips200_show_gray_image((2-1)*offsetx,(2-1)*offsety, (const uint8 *)image_copy, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 0);
-		ips200_show_gray_image((2-1)*offsetx,(10-1)*offsety, (const uint8 *)image_twovalue, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H,0);
-	
-		
-//		ips200_show_binary_image((2-1)*offsetx,(2-1)*offsety, (const uint8 *)image_copy, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H);
-//	  ips200_show_binary_image((2-1)*offsetx,(10-1)*offsety, (const uint8 *)image_twovalue, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H);
-		
+		ips200_show_gray_image((2-1)*offsetx,(10-1)*offsety, (const uint8 *)image_twovalue, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H,1);
+		//Img_draw();
 		display_menu_status();
 }
 void ips200_show_Element(void){
