@@ -142,9 +142,14 @@ void ParameterExchange(void){
 /*------------------------发车二级---------------------------------------*/
 	if(ips200_show_flag==100){  
 		if(grade_flag==3){
-			start=1;
+			start_go+=1;
+			start_go=start_go%2;
 			Angle_flag=1;
 			key_flag=key_flag;
+			grade_flag=2;			//立马重置到上一级，执行一次就好，这个值在发车菜单中不会显示3
+			
+//			PWM_L=500;
+//			PWM_R=600;
 		}
 		if(return_flag==1){
 			return_flag=0;
@@ -168,14 +173,18 @@ void ParameterExchange(void){
 //						Motor_Pid_Dif_P=5;
 //					}
 					break;
-				case 2: Motor_Pid_Dif_P       -=1; break;
+				case 2: Motor_Pid_Dif_P       +=1; break;
 				case 3:Linear_speed+=5;break;
 				case 4:Curve_speed+=5;break;
 
 				case 5:Motor_Pid_Z_L_Ki+=10;break;
 				case 6:Motor_Pid_Z_L_Kp+=10;break;
+				
 				case 7:Motor_Pid_Z_R_Ki+=10;break;
 				case 8:Motor_Pid_Z_R_Kp+=10;break;
+				
+				case 9:Motor_Pid_Z_Dir_Kd+=1;break;
+				case 10:Motor_Pid_Z_Dir_Kp+=1;break;
 			default:
 				break;
 			}
@@ -200,10 +209,12 @@ void ParameterExchange(void){
 
 			case 5:Motor_Pid_Z_L_Ki-=10;break;
 			case 6:Motor_Pid_Z_L_Kp-=10;break;
-
+				
 			case 7:Motor_Pid_Z_R_Ki-=10;break;
 			case 8:Motor_Pid_Z_R_Kp-=10;break;
 			
+			case 9:Motor_Pid_Z_Dir_Kd-=1;break;
+			case 10:Motor_Pid_Z_Dir_Kp-=1;break;
 			default:
 				break;
 			}
@@ -305,8 +316,11 @@ void EepromWrite(void){
 
 	flash_union_buffer[7].int16_type= Threshold_multiple;
 	flash_union_buffer[8].int16_type= Threshold;
-	//元素ui
 		
+	flash_union_buffer[9].int16_type= Motor_Pid_Z_Dir_Kp;
+	flash_union_buffer[10].int16_type= Motor_Pid_Z_Dir_Kd;
+	//元素ui
+	printf("OK12");
   //最后
 	flash_write_page_from_buffer(FLASH_SECTION_INDEX, FLASH_PAGE_INDEX);
 }
@@ -325,7 +339,9 @@ void EepromRead(void){
 	Threshold_multiple=flash_union_buffer[7].int16_type;
 	Threshold=flash_union_buffer[8].int16_type;
 	
+	Motor_Pid_Z_Dir_Kp=flash_union_buffer[9].int16_type;
+	Motor_Pid_Z_Dir_Kd=flash_union_buffer[10].int16_type;
 	//最后
 	Motor_PID_subsection();
-	
+	printf("OK123\n");
 }

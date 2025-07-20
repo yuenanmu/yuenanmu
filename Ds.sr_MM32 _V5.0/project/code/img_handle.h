@@ -19,7 +19,9 @@ typedef struct {
 		float Err;
 }ds_Track_Boundary;
 extern ds_Track_Boundary Track;
+extern uint8 threshold;
 extern uint8 image_two_value[MT9V03X_H][MT9V03X_W];
+extern uint8 Zebra_Flag;
 //void PrintTrackBoundary(const ds_Track_Boundary *tb);
 
 int  my_adapt_threshold(uint8*image,uint16 col, uint16 row);

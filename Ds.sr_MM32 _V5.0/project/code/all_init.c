@@ -1,8 +1,8 @@
 #include "zf_common_headfile.h"
 #include "all_init.h"
-int16 encoder_L;
-int16 encoder_R;
-float encoder_integral=0,encoder=0,encoder_integra2=0;
+int16 encoder_L,encoder_L_last;
+int16 encoder_R,encoder_R_last;
+float encoder_integra1=0,encoder=0,encoder_integra2=0,encoder_integra=0;
 void ds_encoder_init(void){
 	encoder_quad_init(TIM3_ENCODER,TIM3_ENCODER_CH1_B4,TIM3_ENCODER_CH2_B5);
 	encoder_quad_init(TIM4_ENCODER,TIM4_ENCODER_CH1_B6,TIM4_ENCODER_CH2_B7);
@@ -12,10 +12,20 @@ void  ds_encoderCount(void)
 	encoder_clear_count(TIM3_ENCODER);
 	encoder_R=-encoder_get_count(TIM4_ENCODER);
 	encoder_clear_count(TIM4_ENCODER);
-	
+//	if(abs(encoder_L - encoder_L_last) > MAX_EXPECTED_ENCODER) {
+//    encoder_L = encoder_L_last; // 或者直接跳过当前帧
+//}
+//	if(abs(encoder_R - encoder_R_last) > MAX_EXPECTED_ENCODER) {
+//    encoder_R = encoder_R_last; // 或者直接跳过当前帧
+//}
 	encoder=(encoder_L+encoder_R)*0.5;
-	encoder_integral+=encoder*0.02;
-	encoder_integral+=encoder*0.02;
+	encoder_integra1+=encoder_L*0.02;
+	encoder_integra2+=encoder_R*0.02;
+	
+	encoder_integra+=encoder*0.02;
+
+//	encoder_L_last=encoder_L;
+//	encoder_R_last=encoder_R;
 }
 void ds_key_init(void){
 	gpio_init(KEY1, GPI, GPIO_HIGH, GPI_PULL_UP);                               // 初始化 KEY1 输入 默认高电平 上拉输入
@@ -62,6 +72,7 @@ void all_init(void){
 	ds_encoder_init();
 	ds_motor_init();
 	Motor_Pid_init();
+	//初始化之后读取flash并复制
 	EepromRead();
 	ips200_show_string(0, 16, "init success.");
 	system_delay_ms(100); 

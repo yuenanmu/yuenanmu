@@ -136,6 +136,7 @@
 #include "img_handle.h"
 #include "Serial.h"
 #include "element.h"
+#include "cjson.h"
 //===================================================用户自定义文件===================================================
 
 #endif

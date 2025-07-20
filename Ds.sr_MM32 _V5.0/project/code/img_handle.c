@@ -34,6 +34,8 @@ volatile int Ramp_Flag=0;//坡道标志
 
 //十字
 volatile int Cross_Flag=0;
+uint8 Zebra_Flag;
+uint8 Zebra_Count=0;
 volatile int Left_Down_Find=0; //十字使用，找到被置行数，没找到就是0
 volatile int Left_Up_Find=0;   //四个拐点标志
 volatile int Right_Down_Find=0;
@@ -696,6 +698,35 @@ void Cross_Detect()
 //    ips200_showuint8(50,13,Left_Down_Find);
 //    ips200_showuint8(100,13,Right_Down_Find);
 }
+uint8  Zebra_Detected(void)
+{
+    uint8 zebra_count=0;
+    Zebra_Flag=0;//斑马线标志清零
+    if(Longest_White_Column_Left[1]>20&&Longest_White_Column_Right[1]<MT9V03X_W-20&&
+        Longest_White_Column_Right[1]>20&&Longest_White_Column_Left[1]<MT9V03X_W-20&&
+        Search_Stop_Line>=110&&
+    Boundry_Start_Left>=MT9V03X_H-20&&
+    Boundry_Start_Right>=MT9V03X_H-20)
+        {
+            for(int i=MT9V03X_H-1;i>=MT9V03X_H-3;i--)
+            {
+                for(int j=0;j<=MT9V03X_W-1-3;j++)
+                {
+                    if(image_two_value[i][j]==1&&image_two_value[i][j+1]==0&&image_two_value[i][j+2]==0)
+                    {
+                        zebra_count++;
+                    }
+									}
+                if(zebra_count>=10)//如果黑色计数大于等于40，认为是斑马线
+                {
+                    Zebra_Flag=1;
+										BB();
+										return Zebra_Flag ;
+                }
+            }
+        }
+				return 0;
+}
 /*-------------------------------------图像处理------------------------------------------*/
 void car_emergency_stop(void){
 	uint8 nc,nr;
@@ -707,9 +738,13 @@ void car_emergency_stop(void){
 			black_pixel++;
 		}
 	}	
-	if(black_pixel>=4*MT9V03X_W*0.7)
+	if(black_pixel>=4*MT9V03X_W*0.7||Track.Err>150)
 	{
-		start=0;
+		start_go=0;
+//		pwm_set_duty(PWM_1, 0);//重置目标速度
+//		pwm_set_duty(PWM_2, 0);
+		Motor_Control_L(0);
+		Motor_Control_R(0);
 	}
 }
 void Bin_Image_Filter(uint8 *image,uint16 H,uint16 W){
@@ -730,12 +765,12 @@ float Get_Err(void)
 	float Err=0;
 	float weight_count=0;
 	//常规误差
-	for(int i=MT9V03X_H-1;i>=MT9V03X_H-Search_Stop_Line-1;i--)//常规误差计算
+	for(int i=MT9V03X_H-10;i>=MT9V03X_H-30;i--)//常规误差计算
 	{
-			Err+=(MT9V03X_W/2-((Left_Line[i]+Right_Line[i])>>1))*Weight[i];//右移1位，等效除2
-			weight_count+=Weight[i];
+			Err+=(MT9V03X_W/2-((Left_Line[i]+Right_Line[i])>>1));//右移1位，等效除2
+			//weight_count+=Weight[i];
 	}
-	Err=Err/weight_count;
+	Err=Err/20;
 	return Err;//注意此处，误差有正负，还有小数，注意数据类型
 }
 void Get_UseImg(void){
@@ -750,7 +785,17 @@ void Img_Processing(void){
 	
 	Cross_Detect();
 	
-	Show_Boundry();
+	if(Zebra_Detected()==1){
+	Zebra_Flag=0;
+	Zebra_Count+=1;
+	Zebra_Count=Zebra_Count%2+1;
+	if(Zebra_Count==2){
+		start_go=0;
+		Motor_Control_L(0);
+		Motor_Control_R(0);
+		}
+	}
+	//Show_Boundry();
 	Track.Err=Get_Err();
 }
 void Img_draw(void){
@@ -758,10 +803,13 @@ void Img_draw(void){
 	for(uint8 nr=MT9V03X_H-1;nr>MT9V03X_H-Longest_White_Column_Left[0];nr--){
 		ips200_draw_point(Longest_White_Column_Left[1]+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_YELLOW);
 	}
-	for(uint8 nr=MT9V03X_H-1;nr>Longest_White_Column_Left[0];nr--){
+	for(uint8 nr=MT9V03X_H-1;nr>MT9V03X_H-Longest_White_Column_Left[0];nr--){
 		ips200_draw_point(Left_Line[nr]+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_GREEN);
 		ips200_draw_point(Right_Line[nr]+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_BLUE);
-		ips200_draw_point(((Right_Line[nr]+Left_Line[nr])>>1)+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_RED);
+		ips200_draw_point(((Right_Line[nr]+Left_Line[nr])>>1)+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_BLACK);
+	}
+	for(uint8 nr=MT9V03X_H-1;nr>1;nr--){
+		ips200_draw_point(MT9V03X_W/2+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_RED);
 	}
 }
 void Img_draw_clear(void){

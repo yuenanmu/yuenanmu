@@ -68,7 +68,18 @@ void ds_main_menu(void){
 			  display_menu_status();
         ips200_show_string((16-1)*offsetx,(6-1)*offsety,"encoder_R:");
         ips200_show_int((26-1)*offsetx,(6-1)*offsety,encoder_R,3);
-
+				
+			  ips200_show_string((2-1)*offsetx,(7-1)*offsety,"encoder_integra1:");
+        ips200_show_float((20-1)*offsetx,(7-1)*offsety,encoder_integra1,3,3);
+			
+			  ips200_show_string((2-1)*offsetx,(8-1)*offsety,"encoder_integra2:");
+        ips200_show_float((20-1)*offsetx,(8-1)*offsety,encoder_integra2,3,3);
+				
+				ips200_show_string((2-1)*offsetx,(9-1)*offsety,"Err:");
+        ips200_show_float((7-1)*offsetx,(9-1)*offsety,Track.Err,5,2);
+				ips200_show_string((16-1)*offsetx,(9-1)*offsety,"Dif:");
+        ips200_show_float((21-1)*offsetx,(9-1)*offsety,Motor_Pid.Dif_Speed*Motor_Pid.Dif_P,5,2);
+				
 //        ips200_show_string((1-1)*offsetx,(7-1)*offsety,"Desire_Speed:");
 //        ips200_show_float((10-1)*offsetx,(7-1)*offsety,Desire_Speed,2,1);
 
@@ -90,12 +101,12 @@ void ds_main_menu(void){
 }
 void ips200_show_CarGo(void){
     ips200_show_string(1*offsetx,(1-1)*offsety,"CarGo");
-    ips200_show_int((10-1)*offsetx,(1-1)*offsety,start,1);
+    ips200_show_int((10-1)*offsetx,(1-1)*offsety,start_go,1);
 	  display_menu_status();
 }
 void ips200_show_Pid(void){
     ips200_show_string(1*offsetx,(1-1)*offsety,"Sd");
-    ips200_show_string(1*offsetx,(2-1)*offsety,"Cs");
+    ips200_show_string(1*offsetx,(2-1)*offsety,"Dif_P");
     
     ips200_show_string(1*offsetx,(3-1)*offsety,"Line_SP");
     ips200_show_string(1*offsetx,(4-1)*offsety,"Curve_SP");
@@ -104,6 +115,9 @@ void ips200_show_Pid(void){
     ips200_show_string(1*offsetx,(6-1)*offsety,"M_LP");
     ips200_show_string(1*offsetx,(7-1)*offsety,"M_RI");
     ips200_show_string(1*offsetx,(8-1)*offsety,"M_RP");
+	
+		ips200_show_string(1*offsetx,(9-1)*offsety,"M_Dir_D");
+    ips200_show_string(1*offsetx,(10-1)*offsety,"M_Dir_P");
     //ips200_show_float((1-1)*offsetx,(1-1)*offsety,data,int_part_len,2);
     ips200_show_float((10-1)*offsetx,(1-1)*offsety,Motor_Pid_speed_Z,3,2);
     ips200_show_float((10-1)*offsetx,(2-1)*offsety,Motor_Pid.Dif_P,3,2);
@@ -111,25 +125,27 @@ void ips200_show_Pid(void){
     ips200_show_float((10-1)*offsetx,(3-1)*offsety,Linear_speed,3,1);
 		ips200_show_float((10-1)*offsetx,(4-1)*offsety,Curve_speed,3,1);
 		
-		ips200_show_float((10-1)*offsetx,(5-1)*offsety,Motor_Pid.L_Ki,2,3);
-		ips200_show_float((10-1)*offsetx,(6-1)*offsety,Motor_Pid.L_Kp,3,3);
-		ips200_show_float((10-1)*offsetx,(7-1)*offsety,Motor_Pid.R_Ki,2,3);
-		ips200_show_float((10-1)*offsetx,(8-1)*offsety,Motor_Pid.R_Kp,3,3);
+		ips200_show_float((10-1)*offsetx,(5-1)*offsety,Motor_Pid.L_Ki,2,1);
+		ips200_show_float((10-1)*offsetx,(6-1)*offsety,Motor_Pid.L_Kp,3,1);
+		ips200_show_float((10-1)*offsetx,(7-1)*offsety,Motor_Pid.R_Ki,2,1);
+		ips200_show_float((10-1)*offsetx,(8-1)*offsety,Motor_Pid.R_Kp,3,1);
+		
+		ips200_show_float((10-1)*offsetx,(9-1)*offsety,Motor_Pid.Dir_Kd,2,3);
+		ips200_show_float((10-1)*offsetx,(10-1)*offsety,Motor_Pid.Dir_Kp,3,3);
 		
 		display_menu_status();
 }
 void ips200_show_Img(void){
 		//完整图像显示
     //ips200_show_int((5-1)*offsetx,(1-1)*offsety,threshold,3);
-		ips200_show_gray_image((2-1)*offsetx,(2-1)*offsety, (const uint8 *)image_copy, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 0);
+		//ips200_show_gray_image((2-1)*offsetx,(2-1)*offsety, (const uint8 *)image_copy, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 0);
+		//ips200_show_gray_image((2-1)*offsetx,(2-1)*offsety, (const uint8 *)mt9v03x_image, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 0);
 		ips200_show_gray_image((2-1)*offsetx,(10-1)*offsety, (const uint8 *)image_two_value, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H,0);
-	
-		//ips200_show_gray_image(0,50, (const uint8 *)image_copy, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H, 0);
-		//ips200_show_gray_image((2-1)*offsetx,(10-1)*offsety, (const uint8 *)image_twovalue, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H,0);
-		//ips200_show_gray_image(10,50, (const uint8 *)image_two_value, MT9V03X_W, MT9V03X_H, MT9V03X_W, MT9V03X_H,0);
+
 		//边线显示
 		Img_draw();
-	
+		//边线清除
+		Img_draw_clear();
 //		display_menu_status();
 }
 void ips200_show_Element(void){

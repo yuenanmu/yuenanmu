@@ -59,16 +59,19 @@ void TIM2_IRQHandler (void)
        ds_encoderCount();
 			 //Motor_Control_L(Motor_Pid_speed_Z);
 			 //Motor_Control();
+			 Motor_Control_L(20);
+			 //Motor_Control_R(0);
 			 car_emergency_stop();
-			//ds_serial();
+			//ds_wireless_uart(); //发车后数据检测
     }
-		//ds_wireless_uart();
-		 if(count_time%50==0){
+		
+		 if(count_time%200==0){
 			 //ds_serial();
-			 //PrintTrackBoundary(&Track);
-			 if(start){
-			 ds_serial();
-			 }
+			 send_to_vofa();
+			 //ds_serial();
+//			 if(start){
+//			 ds_serial();
+//			 }
 			//ds_wireless_uart();
     }
 		 if(return_flag==1){

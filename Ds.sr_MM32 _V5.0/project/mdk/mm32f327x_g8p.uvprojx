@@ -479,6 +479,16 @@
               <FileType>5</FileType>
               <FilePath>..\code\Serial.h</FilePath>
             </File>
+            <File>
+              <FileName>cjson.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\cjson.c</FilePath>
+            </File>
+            <File>
+              <FileName>cjson.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\cjson.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

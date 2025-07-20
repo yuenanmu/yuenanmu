@@ -49,22 +49,18 @@ int main(void)
 			ParameterExchange();
 			ds_main_menu();
 		}
-//			Motor_Control_L(1000);
-//			Motor_Control_R(1000);
 		
-			//gpio_set_level(DIR_2,GPIO_HIGH);
-			//gpio_set_level(DIR_2,GPIO_LOW);
-		
-		 pwm_set_duty(PWM_1, 4000);
-		 pwm_set_duty(PWM_2, 4000);
-//			if(mt9v03x_finish_flag)
-//		{
-//			Img_Processing();//图象处理
-//			//mt9v03x_send_data(UART_1, mt9v03x_data_ch1);
-//		  ips200_show_Img();
-//			Img_draw_clear();
-//			mt9v03x_finish_flag = 0;	
-//		}
+		if(gpio_get_level(SWITCH1)==0){
+			encoder_integra1=0;
+			encoder_integra2=0;
+		}
+			if(mt9v03x_finish_flag)
+		{
+			Img_Processing();//图象处理
+			//mt9v03x_send_data(UART_1, mt9v03x_data_ch1);
+			if(ips200_show_flag==2||ips200_show_flag==1){}  else ips200_show_Img();
+			mt9v03x_finish_flag = 0;	
+		}
 		//ds_wireless_uart();
     }
 }
@@ -73,3 +69,24 @@ int main(void)
 //ips200_show_binary_image显示二值化图像就是狗屎。。。
 //原来数组越界真的会导致函数卡死，，，和上次的闪存一样莫名其妙的
 //debug调试断点，print查看运行时的变量
+//屏幕：割裂：拔掉所有电源。只有线：摄像头线松了
+//差分速度有点大。差分速度的pid（加菜单）为什么左电机不动了。
+
+//电机测试代码
+//		if(start_go==1){
+//			Motor_Control_L(30);
+//			Motor_Control_R(50);
+////		 pwm_set_duty(PWM_1, 1500);
+////		 pwm_set_duty(PWM_2, 1500);
+//		}
+//		else{
+////		 pwm_set_duty(PWM_1, 0);//重置目标速度
+////		 pwm_set_duty(PWM_2, 0);		
+//			Motor_Control_L(0);
+//			Motor_Control_R(0);
+//		}
+			//gpio_set_level(DIR_2,GPIO_HIGH);
+			//gpio_set_level(DIR_2,GPIO_LOW);
+		
+//		 pwm_set_duty(PWM_1, 1500);
+//		 pwm_set_duty(PWM_2, 1500);

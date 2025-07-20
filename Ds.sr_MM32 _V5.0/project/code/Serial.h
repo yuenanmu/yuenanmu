@@ -5,5 +5,5 @@
 
 void ds_serial(void);
 void ds_wireless_uart(void);
-
+void send_to_vofa();
 #endif
