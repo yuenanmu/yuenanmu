@@ -33,7 +33,7 @@ uint8 return_flag=0;    //返回
 
 uint8 Angle_flag=0; //二级菜单标志
 
-uint8 key_flag=0;
+uint8 key_flag=1;
 uint32 data_buff[85]={0};
 
 uint8 ips200_show_element_flag=0;
@@ -146,10 +146,9 @@ void ParameterExchange(void){
 			start_go=start_go%2;
 			Angle_flag=1;
 			key_flag=key_flag;
+			//key_flag=0;  //发车关闭菜单
 			grade_flag=2;			//立马重置到上一级，执行一次就好，这个值在发车菜单中不会显示3
-			
-//			PWM_L=500;
-//			PWM_R=600;
+			Motor_Pid.Dif_Speed=0;
 		}
 		if(return_flag==1){
 			return_flag=0;
@@ -173,7 +172,7 @@ void ParameterExchange(void){
 //						Motor_Pid_Dif_P=5;
 //					}
 					break;
-				case 2: Motor_Pid_Dif_P       +=1; break;
+				case 2: Motor_Pid_Dif_P       +=1; break;//+=0.1  Motor_Pid_Dif_P是整数，这个无效。
 				case 3:Linear_speed+=5;break;
 				case 4:Curve_speed+=5;break;
 
@@ -183,8 +182,8 @@ void ParameterExchange(void){
 				case 7:Motor_Pid_Z_R_Ki+=10;break;
 				case 8:Motor_Pid_Z_R_Kp+=10;break;
 				
-				case 9:Motor_Pid_Z_Dir_Kd+=1;break;
-				case 10:Motor_Pid_Z_Dir_Kp+=1;break;
+				case 9:Motor_Pid_Z_Dir_Kd+=10;break;
+				case 10:Motor_Pid_Z_Dir_Kp+=10;break;
 			default:
 				break;
 			}
@@ -213,8 +212,8 @@ void ParameterExchange(void){
 			case 7:Motor_Pid_Z_R_Ki-=10;break;
 			case 8:Motor_Pid_Z_R_Kp-=10;break;
 			
-			case 9:Motor_Pid_Z_Dir_Kd-=1;break;
-			case 10:Motor_Pid_Z_Dir_Kp-=1;break;
+			case 9:Motor_Pid_Z_Dir_Kd-=10;break;
+			case 10:Motor_Pid_Z_Dir_Kp-=10;break;
 			default:
 				break;
 			}

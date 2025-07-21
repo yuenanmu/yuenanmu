@@ -1,7 +1,9 @@
 #include "zf_common_headfile.h"
 #include "img_handle.h"
 #define IMG_BLACK 0x00
-#define IMG_WHITE 0xff
+#define IMG_WHITE 0xff 
+#define Prediction_Confidence  0.55
+#define MID_W 87
 //
 ds_Track_Boundary Track;
 // MT9V03X_W               ( 188 )     
@@ -22,6 +24,9 @@ int Longest_White_Column_Left[2]; //最长白列,[0]是最长白列的长度，�
 int Longest_White_Column_Right[2];//最长白列,[0]是最长白列的长度，也就是Search_Stop_Line搜索截止行，[1】是第某列
 int Left_Lost_Flag[MT9V03X_H] ; //左丢线数组，丢线置1，没丢线置0
 int Right_Lost_Flag[MT9V03X_H]; //右丢线数组，丢线置1，没丢线置0
+
+float final_mid_line = MID_W;   // 最终输出的中线值
+float last_mid_line = MID_W;    // 上次中线值
 //---元素类
 uint8 threshold;
 //环岛
@@ -68,6 +73,21 @@ const uint8 Weight[MT9V03X_H]=
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,              //图像最远端40 ——49 行权重
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,              //图像最远端50 ——59 行权重
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,              //图像最远端60 ——69 行权重
+};
+uint8 mid_weight_list[120] = 
+{
+    0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,6,6,
+    6,6,6,6,8,8,8,9,9,9,
+    9,10,10,10,11,12,13,14,15,16,
+    17,18,20,24,20,20,19,19,18,17,
+    16,15,14,13,12,11,10,9,8,7,
+    6,6,6,6,6,6,6,6,6,6,
+    6,5,4,3,2,1,1,1,1,1,
+    1,1,1,1,1,1,1,1,1,1,
 };
 /*----------------------------------------------图像处理部分------------------------------------------------*/
 /*-------------------------------------------------------------------------------------------------------------------
@@ -741,8 +761,6 @@ void car_emergency_stop(void){
 	if(black_pixel>=4*MT9V03X_W*0.7||Track.Err>150)
 	{
 		start_go=0;
-//		pwm_set_duty(PWM_1, 0);//重置目标速度
-//		pwm_set_duty(PWM_2, 0);
 		Motor_Control_L(0);
 		Motor_Control_R(0);
 	}
@@ -760,18 +778,70 @@ void Bin_Image_Filter(uint8 *image,uint16 H,uint16 W){
 			}
 		}
 }
-float Get_Err(void)
+float Get_Err1(void)
 {
-	float Err=0;
+	float Err1=0,Err2=0,Err=0;
 	float weight_count=0;
 	//常规误差
-	for(int i=MT9V03X_H-10;i>=MT9V03X_H-30;i--)//常规误差计算
+	for(int i=MT9V03X_H-25;i>=MT9V03X_H-45;i--)//常规误差计算
 	{
-			Err+=(MT9V03X_W/2-((Left_Line[i]+Right_Line[i])>>1));//右移1位，等效除2
-			//weight_count+=Weight[i];
+		if(i==MT9V03X_H-25||i==MT9V03X_H-45){
+			for(int j=Left_Line[i];j<Right_Line[i];j++)
+			{
+				ips200_draw_point(j+(2-1)*offsetx, i+(10-1)*offsety,RGB565_RED);
+			}
+		}
+			Err1+=(MT9V03X_W/2-((Left_Line[i]+Right_Line[i])>>1));//右移1位，等效除2
 	}
-	Err=Err/20;
+	for(int i=Search_Stop_Line+5;i<=Search_Stop_Line+40;i++)//常规误差计算
+	{
+		if(i==Search_Stop_Line+5||i==Search_Stop_Line+40){
+			for(int j=Left_Line[i];j<Right_Line[i];j++)
+			{
+				ips200_draw_point(j+(2-1)*offsetx, i+(10-1)*offsety,RGB565_RED);
+			}
+		}
+			Err2+=(MT9V03X_W/2-((Left_Line[i]+Right_Line[i])>>1));//右移1位，等效除2
+	}
+	
+	Err=Err1/20.0*Prediction_Confidence+Err2/35.0*(1-Prediction_Confidence);
 	return Err;//注意此处，误差有正负，还有小数，注意数据类型
+}
+float Get_Err2(void)
+{
+    float err=0;
+    uint8 weight_sum;
+    for(int i=MT9V03X_H-1;i>MT9V03X_H-Search_Stop_Line;i--)
+    {
+        err+=(MT9V03X_W/2-((Left_Line[i]+Right_Line[i])>>1)*Weight[i]);//位操作等效除以2
+        weight_sum+=Weight[i];
+    }
+    err=err/weight_sum;
+    return err;
+}
+
+float find_mid_line_weight(void)
+{
+    float mid_line_value = MID_W;       // 最终中线输出值
+    float mid_line = MID_W;             // 本次中线值
+    float weight_midline_sum = 0;      // 加权中线累加值
+    float weight_sum = 0;              // 权重累加值
+		for(uint8 i = MT9V03X_H - 1; i > Search_Stop_Line; i--)
+		{
+			weight_midline_sum += Mid_Line[i] * mid_weight_list[i];
+			weight_sum += mid_weight_list[i];
+		}
+    mid_line = (float)(weight_midline_sum / weight_sum);
+    mid_line_value = last_mid_line * 0.2 + mid_line * 0.8; // 互补滤波
+    last_mid_line = mid_line_value;
+    return mid_line_value;
+}
+float Get_Err3(void)
+{
+    float err;
+		uint8 mid_line_data=find_mid_line_weight();
+    err=MT9V03X_W-mid_line_data;
+    return err;
 }
 void Get_UseImg(void){
 	memcpy(image_copy, mt9v03x_image, MT9V03X_H*MT9V03X_W);
@@ -796,7 +866,7 @@ void Img_Processing(void){
 		}
 	}
 	//Show_Boundry();
-	Track.Err=Get_Err();
+	Track.Err=Get_Err1();
 }
 void Img_draw(void){
 	//画的所有的点和线都要偏移

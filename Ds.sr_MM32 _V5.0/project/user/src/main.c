@@ -43,13 +43,25 @@ int main(void)
 	BB();
     while(1)
     {
-			if(key_flag==0)//按键ui屏幕显示
+			if(key_flag==1)//按键ui屏幕显示
 		{
 			key();
-			ParameterExchange();
+	  	ParameterExchange();
 			ds_main_menu();
 		}
-		
+		//电机测试代码
+//		if(start_go==1){
+//			// Motor_Control_L(30);
+//			// Motor_Control_R(50);
+//		 pwm_set_duty(PWM_1,2000);
+//		 pwm_set_duty(PWM_2,2000);
+//		}
+//		else{
+////		 pwm_set_duty(PWM_1, 0);//重置目标速度
+////		 pwm_set_duty(PWM_2, 0);		
+//			Motor_Control_L(0);
+//			Motor_Control_R(0);
+//		}
 		if(gpio_get_level(SWITCH1)==0){
 			encoder_integra1=0;
 			encoder_integra2=0;

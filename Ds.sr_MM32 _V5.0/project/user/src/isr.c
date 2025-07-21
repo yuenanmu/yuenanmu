@@ -55,12 +55,12 @@ void TIM2_IRQHandler (void)
 {
     count_time++;
     // 此处编写用户代码
-    if(count_time%2==0){
+    if(count_time%10==0){
        ds_encoderCount();
 			 //Motor_Control_L(Motor_Pid_speed_Z);
-			 //Motor_Control();
-			 Motor_Control_L(20);
-			 //Motor_Control_R(0);
+			 Motor_Control();
+//			 Motor_Control_L(110);
+//			 Motor_Control_R(110);
 			 car_emergency_stop();
 			//ds_wireless_uart(); //发车后数据检测
     }

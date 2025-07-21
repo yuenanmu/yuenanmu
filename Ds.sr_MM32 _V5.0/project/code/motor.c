@@ -61,7 +61,7 @@ void Motor_PID_subsection()
 
 	Motor_Pid.speed=1.0*Desire_Speed;
 	
-	Motor_Pid.Dif_P=1*Motor_Pid_Dif_P;
+	Motor_Pid.Dif_P=0.1*Motor_Pid_Dif_P;
 	
 	Motor_Pid.Dir_Kd=0.001*Motor_Pid_Z_Dir_Kd; 
 	Motor_Pid.Dir_Kp=0.001*Motor_Pid_Z_Dir_Kp;
@@ -77,10 +77,10 @@ void Motor_Pid_init()
 
 //	Motor_Pid.L_Ki=1.0;    
 //	Motor_Pid.L_Kp=1.0;  
-	Motor_Pid.L_Ki=3.84;//3.84;//6.639;    
-	Motor_Pid.L_Kp=108;//9;  
-	Motor_Pid.R_Ki=4.3;  
-	Motor_Pid.R_Kp=35;  
+	Motor_Pid.L_Ki=2.78;//3.84;//6.639;    
+	Motor_Pid.L_Kp=0;//9;  
+	Motor_Pid.R_Ki=0;  
+	Motor_Pid.R_Kp=0;  
 	
 	Motor_Pid.Dif_Speed=0.0;
 }
@@ -108,7 +108,7 @@ void Motor_Control()
 
     if(block_time>=4||stop_time>=8)
 	{
-		stop_flag=1;
+		stop_flag=1; 
 	}
 	if(stop_flag==1){
 		start_go=0;
@@ -149,20 +149,25 @@ void Motor_Control()
 
 	Motor_PID_subsection();
 	Motor_Pid.Dif_Speed=Position_PD(Track.Err,0);
+	Motor_Pid.Dif_Speed=Motor_Pid.Dif_Speed*Motor_Pid.Dif_P;//*Motor_Pid.Dif_P
+	//Motor_Pid.Dif_Speed=0;
+	//Motor_Pid.Dif_Speed=Track.Err;
 	//Motor_Pid.Dif_Speed=0.47*Motor_Pid.speed;
 	//方向控制
-	if(Track.Err>0)  //偏右，左转
-	{
-		Motor_Pid.speed_L=Motor_Pid.speed;
-		Motor_Pid.speed_R=Motor_Pid.speed+Motor_Pid.Dif_Speed*Motor_Pid.Dif_P;
-	}
-	else if(Track.Err<0)  //偏左，右转
-	{
-		Motor_Pid.speed_L=Motor_Pid.speed+Motor_Pid.Dif_Speed*Motor_Pid.Dif_P;
-		Motor_Pid.speed_R=Motor_Pid.speed;
-	}
-	Motor_Control_L(Motor_Pid.speed_L);
-	Motor_Control_R(Motor_Pid.speed_R); 
+//	if(Track.Err>=0)  //偏右，左转
+//	{
+//		Motor_Pid.speed_L=Motor_Pid.speed+Motor_Pid.Dif_Speed/2;///err负，Motor_Pid.Dif_Speed正
+//		Motor_Pid.speed_R=Motor_Pid.speed-Motor_Pid.Dif_Speed/2;
+//	}
+//	else if(Track.Err<0)  //偏左，右转
+//	{
+//		Motor_Pid.speed_L=Motor_Pid.speed+Motor_Pid.Dif_Speed/2;
+//		Motor_Pid.speed_R=Motor_Pid.speed-Motor_Pid.Dif_Speed/2;
+//	}
+	Motor_Pid.speed_L=120;
+	Motor_Pid.speed_R=120;   
+	Motor_Control_L(Motor_Pid.speed_L+Motor_Pid.Dif_Speed);
+	Motor_Control_R(Motor_Pid.speed_R-Motor_Pid.Dif_Speed); 
 }
 void Motor_Control_L(int16 OUT_L_SPEED){
 	if(start_go==1)
@@ -171,19 +176,17 @@ void Motor_Control_L(int16 OUT_L_SPEED){
 	}
 	else
 	{
-		PWM_L=0;
+		Incremental_PI_L(encoder_L,0);
 	}
-	if (PWM_L >= 400) {
+	if (PWM_L >= 0) {
 		gpio_set_level(DIR_1, GPIO_HIGH);
 		pwm_set_duty(PWM_1, PWM_L);
 	}
-	else if (PWM_L <= -400) {
+	else if(PWM_L <0) {
 			gpio_set_level(DIR_1, GPIO_LOW);
 			pwm_set_duty(PWM_1, -PWM_L);
 	}
-	else {
-			pwm_set_duty(PWM_1, 0); // PWM太小直接停
-	}
+	
 }
 
 
@@ -194,19 +197,20 @@ void Motor_Control_R(int16 OUT_R_SPEED){
 	}
 	else
 	{
-		PWM_R=0;
+		Incremental_PI_R(encoder_R,0);
+		//PWM_R=0;//也要pid控制
 	}
-		if (PWM_R >= 400) {
+		if (PWM_R >=0) {
 			gpio_set_level(DIR_2, GPIO_HIGH);
 			pwm_set_duty(PWM_2, PWM_R);
 		}
-		else if (PWM_R <= -400) {
+		else if (PWM_R <0) {
 				gpio_set_level(DIR_2, GPIO_LOW);
 				pwm_set_duty(PWM_2, -PWM_R);
 		}
-		else {
-				pwm_set_duty(PWM_2, 0); // PWM太小直接停
-		}
+//		else {
+//				pwm_set_duty(PWM_2, 0); // PWM太小直接停
+//		}
 
 }
 
@@ -232,10 +236,11 @@ void Incremental_PI_R (int encoder_R,int Target_R)
 float Position_PD (float err,int Target)//懒得改名字
 {
 	if(Dir_error>=100)	Dir_error=0;
-	Dir_error=Target-err;                
+	Dir_error=Target-err;
+	Dif_Speed=0;
 	Dif_Speed+=Motor_Pid.Dir_Kd*(Dir_error-Dir_last_error)+Motor_Pid.Dir_Kp*Dir_error;   //使用位置式 PD 控制器求出电机 PWM
 	Dir_last_error=Dir_error;                       //保存上一次偏差
-	uint16 MAX_dif_speed=9;
+	uint16 MAX_dif_speed=27;
 	//限幅
 	if(Dif_Speed>=MAX_dif_speed)	Dif_Speed=MAX_dif_speed;
 	else if(Dif_Speed<=-MAX_dif_speed)	Dif_Speed=-MAX_dif_speed;
