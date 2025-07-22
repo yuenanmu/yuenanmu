@@ -178,7 +178,7 @@ void Motor_Control_L(int16 OUT_L_SPEED){
 	if(start_go==1)
 	{
 		Incremental_PI_L(encoder_L,OUT_L_SPEED);
-		PWM_L+=Position_PD(Track.Err,0)*Motor_Pid.Dif_P/2; //增量PI控制器
+		PWM_L+=Motor_Pid.Dif_Speed/2; //增量PI控制器
 	}
 	else
 	{
@@ -195,12 +195,11 @@ void Motor_Control_L(int16 OUT_L_SPEED){
 	
 }
 
-
 void Motor_Control_R(int16 OUT_R_SPEED){
 	if(start_go==1)
 	{
 		Incremental_PI_R(encoder_R,OUT_R_SPEED);
-		PWM_R-=Position_PD(Track.Err,0)*Motor_Pid.Dif_P/2;
+		PWM_R-=Motor_Pid.Dif_Speed/2;
 	}
 	else
 	{

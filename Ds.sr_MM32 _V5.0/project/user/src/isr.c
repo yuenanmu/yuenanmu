@@ -58,11 +58,11 @@ void TIM2_IRQHandler (void)
     if(count_time%10==0){
        ds_encoderCount();
 //			 //Motor_Control_L(Motor_Pid_speed_Z);
-//			 //Motor_Control();
+			 Motor_Control();
 //	  //Motor_Control_L(110);
 //		//Motor_Control_R(110);
-			Motor_Control_L(110);
-			 //car_emergency_stop();
+			//Motor_Control_L(110);
+			 car_emergency_stop();
 			//ds_wireless_uart(); //发车后数据检测
     }
 		 key();
