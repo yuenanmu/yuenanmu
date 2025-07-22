@@ -73,7 +73,7 @@ void all_init(void){
 	ds_motor_init();
 	Motor_Pid_init();
 	//初始化之后读取flash并复制
-	EepromRead();
+	//EepromRead();
 	ips200_show_string(0, 16, "init success.");
 	system_delay_ms(100); 
 	ips200_clear();

@@ -56,9 +56,9 @@ void send_to_vofa(void) {
 //    wireless_printf("%.2f,%.2f,%.2f\r\n",Track.Err, Motor_Pid.Dif_Speed*Motor_Pid.Dif_P, Motor_Pid.Dif_Speed);
 //    wireless_printf("%d,%d,%d,%d,%.2f,%d\r\n", 50, encoder_L, PWM_L, Motor_Pid_speed_Z,Motor_Pid.speed_L,Motor_error_L);
 //    wireless_printf("%d,%d,%d,%d,%.2f,%d\r\n",50, encoder_R,PWM_R,Motor_Pid_speed_Z,Motor_Pid.speed_R, Motor_error_R);
-//    wireless_printf("%d,%d,%d,%.2f,%.2f,%d,%d\r\n",110, encoder_L,PWM_L,Motor_Pid.L_Ki,Motor_Pid.L_Kp,Motor_Pid_Z_L_Ki,Motor_Pid_Z_L_Kp);
+    wireless_printf("%d,%d,%d,%.2f,%.2f,%d,%d\r\n",110, encoder_L,PWM_L,Motor_Pid.L_Ki,Motor_Pid.L_Kp,Motor_Pid_Z_L_Ki,Motor_Pid_Z_L_Kp);
   	//wireless_printf("%d,%d,%d,%.2f,%.2f,%d,%d\r\n",0, encoder_R,PWM_R,Motor_Pid.R_Ki,Motor_Pid.R_Kp,Motor_Pid_Z_R_Ki,Motor_Pid_Z_R_Kp);
 	   //wireless_printf("%.2f,%.2f,%2.f,%2.f,%2.f,%2.f\n",Track.Err,Motor_Pid.speed_L,Motor_Pid.speed_R,Motor_Pid.Dif_Speed*Motor_Pid.Dif_P,Motor_Pid.Dif_Speed,Motor_Pid.Dif_P);
-	   wireless_printf("%.2f,%.2f,%d,%.2f,%d,%.2f\n",Track.Err,Motor_Pid.speed_L,encoder_L,Motor_Pid.speed_R,encoder_R,Motor_Pid.Dif_Speed);
+	   //wireless_printf("%.2f,%.2f,%d,%.2f,%d,%.2f\n",Track.Err,Motor_Pid.speed_L,encoder_L,Motor_Pid.speed_R,encoder_R,Motor_Pid.Dif_Speed);
 	 //wireless_printf("%.2f,%d,%.2f,%d,%.2f\n",Track.Err,encoder_L,encoder_R,Motor_Pid.Dif_Speed);
 }

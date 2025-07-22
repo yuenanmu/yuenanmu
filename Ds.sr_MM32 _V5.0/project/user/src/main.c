@@ -45,7 +45,7 @@ int main(void)
     {
 			if(key_flag==1)//按键ui屏幕显示
 		{
-			key();
+//			key();
 	  	ParameterExchange();
 			ds_main_menu();
 		}

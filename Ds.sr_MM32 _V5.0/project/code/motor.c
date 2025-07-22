@@ -60,6 +60,7 @@ void Motor_PID_subsection()
 	Motor_Pid.R_Kp=0.1*Motor_Pid_Z_R_Kp; 
 
 	Motor_Pid.speed=1.0*Desire_Speed;
+	//BB();
 	
 	Motor_Pid.Dif_P=0.1*Motor_Pid_Dif_P;
 	
@@ -77,20 +78,19 @@ void Motor_Pid_init()
 
 //	Motor_Pid.L_Ki=1.0;    
 //	Motor_Pid.L_Kp=1.0;  
-	Motor_Pid.L_Ki=2.78;//3.84;//6.639;    
-	Motor_Pid.L_Kp=0;//9;  
-	Motor_Pid.R_Ki=0;  
-	Motor_Pid.R_Kp=0;  
+	Motor_Pid.L_Ki=2.7;//3.84;//6.639;    
+	Motor_Pid.L_Kp=3.0;//9;  
+	Motor_Pid.R_Ki=3.2;  
+	Motor_Pid.R_Kp=6.0;  
 	
 	Motor_Pid.Dif_Speed=0.0;
 }
 void ds_motor_init(void){
-	//gpio_init(DIR_1,GPO,GPIO_HIGH, GPI_PULL_UP);
 	gpio_init(DIR_1,GPO,GPIO_HIGH, GPO_PUSH_PULL);
-  pwm_init        (PWM_1, 17000, 0);  // 初始化左电机 TIM5_CH3_A2  // 初始化 PWM 通道 频率 17KHz 初始占空比 0%
+  pwm_init        (PWM_1, 17000, 0);  // 初始化左电机
 	
 	gpio_init(DIR_2,GPO,GPIO_HIGH, GPO_PUSH_PULL);
-  pwm_init        (PWM_2, 17000, 0);  // 初始化右电机 TIM5_CH3_A3                       // 设置初始速度为0
+  pwm_init        (PWM_2, 17000, 0);  // 初始化右电机
 }
 void Motor_Control()
 {
@@ -164,15 +164,21 @@ void Motor_Control()
 //		Motor_Pid.speed_L=Motor_Pid.speed+Motor_Pid.Dif_Speed/2;
 //		Motor_Pid.speed_R=Motor_Pid.speed-Motor_Pid.Dif_Speed/2;
 //	}
-	Motor_Pid.speed_L=120;
-	Motor_Pid.speed_R=120;   
-	Motor_Control_L(Motor_Pid.speed_L+Motor_Pid.Dif_Speed);
-	Motor_Control_R(Motor_Pid.speed_R-Motor_Pid.Dif_Speed); 
+	Motor_Pid.speed_L=Motor_Pid.speed;
+	Motor_Pid.speed_R=Motor_Pid.speed;
+	// Motor_Control_L(Motor_Pid.speed_L+10);   
+	// Motor_Control_R(Motor_Pid.speed_R+10);    
+	// Motor_Control_L(Motor_Pid.speed_L+Motor_Pid.Dif_Speed*Motor_Pid.Dif_P/2);   
+	// Motor_Control_R(Motor_Pid.speed_R-Motor_Pid.Dif_Speed*Motor_Pid.Dif_P/2); 
+
+	Motor_Control_L(Motor_Pid.speed_L);   
+	Motor_Control_R(Motor_Pid.speed_R); 
 }
 void Motor_Control_L(int16 OUT_L_SPEED){
 	if(start_go==1)
 	{
 		Incremental_PI_L(encoder_L,OUT_L_SPEED);
+		PWM_L+=Position_PD(Track.Err,0)*Motor_Pid.Dif_P/2; //增量PI控制器
 	}
 	else
 	{
@@ -194,11 +200,11 @@ void Motor_Control_R(int16 OUT_R_SPEED){
 	if(start_go==1)
 	{
 		Incremental_PI_R(encoder_R,OUT_R_SPEED);
+		PWM_R-=Position_PD(Track.Err,0)*Motor_Pid.Dif_P/2;
 	}
 	else
 	{
-		Incremental_PI_R(encoder_R,0);
-		//PWM_R=0;//也要pid控制
+		Incremental_PI_R(encoder_R,0);//PWM_R=0;//也要pid控制
 	}
 		if (PWM_R >=0) {
 			gpio_set_level(DIR_2, GPIO_HIGH);
@@ -208,10 +214,6 @@ void Motor_Control_R(int16 OUT_R_SPEED){
 				gpio_set_level(DIR_2, GPIO_LOW);
 				pwm_set_duty(PWM_2, -PWM_R);
 		}
-//		else {
-//				pwm_set_duty(PWM_2, 0); // PWM太小直接停
-//		}
-
 }
 
 void Incremental_PI_L (int encoder_L,int Target_L)  //速度环
@@ -235,14 +237,13 @@ void Incremental_PI_R (int encoder_R,int Target_R)
 }
 float Position_PD (float err,int Target)//懒得改名字
 {
-	if(Dir_error>=100)	Dir_error=0;
 	Dir_error=Target-err;
-	Dif_Speed=0;
-	Dif_Speed+=Motor_Pid.Dir_Kd*(Dir_error-Dir_last_error)+Motor_Pid.Dir_Kp*Dir_error;   //使用位置式 PD 控制器求出电机 PWM
+	Dif_Speed=Motor_Pid.Dir_Kd*(Dir_error-Dir_last_error)+Motor_Pid.Dir_Kp*Dir_error;   //使用位置式 PD 控制器求出电机 PWM
 	Dir_last_error=Dir_error;                       //保存上一次偏差
 	uint16 MAX_dif_speed=27;
 	//限幅
 	if(Dif_Speed>=MAX_dif_speed)	Dif_Speed=MAX_dif_speed;
 	else if(Dif_Speed<=-MAX_dif_speed)	Dif_Speed=-MAX_dif_speed;
+	
 	return Dif_Speed;
 }
