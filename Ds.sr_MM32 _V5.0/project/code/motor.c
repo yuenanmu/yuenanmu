@@ -239,9 +239,9 @@ float Position_PD (float err,int Target)//懒得改名字
 	Dir_error=Target-err;
 	Dif_Speed=Motor_Pid.Dir_Kd*(Dir_error-Dir_last_error)+Motor_Pid.Dir_Kp*Dir_error;   //使用位置式 PD 控制器求出电机 PWM
 	Dir_last_error=Dir_error;                       //保存上一次偏差
-	uint16 MAX_dif_speed=27;
+	uint16 MAX_dif_speed=1000;
 	//限幅
-	if(Dif_Speed>=MAX_dif_speed)	Dif_Speed=MAX_dif_speed;
+	if(Dif_Speed>=MAX_dif_speed)		Dif_Speed=MAX_dif_speed;
 	else if(Dif_Speed<=-MAX_dif_speed)	Dif_Speed=-MAX_dif_speed;
 	
 	return Dif_Speed;

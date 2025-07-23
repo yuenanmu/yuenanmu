@@ -858,7 +858,7 @@ void Img_Processing(void){
 	Cross_Detect();
 	
 	if(Zebra_Detected()==1){
-		BB();
+		//BB();
 	Zebra_Flag=0;
 	Zebra_Count+=1;
 	Zebra_Count=Zebra_Count%2+1;

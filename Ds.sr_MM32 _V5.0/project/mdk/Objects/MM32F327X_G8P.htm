@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\MM32F327X_G8P.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\MM32F327X_G8P.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6180002: Last Updated: Tue Jul 22 22:01:51 2025
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6180002: Last Updated: Wed Jul 23 10:14:49 2025
 <BR><P>
 <H3>Maximum Stack Usage =       2472 bytes + Unknown(Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -728,8 +728,7 @@ Global Symbols
 <LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;beep_off
 <LI><a href="#[75]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;beep_on
 </UL>
-<BR>[Called By]<UL><LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Img_Processing
-<LI><a href="#[48]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<BR>[Called By]<UL><LI><a href="#[48]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
 <P><STRONG><a name="[93]"></a>Bin_Image_Filter</STRONG> (Thumb, 208 bytes, Stack size 32 bytes, img_handle.o(.text.Bin_Image_Filter))
@@ -893,7 +892,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_UseImg
 </UL>
 
-<P><STRONG><a name="[94]"></a>Img_Processing</STRONG> (Thumb, 122 bytes, Stack size 16 bytes, img_handle.o(.text.Img_Processing))
+<P><STRONG><a name="[94]"></a>Img_Processing</STRONG> (Thumb, 118 bytes, Stack size 16 bytes, img_handle.o(.text.Img_Processing))
 <BR><BR>[Stack]<UL><LI>Max Depth = 2456<LI>Call Chain = Img_Processing &rArr; Get_UseImg &rArr; my_adapt_threshold &rArr; pow &rArr; __kernel_poly &rArr; __aeabi_dadd &rArr; _double_epilogue &rArr; _double_round
 </UL>
 <BR>[Calls]<UL><LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Get_UseImg
@@ -903,7 +902,6 @@ Global Symbols
 <LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Zebra_Detected
 <LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Cross_Detect
 <LI><a href="#[95]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Longest_White_Column
-<LI><a href="#[74]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;BB
 </UL>
 <BR>[Called By]<UL><LI><a href="#[48]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
@@ -1068,7 +1066,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[48]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[a4]"></a>Position_PD</STRONG> (Thumb, 262 bytes, Stack size 64 bytes, motor.o(.text.Position_PD))
+<P><STRONG><a name="[a4]"></a>Position_PD</STRONG> (Thumb, 264 bytes, Stack size 64 bytes, motor.o(.text.Position_PD))
 <BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = Position_PD &rArr; __aeabi_fsub &rArr; __aeabi_fadd &rArr; _float_epilogue
 </UL>
 <BR>[Calls]<UL><LI><a href="#[aa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_fcmpgt
@@ -1355,14 +1353,16 @@ Global Symbols
 <LI><a href="#[106]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_debug_init
 </UL>
 
-<P><STRONG><a name="[d6]"></a>display_data</STRONG> (Thumb, 428 bytes, Stack size 40 bytes, menu.o(.text.display_data))
-<BR><BR>[Stack]<UL><LI>Max Depth = 904<LI>Call Chain = display_data &rArr; ips200_show_float &rArr; func_float_to_str &rArr; debug_assert_handler &rArr; debug_output &rArr; sprintf
+<P><STRONG><a name="[d6]"></a>display_data</STRONG> (Thumb, 496 bytes, Stack size 48 bytes, menu.o(.text.display_data))
+<BR><BR>[Stack]<UL><LI>Max Depth = 912<LI>Call Chain = display_data &rArr; ips200_show_float &rArr; func_float_to_str &rArr; debug_assert_handler &rArr; debug_output &rArr; sprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_float
 <LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_int
 <LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_string
 </UL>
-<BR>[Called By]<UL><LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_Img
+<BR>[Called By]<UL><LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_CarGo
+<LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_Img
+<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ds_main_menu
 </UL>
 
 <P><STRONG><a name="[d9]"></a>display_menu_status</STRONG> (Thumb, 388 bytes, Stack size 24 bytes, menu.o(.text.display_menu_status))
@@ -1378,7 +1378,6 @@ Global Symbols
 <LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_Pid
 <LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_CarGo
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_Img
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ds_main_menu
 </UL>
 
 <P><STRONG><a name="[da]"></a>dl1a_get_distance</STRONG> (Thumb, 158 bytes, Stack size 24 bytes, zf_device_dl1a.o(.text.dl1a_get_distance))
@@ -1487,8 +1486,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;all_init
 </UL>
 
-<P><STRONG><a name="[e5]"></a>ds_main_menu</STRONG> (Thumb, 746 bytes, Stack size 40 bytes, menu.o(.text.ds_main_menu))
-<BR><BR>[Stack]<UL><LI>Max Depth = 976<LI>Call Chain = ds_main_menu &rArr; ips200_show_Img &rArr; display_data &rArr; ips200_show_float &rArr; func_float_to_str &rArr; debug_assert_handler &rArr; debug_output &rArr; sprintf
+<P><STRONG><a name="[e5]"></a>ds_main_menu</STRONG> (Thumb, 338 bytes, Stack size 16 bytes, menu.o(.text.ds_main_menu))
+<BR><BR>[Stack]<UL><LI>Max Depth = 960<LI>Call Chain = ds_main_menu &rArr; ips200_show_Img &rArr; display_data &rArr; ips200_show_float &rArr; func_float_to_str &rArr; debug_assert_handler &rArr; debug_output &rArr; sprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[ec]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_Cross
 <LI><a href="#[eb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_Ramp
@@ -1496,9 +1495,7 @@ Global Symbols
 <LI><a href="#[e9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_Element
 <LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_Pid
 <LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_CarGo
-<LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_float
-<LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_int
-<LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;display_menu_status
+<LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;display_data
 <LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_clear
 <LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_string
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_Img
@@ -1860,10 +1857,10 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[e4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_init
 </UL>
 
-<P><STRONG><a name="[e6]"></a>ips200_show_CarGo</STRONG> (Thumb, 480 bytes, Stack size 48 bytes, menu.o(.text.ips200_show_CarGo))
-<BR><BR>[Stack]<UL><LI>Max Depth = 912<LI>Call Chain = ips200_show_CarGo &rArr; ips200_show_float &rArr; func_float_to_str &rArr; debug_assert_handler &rArr; debug_output &rArr; sprintf
+<P><STRONG><a name="[e6]"></a>ips200_show_CarGo</STRONG> (Thumb, 70 bytes, Stack size 16 bytes, menu.o(.text.ips200_show_CarGo))
+<BR><BR>[Stack]<UL><LI>Max Depth = 928<LI>Call Chain = ips200_show_CarGo &rArr; display_data &rArr; ips200_show_float &rArr; func_float_to_str &rArr; debug_assert_handler &rArr; debug_output &rArr; sprintf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[d8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_float
+<BR>[Calls]<UL><LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;display_data
 <LI><a href="#[d7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_int
 <LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;display_menu_status
 <LI><a href="#[4c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_string
@@ -1889,7 +1886,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[e8]"></a>ips200_show_Img</STRONG> (Thumb, 156 bytes, Stack size 32 bytes, menu.o(.text.ips200_show_Img))
-<BR><BR>[Stack]<UL><LI>Max Depth = 936<LI>Call Chain = ips200_show_Img &rArr; display_data &rArr; ips200_show_float &rArr; func_float_to_str &rArr; debug_assert_handler &rArr; debug_output &rArr; sprintf
+<BR><BR>[Stack]<UL><LI>Max Depth = 944<LI>Call Chain = ips200_show_Img &rArr; display_data &rArr; ips200_show_float &rArr; func_float_to_str &rArr; debug_assert_handler &rArr; debug_output &rArr; sprintf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_gray_image
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;display_data
@@ -1953,9 +1950,7 @@ Global Symbols
 <LI><a href="#[59]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memset
 </UL>
 <BR>[Called By]<UL><LI><a href="#[e7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_Pid
-<LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_CarGo
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;display_data
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ds_main_menu
 </UL>
 
 <P><STRONG><a name="[10c]"></a>ips200_show_gray_image</STRONG> (Thumb, 532 bytes, Stack size 64 bytes, zf_device_ips200.o(.text.ips200_show_gray_image))
@@ -1980,7 +1975,6 @@ Global Symbols
 <LI><a href="#[d6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;display_data
 <LI><a href="#[d9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;display_menu_status
 <LI><a href="#[e8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ips200_show_Img
-<LI><a href="#[e5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ds_main_menu
 </UL>
 
 <P><STRONG><a name="[4c]"></a>ips200_show_string</STRONG> (Thumb, 220 bytes, Stack size 32 bytes, zf_device_ips200.o(.text.ips200_show_string))

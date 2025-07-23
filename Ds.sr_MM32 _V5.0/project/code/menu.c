@@ -30,9 +30,12 @@ void display_data(void){
   ips200_show_int((26-1)*offsetx,(6-1)*offsety,encoder_R,3);
 
   ips200_show_string((2-1)*offsetx,(7-1)*offsety,"Spd_L:");
-  ips200_show_float((20-1)*offsetx,(7-1)*offsety,Motor_Pid.speed_L,3,3);
+  ips200_show_float((10-1)*offsetx,(7-1)*offsety,Motor_Pid.speed_L,3,3);
+	ips200_show_int((20-1)*offsetx,(7-1)*offsety,PWM_L,4);
+	
   ips200_show_string((2-1)*offsetx,(8-1)*offsety,"Spd_R:");
-  ips200_show_float((20-1)*offsetx,(8-1)*offsety,Motor_Pid.speed_R,3,3);
+  ips200_show_float((10-1)*offsetx,(8-1)*offsety,Motor_Pid.speed_R,3,3);
+	ips200_show_int((20-1)*offsetx,(8-1)*offsety,PWM_R,4);
 	  
 	ips200_show_string((2-1)*offsetx,(9-1)*offsety,"Err:");
   ips200_show_float((7-1)*offsetx,(9-1)*offsety,Track.Err,5,2);
@@ -60,24 +63,25 @@ void ds_main_menu(void){
         //ips200_show_float((1-1)*offsetx,(1-1)*offsety,data,int_part_len,2);
         //ips200_show_int((1-1)*offsetx,(1-1)*offsety,data,len);
 			
-        ips200_show_string(1*offsetx,(5-1)*offsety,"Status");
-        ips200_show_string((2-1)*offsetx,(6-1)*offsety,"encoder_L:");
-        ips200_show_int((12-1)*offsetx,(6-1)*offsety,encoder_L,3);
-				
-			  display_menu_status();
-        ips200_show_string((16-1)*offsetx,(6-1)*offsety,"encoder_R:");
-        ips200_show_int((26-1)*offsetx,(6-1)*offsety,encoder_R,3);
-				
-			  ips200_show_string((2-1)*offsetx,(7-1)*offsety,"Spd_L:");
-        ips200_show_float((20-1)*offsetx,(7-1)*offsety,Motor_Pid.speed_L,3,3);
-			
-			  ips200_show_string((2-1)*offsetx,(8-1)*offsety,"Spd_R:");
-        ips200_show_float((20-1)*offsetx,(8-1)*offsety,Motor_Pid.speed_R,3,3);
-				
-				ips200_show_string((2-1)*offsetx,(9-1)*offsety,"Err:");
-        ips200_show_float((7-1)*offsetx,(9-1)*offsety,Track.Err,5,2);
-				ips200_show_string((16-1)*offsetx,(9-1)*offsety,"Dif:");
-        ips200_show_float((21-1)*offsetx,(9-1)*offsety,Motor_Pid.Dif_Speed,5,2);//*Motor_Pid.Dif_P
+//        ips200_show_string(1*offsetx,(5-1)*offsety,"Status");
+//        ips200_show_string((2-1)*offsetx,(6-1)*offsety,"encoder_L:");
+//        ips200_show_int((12-1)*offsetx,(6-1)*offsety,encoder_L,3);
+//				
+//			  display_menu_status();
+//        ips200_show_string((16-1)*offsetx,(6-1)*offsety,"encoder_R:");
+//        ips200_show_int((26-1)*offsetx,(6-1)*offsety,encoder_R,3);
+//				
+//			  ips200_show_string((2-1)*offsetx,(7-1)*offsety,"Spd_L:");
+//        ips200_show_float((20-1)*offsetx,(7-1)*offsety,Motor_Pid.speed_L,3,3);
+//			
+//			  ips200_show_string((2-1)*offsetx,(8-1)*offsety,"Spd_R:");
+//        ips200_show_float((20-1)*offsetx,(8-1)*offsety,Motor_Pid.speed_R,3,3);
+//				
+//				ips200_show_string((2-1)*offsetx,(9-1)*offsety,"Err:");
+//        ips200_show_float((7-1)*offsetx,(9-1)*offsety,Track.Err,5,2);
+//				ips200_show_string((16-1)*offsetx,(9-1)*offsety,"Dif:");
+//        ips200_show_float((21-1)*offsetx,(9-1)*offsety,Motor_Pid.Dif_Speed,5,2);//*Motor_Pid.Dif_P
+		display_data();
     }
     if(ips200_show_flag==100)ips200_show_CarGo();
     if(ips200_show_flag==1)ips200_show_Pid();
@@ -94,22 +98,23 @@ void ips200_show_CarGo(void){
     ips200_show_string(1*offsetx,(1-1)*offsety,"CarGo");
     ips200_show_int((10-1)*offsetx,(1-1)*offsety,start_go,1);
 
-    ips200_show_string(1*offsetx,(5-1)*offsety,"Status");
-    ips200_show_string((2-1)*offsetx,(6-1)*offsety,"encoder_L:");
-    ips200_show_int((12-1)*offsetx,(6-1)*offsety,encoder_L,3);
+//    ips200_show_string(1*offsetx,(5-1)*offsety,"Status");
+//    ips200_show_string((2-1)*offsetx,(6-1)*offsety,"encoder_L:");
+//    ips200_show_int((12-1)*offsetx,(6-1)*offsety,encoder_L,3);
 
-    ips200_show_string((16-1)*offsetx,(6-1)*offsety,"encoder_R:");
-    ips200_show_int((26-1)*offsetx,(6-1)*offsety,encoder_R,3);
-    ips200_show_string((2-1)*offsetx,(7-1)*offsety,"Spd_L:");
-    ips200_show_float((20-1)*offsetx,(7-1)*offsety,Motor_Pid.speed_L,3,3);
-  
-    ips200_show_string((2-1)*offsetx,(8-1)*offsety,"Spd_R:");
-    ips200_show_float((20-1)*offsetx,(8-1)*offsety,Motor_Pid.speed_R,3,3);
+//    ips200_show_string((16-1)*offsetx,(6-1)*offsety,"encoder_R:");
+//    ips200_show_int((26-1)*offsetx,(6-1)*offsety,encoder_R,3);
+//    ips200_show_string((2-1)*offsetx,(7-1)*offsety,"Spd_L:");
+//    ips200_show_float((20-1)*offsetx,(7-1)*offsety,Motor_Pid.speed_L,3,3);
+//  
+//    ips200_show_string((2-1)*offsetx,(8-1)*offsety,"Spd_R:");
+//    ips200_show_float((20-1)*offsetx,(8-1)*offsety,Motor_Pid.speed_R,3,3);
 
-    ips200_show_string((2-1)*offsetx,(9-1)*offsety,"Err:");
-    ips200_show_float((7-1)*offsetx,(9-1)*offsety,Track.Err,5,2);
-    ips200_show_string((16-1)*offsetx,(9-1)*offsety,"Dif:");
-    ips200_show_float((21-1)*offsetx,(9-1)*offsety,Motor_Pid.Dif_Speed,5,2);//*Motor_Pid.Dif_P
+//    ips200_show_string((2-1)*offsetx,(9-1)*offsety,"Err:");
+//    ips200_show_float((7-1)*offsetx,(9-1)*offsety,Track.Err,5,2);
+//    ips200_show_string((16-1)*offsetx,(9-1)*offsety,"Dif:");
+//    ips200_show_float((21-1)*offsetx,(9-1)*offsety,Motor_Pid.Dif_Speed,5,2);//*Motor_Pid.Dif_P
+		display_data();
 	  display_menu_status();
 }
 void ips200_show_Pid(void){
