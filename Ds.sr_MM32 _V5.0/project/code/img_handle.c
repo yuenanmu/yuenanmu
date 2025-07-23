@@ -76,7 +76,7 @@ const uint8 Weight[MT9V03X_H]=
 };
 uint8 mid_weight_list[120] = 
 {
-    0,0,0,0,0,0,0,0,0,0,
+    0,0,0,0,0,0,0,0,0,0,        //十个
     0,0,0,0,0,0,0,0,0,0,
     0,0,0,0,0,0,1,1,1,1,
     1,1,1,1,1,1,1,1,1,1,
@@ -657,6 +657,7 @@ void Draw_Line(int startX, int startY, int endX, int endY)
 /*------------------------------------特征识别----------------------*/
 void Cross_Detect()
 {
+		//BB();
     int down_search_start=0;//下点搜索开始行
     Cross_Flag=0;
     if(Island_State==0&&Ramp_Flag==0)//与环岛互斥开
@@ -732,16 +733,16 @@ uint8  Zebra_Detected(void)
             {
                 for(int j=0;j<=MT9V03X_W-1-3;j++)
                 {
-                    if(image_two_value[i][j]==1&&image_two_value[i][j+1]==0&&image_two_value[i][j+2]==0)
+                    if(image_two_value[i][j]==IMG_WHITE&&image_two_value[i][j+1]==0&&image_two_value[i][j+2]==0)
                     {
                         zebra_count++;
                     }
 									}
-                if(zebra_count>=10)//如果黑色计数大于等于40，认为是斑马线
+                if(zebra_count>=10)
                 {
                     Zebra_Flag=1;
-										BB();
-										return Zebra_Flag ;
+                        //BB();
+                        return Zebra_Flag ;
                 }
             }
         }
@@ -778,14 +779,15 @@ void Bin_Image_Filter(uint8 *image,uint16 H,uint16 W){
 			}
 		}
 }
-float Get_Err1(void)
+uint8 foresight_line=25;
+float Get_Err1(void)        //常规误差计算&&前瞻范围画线
 {
 	float Err1=0,Err2=0,Err=0;
 	float weight_count=0;
 	//常规误差
-	for(int i=MT9V03X_H-25;i>=MT9V03X_H-45;i--)//常规误差计算
+	for(int i=MT9V03X_H-foresight_line;i>=MT9V03X_H-foresight_line-20;i--)//常规误差计算
 	{
-		if(i==MT9V03X_H-25||i==MT9V03X_H-45){
+		if(i==MT9V03X_H-foresight_line||i==MT9V03X_H-foresight_line-20){
 			for(int j=Left_Line[i];j<Right_Line[i];j++)
 			{
 				ips200_draw_point(j+(2-1)*offsetx, i+(10-1)*offsety,RGB565_RED);
@@ -793,25 +795,25 @@ float Get_Err1(void)
 		}
 			Err1+=(MT9V03X_W/2-((Left_Line[i]+Right_Line[i])>>1));//右移1位，等效除2
 	}
-	for(int i=Search_Stop_Line+5;i<=Search_Stop_Line+40;i++)//常规误差计算
-	{
-		if(i==Search_Stop_Line+5||i==Search_Stop_Line+40){
-			for(int j=Left_Line[i];j<Right_Line[i];j++)
-			{
-				ips200_draw_point(j+(2-1)*offsetx, i+(10-1)*offsety,RGB565_RED);
-			}
-		}
-			Err2+=(MT9V03X_W/2-((Left_Line[i]+Right_Line[i])>>1));//右移1位，等效除2
-	}
+	// for(int i=Search_Stop_Line+5;i<=Search_Stop_Line+40;i++)//常规误差计算
+	// {
+	// 	if(i==Search_Stop_Line+5||i==Search_Stop_Line+40){
+	// 		for(int j=Left_Line[i];j<Right_Line[i];j++)
+	// 		{
+	// 			ips200_draw_point(j+(2-1)*offsetx, i+(10-1)*offsety,RGB565_RED);
+	// 		}
+	// 	}
+	// 		Err2+=(MT9V03X_W/2-((Left_Line[i]+Right_Line[i])>>1));//右移1位，等效除2
+	// }
 	
-	Err=Err1/20.0*Prediction_Confidence+Err2/35.0*(1-Prediction_Confidence);
-	return Err;//注意此处，误差有正负，还有小数，注意数据类型
+	Err=Err1/20.0;//+Err2/35.0*(1-Prediction_Confidence)   *Prediction_Confidence
+	return Err;
 }
 float Get_Err2(void)
 {
     float err=0;
     uint8 weight_sum;
-    for(int i=MT9V03X_H-1;i>MT9V03X_H-Search_Stop_Line;i--)
+    for(int i=MT9V03X_H-4;i>MT9V03X_H-Search_Stop_Line+10;i--)
     {
         err+=(MT9V03X_W/2-((Left_Line[i]+Right_Line[i])>>1)*Weight[i]);//位操作等效除以2
         weight_sum+=Weight[i];
@@ -839,7 +841,7 @@ float find_mid_line_weight(void)
 float Get_Err3(void)
 {
     float err;
-		uint8 mid_line_data=find_mid_line_weight();
+	uint8 mid_line_data=find_mid_line_weight();
     err=MT9V03X_W-mid_line_data;
     return err;
 }
@@ -856,6 +858,7 @@ void Img_Processing(void){
 	Cross_Detect();
 	
 	if(Zebra_Detected()==1){
+		//BB();
 	Zebra_Flag=0;
 	Zebra_Count+=1;
 	Zebra_Count=Zebra_Count%2+1;
@@ -888,18 +891,3 @@ void Img_draw_clear(void){
 	memset((void *)Right_Lost_Flag,0,sizeof(Right_Lost_Flag));
 	memset((void *)Left_Lost_Flag,0,sizeof(Left_Lost_Flag));
 }
-// ========================== 调试输出宏（可选） =============================
-////#include <stdio.h>
-//void PrintTrackBoundary(const ds_Track_Boundary *tb) {
-//    printf("Longest column: %d (len=%d)\n", tb->longest_white_column, tb->longest_white_length);
-//    printf("Left lost: %d, Right lost: %d, Both lost: %d\n", tb->left_lost_time, tb->right_lost_time, tb->both_lost_time);
-//    printf("Start row left: %d, right: %d\n", tb->left_start_row, tb->right_start_row);
-//}
-
-// ========================== 示例调用方式 =============================
-/*
-uint8_t image_bin[MT9V03X_H][MT9V03X_W];
-TrackBoundary tb;
-TrackBoundary_Extract(image_bin, &tb);
-PrintTrackBoundary(&tb);
-*/

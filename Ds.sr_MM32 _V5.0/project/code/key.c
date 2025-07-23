@@ -235,7 +235,7 @@ void ParameterExchange(void){
 		if(plus){
 			switch (Model) 
 			{
-			case 1:Threshold_multiple+=5;break;
+			case 1:foresight_line+=5;break;
 			case 2:Threshold+=5;   	break;
 			default:
 				break;
@@ -247,7 +247,7 @@ void ParameterExchange(void){
 		if(lose){
 			switch (Model) 
 			{
-			case 1:Threshold_multiple=5;break;
+			case 1:foresight_line-=5;break;
 			case 2:Threshold-=5;   	break;
 			default:
 				break;
@@ -313,7 +313,7 @@ void EepromWrite(void){
 
 	flash_union_buffer[6].int16_type=Motor_Pid_Dif_P;
 
-	flash_union_buffer[7].int16_type= Threshold_multiple;
+	flash_union_buffer[7].uint8_type= foresight_line;
 	flash_union_buffer[8].int16_type= Threshold;
 		
 	flash_union_buffer[9].int16_type= Motor_Pid_Z_Dir_Kp;
@@ -335,7 +335,7 @@ void EepromRead(void){
 
 	Motor_Pid_Dif_P=flash_union_buffer[6].int16_type;
 
-	Threshold_multiple=flash_union_buffer[7].int16_type;
+	foresight_line=flash_union_buffer[7].uint8_type;
 	Threshold=flash_union_buffer[8].int16_type;
 	
 	Motor_Pid_Z_Dir_Kp=flash_union_buffer[9].int16_type;
