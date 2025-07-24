@@ -34,6 +34,7 @@
 ********************************************************************************************************************/
 
 #include "zf_common_headfile.h"
+#define DEG_TO_RAD(deg)  ((deg)*3.1415/180.0)
 
 // **************************** 代码区域 ****************************
 int main(void)
@@ -43,37 +44,25 @@ int main(void)
 	BB();
     while(1)
     {
+//			double angle_deg = TIM2_count_time;       // 角度
+//			double angle_rad = DEG_TO_RAD(angle_deg); // 转换为弧度
+//			result = sin(angle_rad); 
 			if(key_flag==1)//按键ui屏幕显示
 		{
-//			key();
 	  	ParameterExchange();
 			ds_main_menu();
 		}
-		//电机测试代码
-//		if(start_go==1){
-//			// Motor_Control_L(30);
-//			// Motor_Control_R(50);
-//		 pwm_set_duty(PWM_1,2000);
-//		 pwm_set_duty(PWM_2,2000);
-//		}
-//		else{
-////		 pwm_set_duty(PWM_1, 0);//重置目标速度
-////		 pwm_set_duty(PWM_2, 0);		
-//			Motor_Control_L(0);
-//			Motor_Control_R(0);
-//		}
-		if(gpio_get_level(SWITCH1)==0){
-			encoder_integra1=0;
-			encoder_integra2=0;
+		if(close_menu==1){
+			ips200_clear();
+			close_menu=0;
 		}
 			if(mt9v03x_finish_flag)
 		{
 			Img_Processing();//图象处理
 			//mt9v03x_send_data(UART_1, mt9v03x_data_ch1);
-			if(ips200_show_flag==2||ips200_show_flag==1){}  else ips200_show_Img();
+			if(ips200_show_flag==2||ips200_show_flag==1||key_flag==0){}  else ips200_show_Img();
 			mt9v03x_finish_flag = 0;	
 		}
-		//ds_wireless_uart();
     }
 }
 // **************************** 代码区域 ****************************
@@ -102,3 +91,21 @@ int main(void)
 		
 //		 pwm_set_duty(PWM_1, 1500);
 //		 pwm_set_duty(PWM_2, 1500);
+
+//电机测试代码
+//		if(start_go==1){
+//			// Motor_Control_L(30);
+//			// Motor_Control_R(50);
+//		 pwm_set_duty(PWM_1,2000);
+//		 pwm_set_duty(PWM_2,2000);
+//		}
+//		else{
+////		 pwm_set_duty(PWM_1, 0);//重置目标速度
+////		 pwm_set_duty(PWM_2, 0);		
+//			Motor_Control_L(0);
+//			Motor_Control_R(0);
+//		}
+//		if(gpio_get_level(SWITCH1)==0){
+//			encoder_integra1=0;
+//			encoder_integra2=0;
+//		}

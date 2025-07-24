@@ -22,7 +22,7 @@ extern uint32 key3_count;
 extern uint32 key4_count;
 extern uint32 key5_count;
 extern uint32 key6_count;
-extern uint32 count_time;
+
 extern uint8  key1_flag;
 extern uint8  key2_flag;
 extern uint8  key3_flag;
@@ -31,6 +31,7 @@ extern uint8  switch_flag;
 extern uint8  key5_flag;
 extern uint8  key6_flag;
 extern uint8  key_flag;
+extern uint8  close_menu;
 
 //开放接口给菜单显示函数
 extern uint8 offsetx;

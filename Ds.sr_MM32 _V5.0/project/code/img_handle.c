@@ -5,6 +5,7 @@
 #define Prediction_Confidence  0.55
 #define MID_W 87
 //
+double result;
 ds_Track_Boundary Track;
 // MT9V03X_W               ( 188 )     
 // MT9V03X_H               ( 120 ) 
@@ -787,10 +788,12 @@ float Get_Err1(void)        //常规误差计算&&前瞻范围画线
 	//常规误差
 	for(int i=MT9V03X_H-foresight_line;i>=MT9V03X_H-foresight_line-20;i--)//常规误差计算
 	{
-		if(i==MT9V03X_H-foresight_line||i==MT9V03X_H-foresight_line-20){
-			for(int j=Left_Line[i];j<Right_Line[i];j++)
-			{
-				ips200_draw_point(j+(2-1)*offsetx, i+(10-1)*offsety,RGB565_RED);
+		if(key_flag==1&&ips200_show_flag!=1){
+			if(i==MT9V03X_H-foresight_line||i==MT9V03X_H-foresight_line-20){
+				for(int j=Left_Line[i];j<Right_Line[i];j++)
+				{
+					ips200_draw_point(j+(2-1)*offsetx, i+(10-1)*offsety,RGB565_RED);
+				}
 			}
 		}
 			Err1+=(MT9V03X_W/2-((Left_Line[i]+Right_Line[i])>>1));//右移1位，等效除2
@@ -841,13 +844,12 @@ float find_mid_line_weight(void)
 float Get_Err3(void)
 {
     float err;
-	uint8 mid_line_data=find_mid_line_weight();
+		uint8 mid_line_data=find_mid_line_weight();
     err=MT9V03X_W-mid_line_data;
     return err;
 }
 void Get_UseImg(void){
-	memcpy(image_copy, mt9v03x_image, MT9V03X_H*MT9V03X_W);
-	threshold=my_adapt_threshold(*image_copy,MT9V03X_W, MT9V03X_H);
+	threshold=my_adapt_threshold(*mt9v03x_image,MT9V03X_W, MT9V03X_H);
 	Image_Binarization(threshold);
 	Bin_Image_Filter(image_two_value[0], MT9V03X_H,MT9V03X_W);
 }
@@ -868,22 +870,22 @@ void Img_Processing(void){
 		Motor_Control_R(0);
 		}
 	}
-	//Show_Boundry();
-	Track.Err=Get_Err1();
+	Show_Boundry();
+	Track.Err=Get_Err1();//+result*4;
 }
 void Img_draw(void){
 	//画的所有的点和线都要偏移
-	for(uint8 nr=MT9V03X_H-1;nr>MT9V03X_H-Longest_White_Column_Left[0];nr--){
-		ips200_draw_point(Longest_White_Column_Left[1]+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_YELLOW);
-	}
-	for(uint8 nr=MT9V03X_H-1;nr>MT9V03X_H-Longest_White_Column_Left[0];nr--){
-		ips200_draw_point(Left_Line[nr]+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_GREEN);
-		ips200_draw_point(Right_Line[nr]+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_BLUE);
-		ips200_draw_point(((Right_Line[nr]+Left_Line[nr])>>1)+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_BLACK);
-	}
-	for(uint8 nr=MT9V03X_H-1;nr>1;nr--){
-		ips200_draw_point(MT9V03X_W/2+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_RED);
-	}
+//	for(uint8 nr=MT9V03X_H-1;nr>MT9V03X_H-Longest_White_Column_Left[0];nr--){
+//		ips200_draw_point(Longest_White_Column_Left[1]+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_YELLOW);
+//	}
+//	for(uint8 nr=MT9V03X_H-1;nr>MT9V03X_H-Longest_White_Column_Left[0];nr--){
+//		ips200_draw_point(Left_Line[nr]+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_GREEN);
+//		ips200_draw_point(Right_Line[nr]+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_BLUE);
+//		ips200_draw_point(((Right_Line[nr]+Left_Line[nr])>>1)+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_BLACK);
+//	}
+//	for(uint8 nr=MT9V03X_H-20;nr>80;nr--){
+//		ips200_draw_point(MT9V03X_W/2+(2-1)*offsetx, nr+(10-1)*offsety,RGB565_RED);
+//	}
 }
 void Img_draw_clear(void){
 	memset((void *)Left_Line,0,sizeof(Left_Line));

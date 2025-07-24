@@ -73,14 +73,14 @@ extern int16 PWM_L,PWM_R;
 /*************Incremental_PI************/
 extern int16 Motor_error_L,Motor_last_error_L;
 extern int16 Motor_error_R,Motor_last_error_R;
-
+extern float dir_out;
 void Motor_Pid_init();
 void Motor_PID_subsection();
 void ds_motor_init(void);
 void Motor_Control();
 void Motor_Control_L(int16 OUT_L_SPEED);
 void Motor_Control_R(int16 OUT_R_SPEED);
-void Incremental_PI_L (int Encoder1,int Target_L);
-void Incremental_PI_R (int Encoder2,int Target_R);
+int16 Incremental_PI_L (int Encoder1,int Target_L);
+int16 Incremental_PI_R (int Encoder2,int Target_R);
 float Position_PD (float err,int Target);
 #endif

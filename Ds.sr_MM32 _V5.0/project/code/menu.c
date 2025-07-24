@@ -40,7 +40,7 @@ void display_data(void){
 	ips200_show_string((2-1)*offsetx,(9-1)*offsety,"Err:");
   ips200_show_float((7-1)*offsetx,(9-1)*offsety,Track.Err,5,2);
   ips200_show_string((16-1)*offsetx,(9-1)*offsety,"Dif:");
-  ips200_show_float((21-1)*offsetx,(9-1)*offsety,Motor_Pid.Dif_Speed,5,2);//*Motor_Pid.Dif_P
+  ips200_show_float((21-1)*offsetx,(9-1)*offsety,dir_out*Motor_Pid.Dif_P,5,2);//*Motor_Pid.Dif_P
 	
 }
 void ds_ips200_init(void){

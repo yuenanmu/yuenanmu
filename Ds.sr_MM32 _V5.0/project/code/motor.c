@@ -19,6 +19,7 @@ int16 Motor_error_R=0,Motor_last_error_R=0;
 MOTOR_PID Motor_Pid;
 int8 Dir_last_error=0,Dir_error=0;
 float Dif_Speed=0;//不赋值，输出的值很诡异。。不能是全局
+float dir_out;
 /************************UI界面调节的速度环参数(按元素划分)*********************/
 float Desire_Speed=0;
 int16 Motor_Pid_speed_Z=0; //ui调节的速
@@ -148,74 +149,50 @@ void Motor_Control()
 	if(Ring_Speed==32)Desire_Speed=Ready_Out_90_Ring_speed;
 
 	Motor_PID_subsection();
-	Motor_Pid.Dif_Speed=Position_PD(Track.Err,0);
-	Motor_Pid.Dif_Speed=Motor_Pid.Dif_Speed*Motor_Pid.Dif_P;//*Motor_Pid.Dif_P
-	//Motor_Pid.Dif_Speed=0;
-	//Motor_Pid.Dif_Speed=Track.Err;
-	//Motor_Pid.Dif_Speed=0.47*Motor_Pid.speed;
-	//方向控制
-//	if(Track.Err>=0)  //偏右，左转
-//	{
-//		Motor_Pid.speed_L=Motor_Pid.speed+Motor_Pid.Dif_Speed/2;///err负，Motor_Pid.Dif_Speed正
-//		Motor_Pid.speed_R=Motor_Pid.speed-Motor_Pid.Dif_Speed/2;
-//	}
-//	else if(Track.Err<0)  //偏左，右转
-//	{
-//		Motor_Pid.speed_L=Motor_Pid.speed+Motor_Pid.Dif_Speed/2;
-//		Motor_Pid.speed_R=Motor_Pid.speed-Motor_Pid.Dif_Speed/2;
-//	}
-	Motor_Pid.speed_L=Motor_Pid.speed;
-	Motor_Pid.speed_R=Motor_Pid.speed;
-	// Motor_Control_L(Motor_Pid.speed_L+10);   
-	// Motor_Control_R(Motor_Pid.speed_R+10);    
-	// Motor_Control_L(Motor_Pid.speed_L+Motor_Pid.Dif_Speed*Motor_Pid.Dif_P/2);   
-	// Motor_Control_R(Motor_Pid.speed_R-Motor_Pid.Dif_Speed*Motor_Pid.Dif_P/2); 
-
-	Motor_Control_L(Motor_Pid.speed_L);   
-	Motor_Control_R(Motor_Pid.speed_R); 
-}
-void Motor_Control_L(int16 OUT_L_SPEED){
-	if(start_go==1)
-	{
-		Incremental_PI_L(encoder_L,OUT_L_SPEED);
-		PWM_L+=Motor_Pid.Dif_Speed/2; //增量PI控制器
-	}
-	else
-	{
-		Incremental_PI_L(encoder_L,0);
-	}
-	if (PWM_L >= 0) {
-		gpio_set_level(DIR_1, GPIO_HIGH);
-		pwm_set_duty(PWM_1, PWM_L);
-	}
-	else if(PWM_L <0) {
-			gpio_set_level(DIR_1, GPIO_LOW);
-			pwm_set_duty(PWM_1, -PWM_L);
-	}
+	if(start_go==1){
+	int16 speed_out_L = Incremental_PI_L(encoder_L, Motor_Pid.speed); // 返回调节量
+	int16 speed_out_R = Incremental_PI_R(encoder_R, Motor_Pid.speed); // 返回调节量
 	
+	dir_out = Position_PD(Track.Err, 0);
+
+	PWM_L = speed_out_L + dir_out*Motor_Pid.Dif_P;
+	PWM_R = speed_out_R - dir_out*Motor_Pid.Dif_P;
+	}else
+	{
+	int16 speed_out_L = Incremental_PI_L(encoder_L, 0); // 返回调节量
+	int16 speed_out_R = Incremental_PI_R(encoder_R, 0); // 返回调节量
+	
+	dir_out = Position_PD(Track.Err, 0);
+	
+	PWM_L = speed_out_L ;
+	PWM_R = speed_out_R ;
+	}
+	Motor_Control_L(PWM_L);   
+	Motor_Control_R(PWM_R); 
+}
+void Motor_Control_L(int16 OUT_L_PWM){
+	if (OUT_L_PWM >= 0) {
+		gpio_set_level(DIR_1, GPIO_HIGH);
+		pwm_set_duty(PWM_1, OUT_L_PWM);
+	}
+	else if(OUT_L_PWM <0) {
+			gpio_set_level(DIR_1, GPIO_LOW);
+			pwm_set_duty(PWM_1, -OUT_L_PWM);
+	}
 }
 
-void Motor_Control_R(int16 OUT_R_SPEED){
-	if(start_go==1)
-	{
-		Incremental_PI_R(encoder_R,OUT_R_SPEED);
-		PWM_R-=Motor_Pid.Dif_Speed/2;
-	}
-	else
-	{
-		Incremental_PI_R(encoder_R,0);//PWM_R=0;//也要pid控制
-	}
-		if (PWM_R >=0) {
+void Motor_Control_R(int16 OUT_R_PWM){
+		if (OUT_R_PWM >=0) {
 			gpio_set_level(DIR_2, GPIO_HIGH);
-			pwm_set_duty(PWM_2, PWM_R);
+			pwm_set_duty(PWM_2, OUT_R_PWM);
 		}
-		else if (PWM_R <0) {
+		else if (OUT_R_PWM <0) {
 				gpio_set_level(DIR_2, GPIO_LOW);
-				pwm_set_duty(PWM_2, -PWM_R);
+				pwm_set_duty(PWM_2, -OUT_R_PWM);
 		}
 }
 
-void Incremental_PI_L (int encoder_L,int Target_L)  //速度环
+int16 Incremental_PI_L (int encoder_L,int Target_L)  //速度环
 {		
 	Motor_error_L=(Target_L-encoder_L);                //求出速度偏差，由测量值减去目标值
 	PWM_L+=Motor_Pid.L_Kp*(Motor_error_L-Motor_last_error_L)+Motor_Pid.L_Ki*Motor_error_L;   //使用增量 PI 控制器求出电机 PWM。
@@ -223,9 +200,10 @@ void Incremental_PI_L (int encoder_L,int Target_L)  //速度环
 	// 限幅防止PWM过高
 	if (PWM_L > MAX_DUTY) PWM_L = MAX_DUTY;
 	if (PWM_L < -MAX_DUTY) PWM_L = -MAX_DUTY;
+	return PWM_L; // 返回PWM值
 }
 
-void Incremental_PI_R (int encoder_R,int Target_R)
+int16 Incremental_PI_R (int encoder_R,int Target_R)
 {
 	Motor_error_R=(Target_R-encoder_R);                //求出速度偏差，由测量值减去目标值
 	PWM_R+=Motor_Pid.R_Kp*(Motor_error_R-Motor_last_error_R)+Motor_Pid.R_Ki*Motor_error_R;   //使用增量 PI 控制器求出电机 PWM。
@@ -233,6 +211,7 @@ void Incremental_PI_R (int encoder_R,int Target_R)
 	//限幅
 	if (PWM_R > MAX_DUTY) PWM_R = MAX_DUTY;
 	if (PWM_R < -MAX_DUTY) PWM_R = -MAX_DUTY;
+	return PWM_R; // 返回PWM值
 }
 float Position_PD (float err,int Target)//懒得改名字
 {
