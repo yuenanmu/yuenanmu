@@ -727,8 +727,8 @@ uint8  Zebra_Detected(void)
     if(Longest_White_Column_Left[1]>20&&Longest_White_Column_Right[1]<MT9V03X_W-20&&
         Longest_White_Column_Right[1]>20&&Longest_White_Column_Left[1]<MT9V03X_W-20&&
         Search_Stop_Line>=110&&
-    Boundry_Start_Left>=MT9V03X_H-20&&
-    Boundry_Start_Right>=MT9V03X_H-20)
+			Boundry_Start_Left>=MT9V03X_H-20&&
+			Boundry_Start_Right>=MT9V03X_H-20)
         {
             for(int i=MT9V03X_H-1;i>=MT9V03X_H-3;i--)
             {
@@ -742,8 +742,7 @@ uint8  Zebra_Detected(void)
                 if(zebra_count>=10)
                 {
                     Zebra_Flag=1;
-                        //BB();
-                        return Zebra_Flag ;
+										return Zebra_Flag;
                 }
             }
         }
@@ -851,7 +850,7 @@ float Get_Err3(void)
 void Get_UseImg(void){
 	threshold=my_adapt_threshold(*mt9v03x_image,MT9V03X_W, MT9V03X_H);
 	Image_Binarization(threshold);
-	Bin_Image_Filter(image_two_value[0], MT9V03X_H,MT9V03X_W);
+	//Bin_Image_Filter(image_two_value[0], MT9V03X_H,MT9V03X_W);
 }
 void Img_Processing(void){
 	Get_UseImg();
@@ -860,7 +859,7 @@ void Img_Processing(void){
 	Cross_Detect();
 	
 	if(Zebra_Detected()==1){
-		//BB();
+	BB();
 	Zebra_Flag=0;
 	Zebra_Count+=1;
 	Zebra_Count=Zebra_Count%2+1;

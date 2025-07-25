@@ -61,7 +61,7 @@ void TIM2_IRQHandler (void)
 			 car_emergency_stop();
 			 Motor_Control();
     }
-		if(TIM2_count_time%2==0){
+		if(TIM2_count_time%20==0){
 			 key();
 			 if(return_flag==1){
 				return_flag=0;

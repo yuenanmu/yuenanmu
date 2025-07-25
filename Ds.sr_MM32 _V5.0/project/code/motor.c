@@ -79,11 +79,12 @@ void Motor_Pid_init()
 
 //	Motor_Pid.L_Ki=1.0;    
 //	Motor_Pid.L_Kp=1.0;  
-	Motor_Pid.L_Ki=2.7;//3.84;//6.639;    
-	Motor_Pid.L_Kp=3.0;//9;  
-	Motor_Pid.R_Ki=3.2;  
-	Motor_Pid.R_Kp=6.0;  
-	
+	Motor_Pid.L_Ki=6.6;//3.84;//6.639;    
+	Motor_Pid.L_Kp=15.0;//9;  
+	Motor_Pid.R_Ki=6.1;  
+	Motor_Pid.R_Kp=10.0;  
+	//Dir_Kp=19.770
+	//kd=1.48
 	Motor_Pid.Dif_Speed=0.0;
 }
 void ds_motor_init(void){
@@ -154,7 +155,7 @@ void Motor_Control()
 	int16 speed_out_R = Incremental_PI_R(encoder_R, Motor_Pid.speed); // 返回调节量
 	
 	dir_out = Position_PD(Track.Err, 0);
-
+	
 	PWM_L = speed_out_L + dir_out*Motor_Pid.Dif_P;
 	PWM_R = speed_out_R - dir_out*Motor_Pid.Dif_P;
 	}else
@@ -167,6 +168,44 @@ void Motor_Control()
 	PWM_L = speed_out_L ;
 	PWM_R = speed_out_R ;
 	}
+//调节速度环
+//	if(start_go==1){
+//	int16 speed_out_L = Incremental_PI_L(encoder_L, Motor_Pid.speed); // 返回调节量
+//	int16 speed_out_R = Incremental_PI_R(encoder_R, Motor_Pid.speed); // 返回调节量
+//	
+//	dir_out = Position_PD(Track.Err, 0);
+
+//	PWM_L = speed_out_L;
+//	PWM_R = speed_out_R;
+//	}else
+//	{
+//	int16 speed_out_L = Incremental_PI_L(encoder_L, 0); // 返回调节量
+//	int16 speed_out_R = Incremental_PI_R(encoder_R, 0); // 返回调节量
+//	
+//	dir_out = Position_PD(Track.Err, 0);
+//	
+//	PWM_L = speed_out_L ;
+//	PWM_R = speed_out_R ;
+//	}
+//调节方向环
+//	if(start_go==1){
+//	int16 speed_out_L = Incremental_PI_L(encoder_L, Motor_Pid.speed); // 返回调节量
+//	int16 speed_out_R = Incremental_PI_R(encoder_R, Motor_Pid.speed); // 返回调节量
+//	
+//	dir_out = Position_PD(Track.Err, 0);
+
+//	PWM_L = + dir_out*Motor_Pid.Dif_P;
+//	PWM_R = - dir_out*Motor_Pid.Dif_P;
+//	}else
+//	{
+//	int16 speed_out_L = Incremental_PI_L(encoder_L, 0); // 返回调节量
+//	int16 speed_out_R = Incremental_PI_R(encoder_R, 0); // 返回调节量
+//	
+//	dir_out = Position_PD(Track.Err, 0);
+//	
+//	PWM_L = speed_out_L ;
+//	PWM_R = speed_out_R ;
+//	}
 	Motor_Control_L(PWM_L);   
 	Motor_Control_R(PWM_R); 
 }

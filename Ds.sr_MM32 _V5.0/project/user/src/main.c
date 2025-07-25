@@ -60,7 +60,7 @@ int main(void)
 		{
 			Img_Processing();//图象处理
 			//mt9v03x_send_data(UART_1, mt9v03x_data_ch1);
-			if(ips200_show_flag==2||ips200_show_flag==1||key_flag==0){}  else ips200_show_Img();
+			//if(ips200_show_flag==2||ips200_show_flag==1||key_flag==0){}  else ips200_show_Img();
 			mt9v03x_finish_flag = 0;	
 		}
     }
