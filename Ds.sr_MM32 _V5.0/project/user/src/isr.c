@@ -34,7 +34,8 @@
 ********************************************************************************************************************/
 
 #include "isr.h"
-
+uint32 TIM2_count_time;
+uint32 TIM7_count_time;
 //-------------------------------------------------------------------------------------------------------------------
 // 函数简介     TIM1 的定时器更新中断服务函数 启动 .s 文件定义 不允许修改函数名称
 //              默认优先级 修改优先级使用 interrupt_set_priority(TIM1_UP_IRQn, 1);
@@ -53,34 +54,22 @@ void TIM1_UP_IRQHandler (void)
 //-------------------------------------------------------------------------------------------------------------------
 void TIM2_IRQHandler (void)
 {
-    count_time++;
+    TIM2_count_time++;
     // 此处编写用户代码
-    if(count_time%10==0){
+    if(TIM2_count_time%10==0){
        ds_encoderCount();
-//			 //Motor_Control_L(Motor_Pid_speed_Z);
-			 Motor_Control();
-//	  //Motor_Control_L(110);
-//		//Motor_Control_R(110);
-			//Motor_Control_L(110);
 			 car_emergency_stop();
-			//ds_wireless_uart(); //发车后数据检测
+			 Motor_Control();
     }
-		 key();
-		 if(count_time%200==0){
-			 //ds_serial();
-			 send_to_vofa();
-			 //ds_serial();
-//			 if(start){
-//			 ds_serial();
-//			 }
-			//ds_wireless_uart();
-    }
-		 if(return_flag==1){
-			return_flag=0;
-			Model=1;
-			cls_flag=0;
-			ips200_show_flag=0;
-			grade_flag=0;
+		if(TIM2_count_time%20==0){
+			 key();
+			 if(return_flag==1){
+				return_flag=0;
+				Model=1;
+				cls_flag=0;
+				ips200_show_flag=0;
+				grade_flag=0;
+				}
 		}
 //	  ds_serial();
     // 此处编写用户代码
@@ -141,8 +130,17 @@ void TIM6_IRQHandler (void)
 //-------------------------------------------------------------------------------------------------------------------
 void TIM7_IRQHandler (void)
 {
+		TIM7_count_time++;
     // 此处编写用户代码
-
+		if(TIM7_count_time%2==0){
+			 //ds_serial();
+//			 send_to_vofa();
+			 //ds_serial();
+//			 if(start){
+//			 ds_serial();
+//			 }
+			//ds_wireless_uart();
+    }
     // 此处编写用户代码
     TIM7->SR &= ~TIM7->SR;                                                      // 清空中断状态
 }

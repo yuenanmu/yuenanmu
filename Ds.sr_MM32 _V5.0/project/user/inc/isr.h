@@ -37,5 +37,6 @@
 #define _isr_h
 
 #include "zf_common_headfile.h"
-
+extern uint32 TIM2_count_time;
+extern uint32 TIM7_count_time;
 #endif
