@@ -146,8 +146,8 @@ void ParameterExchange(void){
 			start_go=start_go%2;
 			Angle_flag=1;
 			key_flag=key_flag;
-//			key_flag=0;  //发车关闭菜单
-//			close_menu=1;
+			key_flag=0;  //发车关闭菜单
+			close_menu=1;
 			grade_flag=2;			//立马重置到上一级，执行一次就好，这个值在发车菜单中不会显示3
 			Motor_Pid.Dif_Speed=0;
 		}
