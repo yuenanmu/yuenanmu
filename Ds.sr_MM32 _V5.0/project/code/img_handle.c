@@ -6,6 +6,7 @@
 #define MID_W 87
 //
 double result;
+float	black_pixel;
 ds_Track_Boundary Track;
 // MT9V03X_W               ( 188 )     
 // MT9V03X_H               ( 120 ) 
@@ -742,25 +743,26 @@ uint8  Zebra_Detected(void)
                 if(zebra_count>=10)
                 {
                     Zebra_Flag=1;
-										return Zebra_Flag;
                 }
             }
         }
-				return 0;
+				return Zebra_Flag;
 }
 /*-------------------------------------图像处理------------------------------------------*/
 void car_emergency_stop(void){
 	uint8 nc,nr;
-	uint8 black_pixel;
-	for(nr=MT9V03X_H-1;nr<MT9V03X_H-5;nr--)
+	black_pixel=0;//不初始化，这个判断没用的
+	for(nr=MT9V03X_H-1;nr>=MT9V03X_H-5;nr--)
 	{
-		for(nc=1;nc<MT9V03X_W;nc++)
+		for(nc=0;nc<MT9V03X_W;nc++)
 		{
+			if(image_two_value[nr][nc]==IMG_BLACK)
 			black_pixel++;
 		}
 	}	
-	if(black_pixel>=4*MT9V03X_W*0.7||Track.Err>150)
+	if((black_pixel>=4*MT9V03X_W*0.9||Track.Err>150)&&start_go==1)
 	{
+		BB();
 		start_go=0;
 		Motor_Control_L(0);
 		Motor_Control_R(0);
@@ -787,7 +789,7 @@ float Get_Err1(void)        //常规误差计算&&前瞻范围画线
 	//常规误差
 	for(int i=MT9V03X_H-foresight_line;i>=MT9V03X_H-foresight_line-20;i--)//常规误差计算
 	{
-		if(key_flag==1&&ips200_show_flag!=1){
+		if(key_flag==1&&ips200_show_flag!=1&&ips200_show_flag==2&&ips200_show_flag!=0){
 			if(i==MT9V03X_H-foresight_line||i==MT9V03X_H-foresight_line-20){
 				for(int j=Left_Line[i];j<Right_Line[i];j++)
 				{
@@ -850,7 +852,7 @@ float Get_Err3(void)
 void Get_UseImg(void){
 	threshold=my_adapt_threshold(*mt9v03x_image,MT9V03X_W, MT9V03X_H);
 	Image_Binarization(threshold);
-	//Bin_Image_Filter(image_two_value[0], MT9V03X_H,MT9V03X_W);
+	Bin_Image_Filter(image_two_value[0], MT9V03X_H,MT9V03X_W);
 }
 void Img_Processing(void){
 	Get_UseImg();
@@ -862,7 +864,6 @@ void Img_Processing(void){
 	BB();
 	Zebra_Flag=0;
 	Zebra_Count+=1;
-	Zebra_Count=Zebra_Count%2+1;
 	if(Zebra_Count==2){
 		start_go=0;
 		Motor_Control_L(0);

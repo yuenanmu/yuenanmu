@@ -134,7 +134,7 @@ void TIM7_IRQHandler (void)
     // 此处编写用户代码
 		if(TIM7_count_time%2==0){
 			 //ds_serial();
-//			 send_to_vofa();
+			 //send_to_vofa();
 			 //ds_serial();
 //			 if(start){
 //			 ds_serial();

@@ -20,9 +20,11 @@ typedef struct
 	float speed_R;
 	
   float L_Ki;    
-	float L_Kp;  
+	float L_Kp; 
+	float L_Kd;
 	float R_Ki;  
 	float R_Kp;
+	float R_Kd;
 	
 	float Dir_Kd;  
 	float Dir_Kp;
@@ -82,5 +84,11 @@ void Motor_Control_L(int16 OUT_L_SPEED);
 void Motor_Control_R(int16 OUT_R_SPEED);
 int16 Incremental_PI_L (int Encoder1,int Target_L);
 int16 Incremental_PI_R (int Encoder2,int Target_R);
+
+int16 Position_PI_L(int encoder_L, int Target_L);
+int16 Position_PI_R(int encoder_R, int Target_R);
+
+int16 Position_PID_L(int encoder_L, int Target_L);
+int16 Position_PID_R(int encoder_R, int Target_R);
 float Position_PD (float err,int Target);
 #endif

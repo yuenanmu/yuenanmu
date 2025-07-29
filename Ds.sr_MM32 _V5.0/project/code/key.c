@@ -146,8 +146,8 @@ void ParameterExchange(void){
 			start_go=start_go%2;
 			Angle_flag=1;
 			key_flag=key_flag;
-//			key_flag=0;  //发车关闭菜单
-//			close_menu=1;
+			key_flag=0;  //发车关闭菜单
+			close_menu=1;
 			grade_flag=2;			//立马重置到上一级，执行一次就好，这个值在发车菜单中不会显示3
 			Motor_Pid.Dif_Speed=0;
 		}
@@ -177,6 +177,9 @@ void ParameterExchange(void){
 				
 				case 9:Motor_Pid_Z_Dir_Kd+=10;break;
 				case 10:Motor_Pid_Z_Dir_Kp+=100;break;
+				
+				case 11:Motor_Pid.L_Kd+=1;break;
+				case 12:Motor_Pid.R_Kd+=1;break;
 			default:
 				break;
 			}
@@ -202,6 +205,9 @@ void ParameterExchange(void){
 			
 			case 9:Motor_Pid_Z_Dir_Kd-=10;break;
 			case 10:Motor_Pid_Z_Dir_Kp-=100;break;
+				
+			case 11:Motor_Pid.L_Kd-=1;break;
+			case 12:Motor_Pid.R_Kd-=1;break;
 			default:
 				break;
 			}
@@ -306,6 +312,9 @@ void EepromWrite(void){
 		
 	flash_union_buffer[9].int16_type= Motor_Pid_Z_Dir_Kp;
 	flash_union_buffer[10].int16_type= Motor_Pid_Z_Dir_Kd;
+//		
+//	flash_union_buffer[11].float_type= Motor_Pid.L_Kd;
+//	flash_union_buffer[12].float_type= Motor_Pid.R_Kd;
 	//元素ui
 	printf("OK12");
   //最后
@@ -328,6 +337,9 @@ void EepromRead(void){
 	
 	Motor_Pid_Z_Dir_Kp=flash_union_buffer[9].int16_type;
 	Motor_Pid_Z_Dir_Kd=flash_union_buffer[10].int16_type;
+	
+//	Motor_Pid.L_Kd=flash_union_buffer[11].float_type;
+//	Motor_Pid.R_Kd=flash_union_buffer[12].float_type;
 	//最后
 	Motor_PID_subsection();
 	printf("OK123\n");

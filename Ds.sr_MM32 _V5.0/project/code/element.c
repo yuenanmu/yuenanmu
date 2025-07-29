@@ -4,9 +4,9 @@ uint8   Straight=0;
 //void Straight_Detect(void)
 //{
 
-//    if(search_stop_row>=65)//截止行很远
+//    if(Search_Stop_Line>=65)//截止行很远
 //    {
-//        if(search_stop_row>=68&&search_stop_row>=65)//起始点靠下
+//        if(Search_Stop_Line>=68&&Search_Stop_Line>=65)//起始点靠下
 //        {
 //            if(-5<=Track.Err&&Track.Err<=5)//误差很小
 //            {
