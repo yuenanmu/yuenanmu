@@ -126,11 +126,15 @@ void ips200_show_Pid(void){
 
     ips200_show_string(1*offsetx,(5-1)*offsety,"M_LI");
     ips200_show_string(1*offsetx,(6-1)*offsety,"M_LP");
+		//ips200_show_string(1*offsetx,(6-1)*offsety,"M_Ld");
     ips200_show_string(1*offsetx,(7-1)*offsety,"M_RI");
     ips200_show_string(1*offsetx,(8-1)*offsety,"M_RP");
-	
+		//ips200_show_string(1*offsetx,(6-1)*offsety,"M_Ld");
 		ips200_show_string(1*offsetx,(9-1)*offsety,"M_Dir_D");
     ips200_show_string(1*offsetx,(10-1)*offsety,"M_Dir_P");
+	
+		ips200_show_string(1*offsetx,(11-1)*offsety,"M_LD");
+    ips200_show_string(1*offsetx,(12-1)*offsety,"M_RD");
     //ips200_show_float((1-1)*offsetx,(1-1)*offsety,data,int_part_len,2);
     ips200_show_float((10-1)*offsetx,(1-1)*offsety,Motor_Pid_speed_Z,3,2);
     ips200_show_float((10-1)*offsetx,(2-1)*offsety,Motor_Pid.Dif_P,3,2);
@@ -140,11 +144,15 @@ void ips200_show_Pid(void){
 		
 		ips200_show_float((10-1)*offsetx,(5-1)*offsety,Motor_Pid.L_Ki,2,1);
 		ips200_show_float((10-1)*offsetx,(6-1)*offsety,Motor_Pid.L_Kp,3,1);
+		//ips200_show_float((10-1)*offsetx,(6-1)*offsety,Motor_Pid.L_Kd,3,1);
 		ips200_show_float((10-1)*offsetx,(7-1)*offsety,Motor_Pid.R_Ki,2,1);
 		ips200_show_float((10-1)*offsetx,(8-1)*offsety,Motor_Pid.R_Kp,3,1);
 		
 		ips200_show_float((10-1)*offsetx,(9-1)*offsety,Motor_Pid.Dir_Kd,2,3);
 		ips200_show_float((10-1)*offsetx,(10-1)*offsety,Motor_Pid.Dir_Kp,3,3);
+		
+		ips200_show_float((10-1)*offsetx,(11-1)*offsety,Motor_Pid.L_Kd,2,3);
+		ips200_show_float((10-1)*offsetx,(12-1)*offsety,Motor_Pid.R_Kd,3,3);
 		
 		display_menu_status();
 }

@@ -177,6 +177,9 @@ void ParameterExchange(void){
 				
 				case 9:Motor_Pid_Z_Dir_Kd+=10;break;
 				case 10:Motor_Pid_Z_Dir_Kp+=100;break;
+				
+				case 11:Motor_Pid.L_Kd+=1;break;
+				case 12:Motor_Pid.R_Kd+=1;break;
 			default:
 				break;
 			}
@@ -202,6 +205,9 @@ void ParameterExchange(void){
 			
 			case 9:Motor_Pid_Z_Dir_Kd-=10;break;
 			case 10:Motor_Pid_Z_Dir_Kp-=100;break;
+				
+			case 11:Motor_Pid.L_Kd-=1;break;
+			case 12:Motor_Pid.R_Kd-=1;break;
 			default:
 				break;
 			}
@@ -306,6 +312,9 @@ void EepromWrite(void){
 		
 	flash_union_buffer[9].int16_type= Motor_Pid_Z_Dir_Kp;
 	flash_union_buffer[10].int16_type= Motor_Pid_Z_Dir_Kd;
+//		
+//	flash_union_buffer[11].float_type= Motor_Pid.L_Kd;
+//	flash_union_buffer[12].float_type= Motor_Pid.R_Kd;
 	//元素ui
 	printf("OK12");
   //最后
@@ -328,6 +337,9 @@ void EepromRead(void){
 	
 	Motor_Pid_Z_Dir_Kp=flash_union_buffer[9].int16_type;
 	Motor_Pid_Z_Dir_Kd=flash_union_buffer[10].int16_type;
+	
+//	Motor_Pid.L_Kd=flash_union_buffer[11].float_type;
+//	Motor_Pid.R_Kd=flash_union_buffer[12].float_type;
 	//最后
 	Motor_PID_subsection();
 	printf("OK123\n");
