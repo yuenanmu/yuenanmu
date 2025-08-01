@@ -103,11 +103,6 @@ void ds_motor_init(void){
 void Motor_Control()
 {
 /************************电机保护*********************/
-    //原先没想到，学长提醒之下加入了出赛道保护
-    if(black_area==1){
-        stop_time++;
-    }else{stop_time=0;}
-
     //电机不转但pid疯狂加电流，防止堵转
     if((encoder_L<=5&&PWM_L>7000)||(encoder_R<=5&&PWM_R>7000)&&start_go==1)
     {
@@ -171,8 +166,8 @@ void Motor_Control()
 	int16 speed_out = Position_PID_R((encoder_R+encoder_L)>>1, 0); // 返回调节量
 	dir_out = Position_PD(Track.Err, 0);
 	
-	PWM_L = speed_out ;
-	PWM_R = speed_out ;
+	PWM_L = speed_out+dir_out*Motor_Pid.Dif_P ;
+	PWM_R = speed_out-dir_out*Motor_Pid.Dif_P ;
 		
 //	PWM_L = dir_out*Motor_Pid.Dif_P;
 //	PWM_R = -dir_out*Motor_Pid.Dif_P;

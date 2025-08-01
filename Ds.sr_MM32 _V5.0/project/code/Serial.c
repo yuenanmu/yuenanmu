@@ -1,11 +1,12 @@
 #include "zf_common_headfile.h"
 #include "Serial.h"
 void ds_serial(void){
-	printf("good\n");
+	//printf("good\n");
+	//printf("%d,%d,%d\n",imu660ra_gyro_x,imu660ra_gyro_y,imu660ra_gyro_z);
 	//printf("Target_L:%d,encoder_L:%d,PWM_L:%d,Motor_Pid_speed_Z:%d\n",1500,encoder_L,PWM_L,Motor_Pid_speed_Z);
-	printf("Track.Err:%.2f   Dif:%.2f  Dif_Sd:%.2f\n",Track.Err,Motor_Pid.Dif_Speed*Motor_Pid.Dif_P,Motor_Pid.Dif_Speed);
-	printf("Target_L:%d,encoder_L:%d,PWM_L:%d,Motor_Pid_speed_Z:%d,Motor_Pid.speed_L:%.2f,Motor_error_L:%d\n",50,encoder_L,PWM_L,Motor_Pid_speed_Z,Motor_Pid.speed_L,Motor_error_L);
-	printf("Target_R:%d,encoder_R:%d,PWM_R:%d,Motor_Pid_speed_Z:%d,Motor_Pid.speed_R:%.2f,Motor_error_R:%d\n",50,encoder_R,PWM_R,Motor_Pid_speed_Z,Motor_Pid.speed_R,Motor_error_R);
+//	printf("Track.Err:%.2f   Dif:%.2f  Dif_Sd:%.2f\n",Track.Err,Motor_Pid.Dif_Speed*Motor_Pid.Dif_P,Motor_Pid.Dif_Speed);
+//	printf("Target_L:%d,encoder_L:%d,PWM_L:%d,Motor_Pid_speed_Z:%d,Motor_Pid.speed_L:%.2f,Motor_error_L:%d\n",50,encoder_L,PWM_L,Motor_Pid_speed_Z,Motor_Pid.speed_L,Motor_error_L);
+//	printf("Target_R:%d,encoder_R:%d,PWM_R:%d,Motor_Pid_speed_Z:%d,Motor_Pid.speed_R:%.2f,Motor_error_R:%d\n",50,encoder_R,PWM_R,Motor_Pid_speed_Z,Motor_Pid.speed_R,Motor_error_R);
 //	printf("start_left = %d,start_right = %d\n",start_left,start_right);
 //	printf("longest_line_row = %d, col = %d, len = %d\n", longest_line_row, longest_line_col, longest_line_len);
 //  for (int r = MT9V03X_H - 1; r > longest_line_row; r--) {

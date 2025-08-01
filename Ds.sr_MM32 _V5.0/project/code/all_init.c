@@ -50,10 +50,11 @@ void all_init(void){
 	
 	//系统初始化
 	clock_init(SYSTEM_CLOCK_120M);                                              // 初始化芯片时钟 工作频率为 120MHz
-  debug_init();   
+  	debug_init();   
 	system_delay_ms(100);
 	
 	//外设初始化
+	ds_ips200_init();
 	while(1)
   {
         if(mt9v03x_init())
@@ -66,12 +67,25 @@ void all_init(void){
         }
         system_delay_ms(500);                                                   // 短延时快速闪灯表示异常
   }
+//	while (1)
+//    {
+//        if (imu660ra_init())
+//        {
+//            ips200_show_string(0, 32, "mt9v03x reinit.");
+//        }
+//        else
+//        {
+//            break;
+//        }
+//				system_delay_ms(500);
+//    }
 	wireless_uart_init();
-  ds_ips200_init();
+  	ds_ips200_init();
 	ds_key_init();
 	ds_encoder_init();
 	ds_motor_init();
 	Motor_Pid_init();
+//	imu660ra_init();
 	//初始化之后读取flash并复制
 	EepromRead();
 	ips200_show_string(0, 16, "init success.");
