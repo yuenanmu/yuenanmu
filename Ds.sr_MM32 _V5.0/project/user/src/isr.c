@@ -58,10 +58,12 @@ void TIM2_IRQHandler (void)
     // 此处编写用户代码
     if(TIM2_count_time%10==0){
        ds_encoderCount();
+			 //imu660ra_get_gyro();
 			 car_emergency_stop();
 			 Motor_Control();
     }
 		if(TIM2_count_time%20==0){
+			 //ds_serial();
 			 key();
 			 if(return_flag==1){
 				return_flag=0;
