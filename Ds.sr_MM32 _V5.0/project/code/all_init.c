@@ -84,8 +84,8 @@ void all_init(void){
 	ds_key_init();
 	ds_encoder_init();
 	ds_motor_init();
-	Motor_Pid_init();
-//	imu660ra_init();
+	Motor_All_Pid_init();
+
 	//初始化之后读取flash并复制
 	EepromRead();
 	ips200_show_string(0, 16, "init success.");

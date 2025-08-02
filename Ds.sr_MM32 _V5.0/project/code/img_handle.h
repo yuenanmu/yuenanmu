@@ -1,6 +1,7 @@
 #ifndef _Img_h
 #define _Img_h
-
+#define LCDH 	120
+#define LCDW	188
 #include "zf_common_headfile.h"
 typedef struct {
     uint8_t left[MT9V03X_H];            // 左边线每一行的位置

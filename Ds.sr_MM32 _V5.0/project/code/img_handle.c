@@ -1,15 +1,13 @@
-#include "zf_common_headfile.h"
 #include "img_handle.h"
 #define IMG_BLACK 0x00
 #define IMG_WHITE 0xff 
 #define Prediction_Confidence  0.55
 #define MID_W 87
-//
+
 double result;
 float	black_pixel;
 ds_Track_Boundary Track;
-// MT9V03X_W               ( 188 )     
-// MT9V03X_H               ( 120 ) 
+
 uint8 image_two_value[MT9V03X_H][MT9V03X_W];//二值化后的原数组
 volatile int Left_Line[MT9V03X_H]; //左边线数组
 volatile int Right_Line[MT9V03X_H];//右边线数组
@@ -760,12 +758,11 @@ void car_emergency_stop(void){
 			black_pixel++;
 		}
 	}	
-	if((black_pixel>=4*MT9V03X_W*0.9||Track.Err>150)&&start_go==1)
+	if((black_pixel>=4*MT9V03X_W*0.9||Track.Err>150||PWM_L>7000||PWM_R>7000)&&start_go==1)
 	{
 		BB();
 		start_go=0;
-		Motor_Control_L(0);
-		Motor_Control_R(0);
+		Motor_Control_PwmOut(0,0);
 	}
 }
 void Bin_Image_Filter(uint8 *image,uint16 H,uint16 W){
@@ -866,8 +863,7 @@ void Img_Processing(void){
 	Zebra_Count+=1;
 	if(Zebra_Count==2){
 		start_go=0;
-		Motor_Control_L(0);
-		Motor_Control_R(0);
+		Motor_Control_PwmOut(0,0);
 		}
 	}
 	Show_Boundry();
