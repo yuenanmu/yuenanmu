@@ -3,6 +3,7 @@
 
 #define MAX_DUTY 5000
 #define MAX_INTEGRAL 600//560//480//360
+#define MAX_dif_speed 1000 
 float Err0,Err1,ErrI,Err2;
 //
 uint8_t black_area=0;
@@ -19,6 +20,7 @@ int16 PWM_L=0,PWM_R=0;
 int16 Motor_error_L=0,Motor_last_error_L=0;
 int16 Motor_error_R=0,Motor_last_error_R=0;
 MOTOR_PID Motor_Pid;
+Turn_PPDD_LocTypeDef Turn_PPDD_Loc;
 int8 Dir_last_error=0,Dir_error=0;
 float Dif_Speed=0;//不赋值，输出的值很诡异。。不能是全局
 float dir_out;
@@ -154,7 +156,7 @@ void Motor_Control()
 	if(start_go==1){
 	int16 speed_out_L = Position_PID_L(encoder_L, Motor_Pid.speed); // 返回调节量
 	int16 speed_out_R = Position_PID_R(encoder_R, Motor_Pid.speed); // 返回调节量
-	
+	int16 speed_out = Position_PID_L((encoder_R+encoder_L)>>1, Motor_Pid.speed); // 返回调节量
 	dir_out = Position_PD(Track.Err, 0);
 	
 	PWM_L = speed_out_L+dir_out*Motor_Pid.Dif_P;// + dir_out*Motor_Pid.Dif_P;
@@ -163,53 +165,12 @@ void Motor_Control()
 	{
 	int16 speed_out_L = Position_PID_L(encoder_L, 0); // 返回调节量
 	int16 speed_out_R = Position_PID_R(encoder_R, 0); // 返回调节量
-	int16 speed_out = Position_PID_R((encoder_R+encoder_L)>>1, 0); // 返回调节量
+	int16 speed_out = Position_PID_L((encoder_R+encoder_L)>>1, 0); // 返回调节量
 	dir_out = Position_PD(Track.Err, 0);
 	
 	PWM_L = speed_out+dir_out*Motor_Pid.Dif_P ;
 	PWM_R = speed_out-dir_out*Motor_Pid.Dif_P ;
-		
-//	PWM_L = dir_out*Motor_Pid.Dif_P;
-//	PWM_R = -dir_out*Motor_Pid.Dif_P;
 	}
-//调节速度环
-//	if(start_go==1){
-//	int16 speed_out_L = Incremental_PI_L(encoder_L, Motor_Pid.speed); // 返回调节量
-//	int16 speed_out_R = Incremental_PI_R(encoder_R, Motor_Pid.speed); // 返回调节量
-//	
-//	dir_out = Position_PD(Track.Err, 0);
-
-//	PWM_L = speed_out_L;
-//	PWM_R = speed_out_R;
-//	}else
-//	{
-//	int16 speed_out_L = Incremental_PI_L(encoder_L, 0); // 返回调节量
-//	int16 speed_out_R = Incremental_PI_R(encoder_R, 0); // 返回调节量
-//	
-//	dir_out = Position_PD(Track.Err, 0);
-//	
-//	PWM_L = speed_out_L ;
-//	PWM_R = speed_out_R ;
-//	}
-//调节方向环
-//	if(start_go==1){
-//	int16 speed_out_L = Incremental_PI_L(encoder_L, Motor_Pid.speed); // 返回调节量
-//	int16 speed_out_R = Incremental_PI_R(encoder_R, Motor_Pid.speed); // 返回调节量
-//	
-//	dir_out = Position_PD(Track.Err, 0);
-
-//	PWM_L = + dir_out*Motor_Pid.Dif_P;
-//	PWM_R = - dir_out*Motor_Pid.Dif_P;
-//	}else
-//	{
-//	int16 speed_out_L = Incremental_PI_L(encoder_L, 0); // 返回调节量
-//	int16 speed_out_R = Incremental_PI_R(encoder_R, 0); // 返回调节量
-//	
-//	dir_out = Position_PD(Track.Err, 0);
-//	
-//	PWM_L = speed_out_L ;
-//	PWM_R = speed_out_R ;
-//	}
 	Motor_Control_L(PWM_L);   
 	Motor_Control_R(PWM_R); 
 }
@@ -392,10 +353,28 @@ float Position_PD (float err,int Target)//懒得改名字
 	Dir_error=Target-err;
 	Dif_Speed=Motor_Pid.Dir_Kd*(Dir_error-Dir_last_error)+Motor_Pid.Dir_Kp*Dir_error;   //使用位置式 PD 控制器求出电机 PWM
 	Dir_last_error=Dir_error;                       //保存上一次偏差
-	uint16 MAX_dif_speed=1000;
+
 	//限幅
 	if(Dif_Speed>=MAX_dif_speed)		Dif_Speed=MAX_dif_speed;
 	else if(Dif_Speed<=-MAX_dif_speed)	Dif_Speed=-MAX_dif_speed;
 	
 	return Dif_Speed;
+}
+float PPDD_location(float setvalue,float actualvalue, float GZ, Turn_PPDD_LocTypeDef *PPDD)
+{
+    PPDD->ek =setvalue-actualvalue;
+    PPDD->location_sum += PPDD->ek;//计算累计误差值                         
+    //out计算
+    PPDD->out=PPDD->kp*PPDD->ek  +  PPDD->kp2*abs(PPDD->ek)*PPDD->ek  +  (PPDD->ek-PPDD->ek1)*PPDD->kd  +  GZ*PPDD->kd2;//极性调整处
+    PPDD->ek1 = PPDD->ek;  
+    //PID限幅
+    if(PPDD->out<-MAX_dif_speed)PPDD->out=-MAX_dif_speed;
+    if(PPDD->out>MAX_dif_speed)PPDD->out=MAX_dif_speed;
+    
+    return PPDD->out;
+}
+float turn_pid_location(void)
+{
+	dir_out=-PPDD_location(0,Track.Err,imu660ra_gyro_z,&Turn_PPDD_Loc);//转向环
+  	return  dir_out;
 }

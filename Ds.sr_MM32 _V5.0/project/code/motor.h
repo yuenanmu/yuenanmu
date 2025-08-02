@@ -19,7 +19,7 @@ typedef struct
 	float speed_L;
 	float speed_R;
 	
-  float L_Ki;    
+  	float L_Ki;    
 	float L_Kp; 
 	float L_Kd;
 	float R_Ki;  
@@ -32,6 +32,20 @@ typedef struct
 	float Dif_P;  //Differential Proportional
 	float Dif_Speed;  
 }MOTOR_PID;
+typedef struct
+{
+  float kp;
+  float kd;
+  float kp2;
+  float kd2;
+  float ek;                      
+  float ek1;                      
+  float location_sum;            
+  float out;
+  float PID_I_LIMIT_MAX;
+  float PID_OUT_LIMIT_MAX;	
+}Turn_PPDD_LocTypeDef;
+extern Turn_PPDD_LocTypeDef Turn_PPDD_Loc;
 extern float Desire_Speed;
 extern int16 Motor_Pid_speed_Z; //ui调节的速
 extern int16 Motor_Pid_Z_L_Ki;
@@ -91,4 +105,5 @@ int16 Position_PI_R(int encoder_R, int Target_R);
 int16 Position_PID_L(int encoder_L, int Target_L);
 int16 Position_PID_R(int encoder_R, int Target_R);
 float Position_PD (float err,int Target);
+float turn_pid_location(void);
 #endif
