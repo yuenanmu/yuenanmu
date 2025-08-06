@@ -7,9 +7,9 @@ uint8_t gyro_ration = 4;   //陀螺仪置信度
 float filtering_angle = 0; //解算出的角度
 float angle_temp;        //角度计算中间变量
 float cycle_T = 0.005;         //采样周期
-imu_err_typdef imu_err = { 0,8,0 }; //imu误差结构体
+imu_err_typdef imu_err = { 0,0,0 }; //imu误差结构体
 uint16 az_last = 0; //上次加速度计Z轴数据
-
+int16 gx, gy, gz, ax, ay, az;
 /**
 * @brief   imu初始化
 * @param   无
@@ -39,7 +39,6 @@ void imu_init(void)
 */
 void first_order_filtering(void)
 {
-    int16 gx, gy, gz, ax, ay, az;
     //临时变量存储                                                      
     gx = imu660ra_gyro_x;
     gy = imu660ra_gyro_y;
@@ -63,13 +62,13 @@ void first_order_filtering(void)
     {
         gz = 0;
     }
-    //一阶互补滤波算角度
-    float gyro_temp;
-    float acc_temp;
-    gyro_temp = gy * gyro_ration;
-    acc_temp = (-ax - angle_temp) * acc_ration;
-    angle_temp += ((gyro_temp + acc_temp) * cycle_T);
-    filtering_angle = angle_temp;
+//    //一阶互补滤波算角度
+//    float gyro_temp;
+//    float acc_temp;
+//    gyro_temp = gy * gyro_ration;
+//    acc_temp = (-ax - angle_temp) * acc_ration;
+//    angle_temp += ((gyro_temp + acc_temp) * cycle_T);
+//    filtering_angle = angle_temp;
 }
 
 
@@ -79,7 +78,8 @@ void first_order_filtering(void)
 */
 void lift_protection(void)
 {
-    int16 gx, gy, gz, ax, ay, az;
+	static int16 az_last,ax_last,ay_last;
+  int16 gx, gy, gz, ax, ay, az;  
     //临时变量存储                                                      
     gx = imu660ra_gyro_x;
     gy = imu660ra_gyro_y;
@@ -88,16 +88,25 @@ void lift_protection(void)
     ay = imu660ra_acc_y;
     az = imu660ra_acc_z;
 
-    uint8 acc_abnormal = abs(az - az_last) > 8000; //加速度异常标志
+    uint8 acc_abnormal_z = abs(az - az_last) > 8000; //加速度异常标志
+	  uint8 acc_abnormal_x = abs(ax - ax_last) > 8000;
+		uint8 acc_abnormal_y = abs(ay - ay_last) > 8000;
 
-    if (acc_abnormal) //如果加速度异常或角度异常
+    if (acc_abnormal_z) //如果加速度异常或角度异常
     {
+				ips200_clear(); //清屏
         ips200_show_string(0, 0, "Lift protection!"); //显示提起保护信息
         system_delay_ms(20);
-        ips200_clear(); //清屏
-        key_clear_all_state();//清除按键状态
+				start_go=0;
         BB();//蜂鸣器响
     }
 
     az_last = az; //保存上次加速度计Z轴数据
+		ax_last = ax;
+		ay_last = ay;
+}
+void imu660ra_ReadData(void){
+	imu660ra_get_gyro();
+	imu660ra_get_acc();
+	first_order_filtering();
 }

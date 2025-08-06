@@ -58,7 +58,11 @@ int main(void)
 		}
 			if(mt9v03x_finish_flag)
 		{
+			int16 temp1=TIM2_count_time;
 			Img_Processing();//图象处理
+			int16 temp2=TIM2_count_time;
+			int16 temp=temp2-temp1;
+			//printf("%d",temp);
 			//mt9v03x_send_data(UART_1, mt9v03x_data_ch1);
 			//if(ips200_show_flag==2||ips200_show_flag==1||key_flag==0){}  else ips200_show_Img();
 			mt9v03x_finish_flag = 0;	

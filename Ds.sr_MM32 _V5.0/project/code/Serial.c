@@ -2,7 +2,8 @@
 #include "Serial.h"
 void ds_serial(void){
 	//printf("good\n");
-	//printf("%d,%d,%d\n",imu660ra_gyro_x,imu660ra_gyro_y,imu660ra_gyro_z);
+	printf("%d,%d,%d\n",gx,gy,gz);
+	//printf("%.2f,%d,%d\r\n",Motor_Pid.speed,(encoder_R+encoder_L)>>1,(PWM_L+PWM_R)>>1);
 	//printf("Target_L:%d,encoder_L:%d,PWM_L:%d,Motor_Pid_speed_Z:%d\n",1500,encoder_L,PWM_L,Motor_Pid_speed_Z);
 //	printf("Track.Err:%.2f   Dif:%.2f  Dif_Sd:%.2f\n",Track.Err,Motor_Pid.Dif_Speed*Motor_Pid.Dif_P,Motor_Pid.Dif_Speed);
 }

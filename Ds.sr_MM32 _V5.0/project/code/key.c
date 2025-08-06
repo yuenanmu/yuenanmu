@@ -165,22 +165,22 @@ void ParameterExchange(void){
 			switch (Model) 
 			{
 				case 1:Motor_Pid_speed_Z+=50;break;
-				case 2:Motor_Pid.Dif_P +=0.1; break;//+=0.1  Motor_Pid_Dif_P是整数，这个无效。
+				case 2:Motor_Pid.Dif_P +=1; break;//+=0.1  Motor_Pid_Dif_P是整数，这个无效。
 				
 				case 3:Linear_speed+=5;break;
 				case 4:Curve_speed+=5;break;
 
-				case 5:Motor_Pid.Kp+=0.1;break;
+				case 5:Motor_Pid.Kp+=1;break;
 				case 6:Motor_Pid.Ki+=1;break;
-				case 7:Motor_Pid.Kd+=0.1;break;
+				case 7:Motor_Pid.Kd+=1;break;
 
 				case 8:Motor_Pid.Dir_Kp+=10;break;
 				case 9:Motor_Pid.Dir_Kd+=100;break;
 
-				case 10:Turn_PPDD_Loc.kp+=0.1;break;//转向响应系数
-				case 11:Turn_PPDD_Loc.kd+=0.1;break;//抑制抖动+预测
+				case 10:Turn_PPDD_Loc.kp+=1;break;//转向响应系数
+				case 11:Turn_PPDD_Loc.kd+=1;break;//抑制抖动+预测
 				case 12:Turn_PPDD_Loc.kp2+=1;break;//二次项系数,急弯转不过来,加
-				case 13:Turn_PPDD_Loc.kd2+=1;break;//陀螺仪转向系数,抑制抖动
+				case 13:Turn_PPDD_Loc.kd2+=0.001;break;//陀螺仪转向系数,抑制抖动
 
 			default:
 				break;
@@ -194,22 +194,22 @@ void ParameterExchange(void){
 			switch (Model) 
 			{
 						case 1:Motor_Pid_speed_Z-=50;break;
-            case 2:Motor_Pid.Dif_P -=0.1; break;
+            case 2:Motor_Pid.Dif_P -=1; break;
             
             case 3:Linear_speed-=5;break;
             case 4:Curve_speed-=5;break;
 
-            case 5:Motor_Pid.Kp-=0.1;break;
+            case 5:Motor_Pid.Kp-=1;break;
             case 6:Motor_Pid.Ki-=1;break;
-            case 7:Motor_Pid.Kd-=0.1;break;
+            case 7:Motor_Pid.Kd-=1;break;
 
             case 8:Motor_Pid.Dir_Kp-=10;break;
             case 9:Motor_Pid.Dir_Kd-=100;break;
 
-            case 10:Turn_PPDD_Loc.kp-=0.1;break;//转向响应系数
-            case 11:Turn_PPDD_Loc.kd-=0.1;break;//抑制抖动+预测
+            case 10:Turn_PPDD_Loc.kp-=1;break;//转向响应系数
+            case 11:Turn_PPDD_Loc.kd-=1;break;//抑制抖动+预测
             case 12:Turn_PPDD_Loc.kp2-=1;break;//二次项系数,急弯转不过来,加
-            case 13:Turn_PPDD_Loc.kd2-=1;break;//陀螺仪转向系数,抑制抖动
+            case 13:Turn_PPDD_Loc.kd2-=0.001;break;//陀螺仪转向系数,抑制抖动
 			default:
 				break;
 			}
@@ -237,6 +237,7 @@ void ParameterExchange(void){
 				break;
 			}
 			/*---------------flash保存--------------------*/
+			Motor_PID_subsection();
 			EepromWrite();
 			plus=0;
 		}
@@ -249,6 +250,7 @@ void ParameterExchange(void){
 				break;
 			}
 			/*---------------flash保存--------------------*/
+			Motor_PID_subsection();
 			EepromWrite();
 			lose=0;
 		}
@@ -271,20 +273,22 @@ void EepromWrite(void){
 	flash_buffer_clear();  
 	flash_union_buffer[0].int16_type  = Motor_Pid_speed_Z;
 	flash_union_buffer[1].float_type  = Motor_Pid.Dif_P;           // case 2
-    flash_union_buffer[2].int16_type  = Linear_speed;              // case 3
-    flash_union_buffer[3].int16_type  = Curve_speed;               // case 4
+	flash_union_buffer[2].int16_type  = Linear_speed;              // case 3
+	flash_union_buffer[3].int16_type  = Curve_speed;               // case 4
 
-    flash_union_buffer[4].float_type  = Motor_Pid.Kp;              // case 5
-    flash_union_buffer[5].float_type  = Motor_Pid.Ki;              // case 6
-    flash_union_buffer[6].float_type  = Motor_Pid.Kd;              // case 7
+	flash_union_buffer[4].float_type  = Motor_Pid.Kp;              // case 5
+	flash_union_buffer[5].float_type  = Motor_Pid.Ki;              // case 6
+	flash_union_buffer[6].float_type  = Motor_Pid.Kd;              // case 7
 
-    flash_union_buffer[7].float_type  = Motor_Pid.Dir_Kp;          // case 8
-    flash_union_buffer[8].float_type  = Motor_Pid.Dir_Kd;          // case 9
+	flash_union_buffer[7].float_type  = Motor_Pid.Dir_Kp;          // case 8
+	flash_union_buffer[8].float_type  = Motor_Pid.Dir_Kd;          // case 9
 
-    flash_union_buffer[9].float_type  = Turn_PPDD_Loc.kp;          // case 10
-    flash_union_buffer[10].float_type = Turn_PPDD_Loc.kd;          // case 11
-    flash_union_buffer[11].float_type = Turn_PPDD_Loc.kp2;         // case 12
-    flash_union_buffer[12].float_type = Turn_PPDD_Loc.kd2;         // case 13
+	flash_union_buffer[9].float_type  = Turn_PPDD_Loc.kp;          // case 10
+	flash_union_buffer[10].float_type = Turn_PPDD_Loc.kd;          // case 11
+	flash_union_buffer[11].float_type = Turn_PPDD_Loc.kp2;         // case 12
+	flash_union_buffer[12].float_type = Turn_PPDD_Loc.kd2;         // case 13
+		
+	flash_union_buffer[13].int16_type = foresight_line;
 	//元素ui
 	printf("OK12");
   //最后
@@ -293,24 +297,24 @@ void EepromWrite(void){
 
 void EepromRead(void){
 	flash_read_page_to_buffer(FLASH_SECTION_INDEX, FLASH_PAGE_INDEX);
-	Motor_Pid_speed_Z  =flash_union_buffer[0].int16_type;
+	Motor_Pid_speed_Z  = flash_union_buffer[0].int16_type;
 	Motor_Pid.Dif_P    = flash_union_buffer[1].float_type;    // case 2
-    Linear_speed       = flash_union_buffer[2].int16_type;    // case 3
-    Curve_speed        = flash_union_buffer[3].int16_type;    // case 4
+	Linear_speed       = flash_union_buffer[2].int16_type;    // case 3
+	Curve_speed        = flash_union_buffer[3].int16_type;    // case 4
 
-    Motor_Pid.Kp       = flash_union_buffer[4].float_type;    // case 5
-    Motor_Pid.Ki       = flash_union_buffer[5].float_type;    // case 6
-    Motor_Pid.Kd       = flash_union_buffer[6].float_type;    // case 7
+	Motor_Pid.Kp       = flash_union_buffer[4].float_type;    // case 5
+	Motor_Pid.Ki       = flash_union_buffer[5].float_type;    // case 6
+	Motor_Pid.Kd       = flash_union_buffer[6].float_type;    // case 7
 
-    Motor_Pid.Dir_Kp   = flash_union_buffer[7].float_type;    // case 8
-    Motor_Pid.Dir_Kd   = flash_union_buffer[8].float_type;    // case 9
+	Motor_Pid.Dir_Kp   = flash_union_buffer[7].float_type;    // case 8
+	Motor_Pid.Dir_Kd   = flash_union_buffer[8].float_type;    // case 9
 
-    Turn_PPDD_Loc.kp   = flash_union_buffer[9].float_type;    // case 10
-    Turn_PPDD_Loc.kd   = flash_union_buffer[10].float_type;   // case 11
-    Turn_PPDD_Loc.kp2  = flash_union_buffer[11].float_type;   // case 12
-    Turn_PPDD_Loc.kd2  = flash_union_buffer[12].float_type; 
+	Turn_PPDD_Loc.kp   = flash_union_buffer[9].float_type;    // case 10
+	Turn_PPDD_Loc.kd   = flash_union_buffer[10].float_type;   // case 11
+	Turn_PPDD_Loc.kp2  = flash_union_buffer[11].float_type;   // case 12
+	Turn_PPDD_Loc.kd2  = flash_union_buffer[12].float_type; 
 	
-
+	foresight_line     = flash_union_buffer[13].int16_type ;
 	//最后
 	Motor_PID_subsection();
 	printf("OK123\n");

@@ -18,7 +18,7 @@ typedef struct
 	float speed;
 	float speed_out;
 	
-  	float Ki;    
+  float Ki;    
 	float Kp; 
 	float Kd;
 	
