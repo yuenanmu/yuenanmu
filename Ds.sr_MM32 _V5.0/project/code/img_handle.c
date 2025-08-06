@@ -1,15 +1,13 @@
-#include "zf_common_headfile.h"
 #include "img_handle.h"
 #define IMG_BLACK 0x00
 #define IMG_WHITE 0xff 
 #define Prediction_Confidence  0.55
 #define MID_W 87
-//
+
 double result;
 float	black_pixel;
 ds_Track_Boundary Track;
-// MT9V03X_W               ( 188 )     
-// MT9V03X_H               ( 120 ) 
+
 uint8 image_two_value[MT9V03X_H][MT9V03X_W];//二值化后的原数组
 volatile int Left_Line[MT9V03X_H]; //左边线数组
 volatile int Right_Line[MT9V03X_H];//右边线数组
@@ -727,9 +725,7 @@ uint8  Zebra_Detected(void)
     Zebra_Flag=0;//斑马线标志清零
     if(Longest_White_Column_Left[1]>20&&Longest_White_Column_Right[1]<MT9V03X_W-20&&
         Longest_White_Column_Right[1]>20&&Longest_White_Column_Left[1]<MT9V03X_W-20&&
-        Search_Stop_Line>=110&&
-			Boundry_Start_Left>=MT9V03X_H-20&&
-			Boundry_Start_Right>=MT9V03X_H-20)
+				Boundry_Start_Left>=MT9V03X_H-20&&Boundry_Start_Right>=MT9V03X_H-20)
         {
             for(int i=MT9V03X_H-1;i>=MT9V03X_H-3;i--)
             {
@@ -740,7 +736,7 @@ uint8  Zebra_Detected(void)
                         zebra_count++;
                     }
 									}
-                if(zebra_count>=10)
+                if(zebra_count>=6)
                 {
                     Zebra_Flag=1;
                 }
@@ -760,12 +756,11 @@ void car_emergency_stop(void){
 			black_pixel++;
 		}
 	}	
-	if((black_pixel>=4*MT9V03X_W*0.9||Track.Err>150)&&start_go==1)
+	if((black_pixel>=4*MT9V03X_W*0.9||Track.Err>150||PWM_L>7000||PWM_R>7000)&&start_go==1)
 	{
 		BB();
 		start_go=0;
-		Motor_Control_L(0);
-		Motor_Control_R(0);
+		Motor_Control_PwmOut(0,0);
 	}
 }
 void Bin_Image_Filter(uint8 *image,uint16 H,uint16 W){
@@ -787,10 +782,10 @@ float Get_Err1(void)        //常规误差计算&&前瞻范围画线
 	float Err1=0,Err2=0,Err=0;
 	float weight_count=0;
 	//常规误差
-	for(int i=MT9V03X_H-foresight_line;i>=MT9V03X_H-foresight_line-20;i--)//常规误差计算
+	for(int i=MT9V03X_H-foresight_line;i>=MT9V03X_H-foresight_line-10;i--)//常规误差计算
 	{
 		if(key_flag==1&&ips200_show_flag!=1&&ips200_show_flag==2&&ips200_show_flag!=0){
-			if(i==MT9V03X_H-foresight_line||i==MT9V03X_H-foresight_line-20){
+			if(i==MT9V03X_H-foresight_line||i==MT9V03X_H-foresight_line-10){
 				for(int j=Left_Line[i];j<Right_Line[i];j++)
 				{
 					ips200_draw_point(j+(2-1)*offsetx, i+(10-1)*offsety,RGB565_RED);
@@ -799,18 +794,7 @@ float Get_Err1(void)        //常规误差计算&&前瞻范围画线
 		}
 			Err1+=(MT9V03X_W/2-((Left_Line[i]+Right_Line[i])>>1));//右移1位，等效除2
 	}
-	// for(int i=Search_Stop_Line+5;i<=Search_Stop_Line+40;i++)//常规误差计算
-	// {
-	// 	if(i==Search_Stop_Line+5||i==Search_Stop_Line+40){
-	// 		for(int j=Left_Line[i];j<Right_Line[i];j++)
-	// 		{
-	// 			ips200_draw_point(j+(2-1)*offsetx, i+(10-1)*offsety,RGB565_RED);
-	// 		}
-	// 	}
-	// 		Err2+=(MT9V03X_W/2-((Left_Line[i]+Right_Line[i])>>1));//右移1位，等效除2
-	// }
-	
-	Err=Err1/20.0;//+Err2/35.0*(1-Prediction_Confidence)   *Prediction_Confidence
+	Err=Err1*0.1;      //+Err2/35.0*(1-Prediction_Confidence)   *Prediction_Confidence
 	return Err;
 }
 float Get_Err2(void)
@@ -861,13 +845,12 @@ void Img_Processing(void){
 	Cross_Detect();
 	
 	if(Zebra_Detected()==1){
-	BB();
+	//BB();
 	Zebra_Flag=0;
 	Zebra_Count+=1;
 	if(Zebra_Count==2){
 		start_go=0;
-		Motor_Control_L(0);
-		Motor_Control_R(0);
+		Motor_Control_PwmOut(0,0);
 		}
 	}
 	Show_Boundry();

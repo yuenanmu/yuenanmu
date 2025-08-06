@@ -1,6 +1,7 @@
 #ifndef _Img_h
 #define _Img_h
-
+#define LCDH 	120
+#define LCDW	188
 #include "zf_common_headfile.h"
 typedef struct {
     uint8_t left[MT9V03X_H];            // 左边线每一行的位置
@@ -23,8 +24,8 @@ extern uint8 threshold;
 extern uint8 image_two_value[MT9V03X_H][MT9V03X_W];
 extern uint8 Zebra_Flag;
 extern uint8 foresight_line;
+extern volatile int Search_Stop_Line;
 extern double result;
-//void PrintTrackBoundary(const ds_Track_Boundary *tb);
 
 int  my_adapt_threshold(uint8*image,uint16 col, uint16 row);
 

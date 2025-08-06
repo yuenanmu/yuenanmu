@@ -58,7 +58,7 @@ void TIM2_IRQHandler (void)
     // 此处编写用户代码
     if(TIM2_count_time%10==0){
        ds_encoderCount();
-			 //imu660ra_get_gyro();
+			 imu660ra_ReadData();
 			 car_emergency_stop();
 			 Motor_Control();
     }
@@ -134,7 +134,7 @@ void TIM7_IRQHandler (void)
 {
 		TIM7_count_time++;
     // 此处编写用户代码
-		if(TIM7_count_time%2==0){
+		if(TIM7_count_time%200==0){
 			 //ds_serial();
 			 //send_to_vofa();
 			 //ds_serial();

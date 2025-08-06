@@ -8,7 +8,7 @@ typedef struct {
     uint8 gy_err;
     uint8 gz_err;
 }imu_err_typdef;
-
+extern int16 gx, gy, gz, ax, ay, az;
 extern float filtering_angle;
 
 void imu_init(void);
@@ -17,4 +17,5 @@ void first_order_filtering(void);
 
 void lift_protection(void);
 
+void imu660ra_ReadData(void);
 #endif 

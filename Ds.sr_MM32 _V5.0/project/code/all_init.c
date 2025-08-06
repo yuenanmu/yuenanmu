@@ -43,14 +43,14 @@ void beep_off(){
 }
 void BB(){
 	beep_on();
-	system_delay_ms(500);
+	system_delay_ms(50);
 	beep_off();
 }
 void all_init(void){
 	
 	//系统初始化
 	clock_init(SYSTEM_CLOCK_120M);                                              // 初始化芯片时钟 工作频率为 120MHz
-  	debug_init();   
+  debug_init();   
 	system_delay_ms(100);
 	
 	//外设初始化
@@ -67,25 +67,14 @@ void all_init(void){
         }
         system_delay_ms(500);                                                   // 短延时快速闪灯表示异常
   }
-//	while (1)
-//    {
-//        if (imu660ra_init())
-//        {
-//            ips200_show_string(0, 32, "mt9v03x reinit.");
-//        }
-//        else
-//        {
-//            break;
-//        }
-//				system_delay_ms(500);
-//    }
+	imu_init();
 	wireless_uart_init();
-  	ds_ips200_init();
+  ds_ips200_init();
 	ds_key_init();
 	ds_encoder_init();
 	ds_motor_init();
-	Motor_Pid_init();
-//	imu660ra_init();
+	Motor_All_Pid_init();
+
 	//初始化之后读取flash并复制
 	EepromRead();
 	ips200_show_string(0, 16, "init success.");
@@ -93,7 +82,7 @@ void all_init(void){
 	ips200_clear();
 	//片上资源初始化
 	pit_ms_init(TIM2_PIT, 1); 
-	pit_ms_init(TIM7_PIT, 100);
+	pit_ms_init(TIM7_PIT, 1);//100
 	interrupt_set_priority(TIM2_IRQn, 0);
 	interrupt_set_priority(TIM7_IRQn, 1);
 	
