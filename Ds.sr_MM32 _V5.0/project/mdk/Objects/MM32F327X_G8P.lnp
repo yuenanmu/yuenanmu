@@ -10,6 +10,7 @@
 ".\objects\serial.o"
 ".\objects\cjson.o"
 ".\objects\imu.o"
+".\objects\img_process.o"
 ".\objects\zf_common_clock.o"
 ".\objects\zf_common_debug.o"
 ".\objects\zf_common_fifo.o"

@@ -1,5 +1,6 @@
 #include "zf_common_headfile.h"
 #include "element.h"
+uint8   Curve=0;
 uint8   Straight=0;
 //void Straight_Detect(void)
 //{

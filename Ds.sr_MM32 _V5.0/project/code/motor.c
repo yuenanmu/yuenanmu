@@ -3,11 +3,11 @@
 
 #define MAX_speed 3500
 #define MAX_INTEGRAL 600//560//480//360
-#define MAX_dif_speed 2000 
+#define MAX_dif_speed 3000 
 #define MAX__DUTY 6000
 float Err0,Err1,ErrI,Err2;
 //
-uint8_t Ring_left,Ring_right,curve;
+uint8_t Ring_left=0,Ring_right=0,curve=0;
 /************************发车控制*********************/
 uint8 start_go=0;
 int16 PWM_L=0,PWM_R=0;
@@ -53,6 +53,7 @@ int16 Ready_Out_90_Ring_speed=0;//出圈
 
 void Motor_PID_subsection()//flash原本数据导致变量是“-nan”,无法修改。取消这个函数注释
 {
+//	Motor_Pid_speed_Z=0;
 //	Motor_Pid.Ki=0.01*Motor_Pid_Z_Ki; 	
 //	Motor_Pid.Kp=0.1*Motor_Pid_Z_Kp; 
 //	Motor_Pid.Kd=0.1*Motor_Pid_Z_Kd; 
@@ -67,23 +68,23 @@ void Motor_PID_subsection()//flash原本数据导致变量是“-nan”,无法�
 //	Turn_PPDD_Loc.kp=0.0;
 //	Turn_PPDD_Loc.kd2=0.0;
 //	Turn_PPDD_Loc.kp2=0.0;
-	//foresight_line=0;
+		//foresight_line=40;
 }
 void Motor_All_Pid_init()
 {
+	Motor_Pid_speed_Z=200;
+	Motor_Pid.speed=-2;
 
-	Motor_Pid.speed=0.0;
-
-	Motor_Pid.Ki=3.2;//3.84;//6.639;    
+	Motor_Pid.Ki=10.0;//3.84;//6.639;    
 	Motor_Pid.Kp=8.0;//9; 
-	Motor_Pid.Kd=6.499;	
+	Motor_Pid.Kd=16.0;	
 
 	Motor_Pid.Dif_Speed=0.0;
 
-	Turn_PPDD_Loc.kd=0.0f;
+	Turn_PPDD_Loc.kd=8.0f;
 	Turn_PPDD_Loc.kp=0.0f;
 	Turn_PPDD_Loc.kd2=0.0f;
-	Turn_PPDD_Loc.kp2=0.0f;
+	Turn_PPDD_Loc.kp2=0.01f;
 
 }
 void ds_motor_init(void){
@@ -105,11 +106,11 @@ void Motor_Control()
 			Motor_Pid.speed=Desire_Speed;
 		}
 	}
-	if(Straight==1 && Ramp_flag==0 && Cross_flag==0 && Ring_state==0 && Ring_left==0 && Ring_right==0 && Ring_Speed==0)
+	if(Straight_Flag==1 && Ramp_flag==0 && Cross_flag==0 && Ring_state==0 && Ring_left==0 && Ring_right==0 && Ring_Speed==0)
 	{
 		Desire_Speed=Motor_Pid_speed_Z+Linear_speed;
 	}
-	if(curve==1 && Ramp_flag==0 && Cross_flag==0 && Ring_state==0 && Ring_left==0 && Ring_right==0 && Ring_Speed==0)
+	if(Curve_Flag==1 && Ramp_flag==0 && Cross_flag==0 && Ring_state==0 && Ring_left==0 && Ring_right==0 && Ring_Speed==0)
 	{
 		Desire_Speed=Motor_Pid_speed_Z-Curve_speed;
 	}
@@ -132,17 +133,31 @@ void Motor_Control()
 	if(start_go==1){
 	int16 speed_out = Position_PID((encoder_R+encoder_L)>>1, Motor_Pid.speed); // 返回调节量
 	dir_out = turn_pid_location(); 
-	
-	PWM_L = speed_out+dir_out*Motor_Pid.Dif_P;
-	PWM_R = speed_out-dir_out*Motor_Pid.Dif_P;
-
+	// 计算差速
+	float diff_output = dir_out * Motor_Pid.Dif_P;
+	// 限制差速不超过基础速度的80%，防止反转
+	float max_diff = speed_out * 0.8;
+	if (fabs(diff_output) > max_diff) {
+	diff_output = (diff_output > 0) ? max_diff : -max_diff;
+	}
+//	PWM_L = speed_out;//+diff_output;
+//	PWM_R = speed_out;//-diff_output;
+	PWM_L = speed_out+diff_output;
+	PWM_R = speed_out-diff_output;
+	//BB();
 	}else
 	{
 	int16 speed_out = Position_PID((encoder_R+encoder_L)>>1, 0); // 返回调节量
-	dir_out = turn_pid_location(); 
-	
-	PWM_L = speed_out;
-	PWM_R = speed_out;
+//	dir_out = turn_pid_location(); 
+//	// 计算差速
+//	float diff_output = dir_out * Motor_Pid.Dif_P;
+//	// 限制差速不超过基础速度的80%，防止反转
+//	float max_diff = speed_out * 0.8;
+//	if (fabs(diff_output) > max_diff) {
+//	diff_output = (diff_output > 0) ? max_diff : -max_diff;
+//	}
+	PWM_L = speed_out;//+diff_output;
+	PWM_R = speed_out;//-diff_output;
 	}
 	Motor_Control_PwmOut(PWM_L, PWM_R); 
 }
@@ -150,12 +165,14 @@ void Motor_Control_PwmOut(int16 OUT_L_PWM, int16 OUT_R_PWM){
 	
 	if (OUT_L_PWM >= 0) {
 		OUT_L_PWM=OUT_L_PWM > MAX__DUTY? MAX__DUTY:OUT_L_PWM;
-		gpio_set_level(DIR_1, GPIO_HIGH);
+		//gpio_set_level(DIR_1, GPIO_HIGH);
+		gpio_set_level(DIR_1, GPIO_LOW);
 		pwm_set_duty(PWM_1, OUT_L_PWM);
 	}
 	else if(OUT_L_PWM <0) {
 		OUT_L_PWM=OUT_L_PWM < -MAX__DUTY? -MAX__DUTY:OUT_L_PWM;
-			gpio_set_level(DIR_1, GPIO_LOW);
+		gpio_set_level(DIR_1, GPIO_HIGH);
+		//gpio_set_level(DIR_1, GPIO_LOW);
 			pwm_set_duty(PWM_1, -OUT_L_PWM);
 	}
 	if (OUT_R_PWM >=0) {

@@ -78,7 +78,7 @@ void first_order_filtering(void)
 */
 void lift_protection(void)
 {
-	static int16 az_last,ax_last,ay_last;
+	static int16 az_last=0,ax_last=0,ay_last=0;
   int16 gx, gy, gz, ax, ay, az;  
     //临时变量存储                                                      
     gx = imu660ra_gyro_x;
@@ -94,16 +94,16 @@ void lift_protection(void)
 
     if (acc_abnormal_z) //如果加速度异常或角度异常
     {
-				ips200_clear(); //清屏
+		ips200_clear(); //清屏
         ips200_show_string(0, 0, "Lift protection!"); //显示提起保护信息
         system_delay_ms(20);
-				start_go=0;
+		start_go=0;
         BB();//蜂鸣器响
     }
 
     az_last = az; //保存上次加速度计Z轴数据
-		ax_last = ax;
-		ay_last = ay;
+    ax_last = ax;
+    ay_last = ay;
 }
 void imu660ra_ReadData(void){
 	imu660ra_get_gyro();
