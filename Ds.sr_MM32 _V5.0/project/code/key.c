@@ -146,8 +146,8 @@ void ParameterExchange(void){
 			start_go=start_go%2;
 			Angle_flag=1;
 			key_flag=key_flag;
-			key_flag=0;  //发车关闭菜单
-			close_menu=1;
+//			key_flag=0;  //发车关闭菜单
+//			close_menu=1;
 			grade_flag=2;			//立马重置到上一级，执行一次就好，这个值在发车菜单中不会显示3
 			Motor_Pid.Dif_Speed=0;
 		}
@@ -291,6 +291,7 @@ void EepromWrite(void){
 	flash_union_buffer[13].int16_type = foresight_line;
 	//元素ui
 	printf("OK12");
+	
   //最后
 	flash_write_page_from_buffer(FLASH_SECTION_INDEX, FLASH_PAGE_INDEX);
 }
@@ -318,4 +319,5 @@ void EepromRead(void){
 	//最后
 	Motor_PID_subsection();
 	printf("OK123\n");
+	
 }

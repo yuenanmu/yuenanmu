@@ -74,12 +74,13 @@ void all_init(void){
 	ds_encoder_init();
 	ds_motor_init();
 	Motor_All_Pid_init();
-
+	//EepromWrite();
 	//初始化之后读取flash并复制
 	EepromRead();
 	ips200_show_string(0, 16, "init success.");
 	system_delay_ms(100); 
 	ips200_clear();
+	//foresight_line=40;
 	//片上资源初始化
 	pit_ms_init(TIM2_PIT, 1); 
 	pit_ms_init(TIM7_PIT, 1);//100

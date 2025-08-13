@@ -499,6 +499,16 @@
               <FileType>5</FileType>
               <FilePath>..\code\imu.h</FilePath>
             </File>
+            <File>
+              <FileName>img_process.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\img_process.c</FilePath>
+            </File>
+            <File>
+              <FileName>img_process.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\img_process.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
