@@ -290,7 +290,7 @@ void EepromWrite(void){
 		
 	flash_union_buffer[13].int16_type = foresight_line;
 	//元素ui
-	printf("OK12");
+	//printf("OK12");
 	
   //最后
 	flash_write_page_from_buffer(FLASH_SECTION_INDEX, FLASH_PAGE_INDEX);
@@ -318,6 +318,6 @@ void EepromRead(void){
 	foresight_line     = flash_union_buffer[13].int16_type ;
 	//最后
 	Motor_PID_subsection();
-	printf("OK123\n");
+	//printf("OK123\n");
 	
 }
