@@ -1,13 +1,15 @@
+#include "zf_common_headfile.h"
 #include "img_handle.h"
 #define IMG_BLACK 0x00
 #define IMG_WHITE 0xff 
 #define Prediction_Confidence  0.55
 #define MID_W 87
-
+//
 double result;
 float	black_pixel;
 ds_Track_Boundary Track;
-
+// MT9V03X_W               ( 188 )     
+// MT9V03X_H               ( 120 ) 
 uint8 image_two_value[MT9V03X_H][MT9V03X_W];//二值化后的原数组
 volatile int Left_Line[MT9V03X_H]; //左边线数组
 volatile int Right_Line[MT9V03X_H];//右边线数组
@@ -53,8 +55,17 @@ volatile int Zebra_Stripes_Flag=0;//斑马线
 volatile uint8 Obstacle_Dir=0; //0右拐，1左拐
 volatile uint8 Island_Switch=1;//环岛识别开启标志位
 volatile uint8 Straight_Flag=0;//长直道识别标
-volatile uint8 Curve_Flag=0;
 volatile uint8 Ramp_Switch=0;  //坡道识别标志位
+//const uint8 Weight[MT9V03X_H]=
+//{
+//        1, 1, 1, 1, 1, 1, 1, 1, 1, 1,              //图像最远端00 ——09 行权重
+//        1, 1, 1, 1, 1, 1, 1, 1, 1, 1,              //图像最远端10 ——19 行权重
+//        1, 1, 1, 1, 1, 1, 1, 3, 4, 5,              //图像最远端20 ——29 行权重
+//        6, 7, 9,11,13,15,17,19,20,20,              //图像最远端30 ——39 行权重
+//       19,17,15,13,11, 9, 7, 5, 3, 1,              //图像最远端40 ——49 行权重
+//        1, 1, 1, 1, 1, 1, 1, 1, 1, 1,              //图像最远端50 ——59 行权重
+//        1, 1, 1, 1, 1, 1, 1, 1, 1, 1,              //图像最远端60 ——69 行权重
+//};
 const uint8 Weight[MT9V03X_H]=
 {
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1,              //图像最远端00 ——09 行权重
@@ -288,9 +299,10 @@ void Show_Boundry(void)
     int16 i;
     for(i=MT9V03X_H-1;i>=MT9V03X_H-Search_Stop_Line;i--)//从最底下往上扫描
     {
-        image_two_value[i][Left_Line[i]]=IMG_BLACK;//Left_Line[i]+1
+        image_two_value[i][Left_Line[i]+1]=IMG_BLACK;
         image_two_value[i][(Left_Line[i]+Right_Line[i])>>1]=IMG_BLACK;
-        image_two_value[i][Right_Line[i]]=IMG_BLACK;//Right_Line[i]-1
+        image_two_value[i][Right_Line[i]-1]=IMG_BLACK;
+				//BB();
     }
 
     //在屏幕理论中线处显示红线，用于调整摄像头
@@ -645,34 +657,6 @@ void Draw_Line(int startX, int startY, int endX, int endY)
     }
 }
 /*------------------------------------特征识别----------------------*/
-void Straight_Detect(void)
-{
-    Straight_Flag=0;
-    if(Search_Stop_Line>=96)//截止行很远
-    {
-        if(Boundry_Start_Left>=65&&Boundry_Start_Right>=65)//起始点靠下
-        {
-            if(-5<=Track.Err&&Track.Err<=5)//误差很小
-            {
-                Straight_Flag=1;//认为是直道
-            }
-        }
-    }
-}
-void Curve_Detect(void)
-{
-    Curve_Flag=0;
-    if(Search_Stop_Line<=75)//截止行很远
-    {
-        if(Boundry_Start_Left>=65&&Boundry_Start_Right>=65)//起始点靠下
-        {
-            if(-30>=Track.Err&&Track.Err>=30)//误差很小
-            {
-                Curve_Flag=1;//认为是直道
-            }
-        }
-    }
-}
 void Cross_Detect()
 {
 		//BB();
@@ -743,7 +727,9 @@ uint8  Zebra_Detected(void)
     Zebra_Flag=0;//斑马线标志清零
     if(Longest_White_Column_Left[1]>20&&Longest_White_Column_Right[1]<MT9V03X_W-20&&
         Longest_White_Column_Right[1]>20&&Longest_White_Column_Left[1]<MT9V03X_W-20&&
-				Boundry_Start_Left>=MT9V03X_H-20&&Boundry_Start_Right>=MT9V03X_H-20)
+        Search_Stop_Line>=110&&
+			Boundry_Start_Left>=MT9V03X_H-20&&
+			Boundry_Start_Right>=MT9V03X_H-20)
         {
             for(int i=MT9V03X_H-1;i>=MT9V03X_H-3;i--)
             {
@@ -754,7 +740,7 @@ uint8  Zebra_Detected(void)
                         zebra_count++;
                     }
 									}
-                if(zebra_count>=6)
+                if(zebra_count>=10)
                 {
                     Zebra_Flag=1;
                 }
@@ -774,16 +760,17 @@ void car_emergency_stop(void){
 			black_pixel++;
 		}
 	}	
-	if((black_pixel>=4*MT9V03X_W*0.9||Track.Err>150||PWM_L>7000||PWM_R>7000)&&start_go==1)
+	if((black_pixel>=4*MT9V03X_W*0.9||Track.Err>150)&&start_go==1)
 	{
 		BB();
 		start_go=0;
-		Motor_Control_PwmOut(0,0);
+		Motor_Control_L(0);
+		Motor_Control_R(0);
 	}
 }
 void Bin_Image_Filter(uint8 *image,uint16 H,uint16 W){
-    for(int nr=1;nr<H-1;nr+=2){
-        for(int nc=1;nc<W-1;nc+=2){
+    for(int nr=1;nr<H-1;nr++){
+        for(int nc=1;nc<W-1;nc++){
 					int index=nr*W+nc;
 					int sum=image[(nr+1)*W+nc]+image[(nr-1)*W+nc]+image[nr*W+(nc+1)]+image[nr*W+(nc-1)];
             if(image[index]==IMG_BLACK && sum>2*IMG_WHITE){
@@ -794,17 +781,16 @@ void Bin_Image_Filter(uint8 *image,uint16 H,uint16 W){
 			}
 		}
 }
-int16 foresight_line=25;
-uint8 Std_Line=70;
+uint8 foresight_line=25;
 float Get_Err1(void)        //常规误差计算&&前瞻范围画线
 {
 	float Err1=0,Err2=0,Err=0;
 	float weight_count=0;
 	//常规误差
-	for(int i=MT9V03X_H-foresight_line;i>=MT9V03X_H-foresight_line-10;i--)//常规误差计算
+	for(int i=MT9V03X_H-foresight_line;i>=MT9V03X_H-foresight_line-20;i--)//常规误差计算
 	{
 		if(key_flag==1&&ips200_show_flag!=1&&ips200_show_flag==2&&ips200_show_flag!=0){
-			if(i==MT9V03X_H-foresight_line||i==MT9V03X_H-foresight_line-10){
+			if(i==MT9V03X_H-foresight_line||i==MT9V03X_H-foresight_line-20){
 				for(int j=Left_Line[i];j<Right_Line[i];j++)
 				{
 					ips200_draw_point(j+(2-1)*offsetx, i+(10-1)*offsety,RGB565_RED);
@@ -813,7 +799,18 @@ float Get_Err1(void)        //常规误差计算&&前瞻范围画线
 		}
 			Err1+=(MT9V03X_W/2-((Left_Line[i]+Right_Line[i])>>1));//右移1位，等效除2
 	}
-	Err=Err1*0.1;      //+Err2/35.0*(1-Prediction_Confidence)   *Prediction_Confidence
+	// for(int i=Search_Stop_Line+5;i<=Search_Stop_Line+40;i++)//常规误差计算
+	// {
+	// 	if(i==Search_Stop_Line+5||i==Search_Stop_Line+40){
+	// 		for(int j=Left_Line[i];j<Right_Line[i];j++)
+	// 		{
+	// 			ips200_draw_point(j+(2-1)*offsetx, i+(10-1)*offsety,RGB565_RED);
+	// 		}
+	// 	}
+	// 		Err2+=(MT9V03X_W/2-((Left_Line[i]+Right_Line[i])>>1));//右移1位，等效除2
+	// }
+	
+	Err=Err1/20.0;//+Err2/35.0*(1-Prediction_Confidence)   *Prediction_Confidence
 	return Err;
 }
 float Get_Err2(void)
@@ -861,16 +858,16 @@ void Img_Processing(void){
 	Get_UseImg();
 	Longest_White_Column();
 	
-    Straight_Detect();
-    Curve_Detect();
 	Cross_Detect();
+	
 	if(Zebra_Detected()==1){
-	//BB();
+	BB();
 	Zebra_Flag=0;
 	Zebra_Count+=1;
 	if(Zebra_Count==2){
 		start_go=0;
-		Motor_Control_PwmOut(0,0);
+		Motor_Control_L(0);
+		Motor_Control_R(0);
 		}
 	}
 	Show_Boundry();

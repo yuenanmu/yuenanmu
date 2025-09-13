@@ -43,7 +43,7 @@ void beep_off(){
 }
 void BB(){
 	beep_on();
-	system_delay_ms(50);
+	system_delay_ms(500);
 	beep_off();
 }
 void all_init(void){
@@ -54,7 +54,6 @@ void all_init(void){
 	system_delay_ms(100);
 	
 	//外设初始化
-	ds_ips200_init();
 	while(1)
   {
         if(mt9v03x_init())
@@ -67,23 +66,20 @@ void all_init(void){
         }
         system_delay_ms(500);                                                   // 短延时快速闪灯表示异常
   }
-	imu_init();
 	wireless_uart_init();
   ds_ips200_init();
 	ds_key_init();
 	ds_encoder_init();
 	ds_motor_init();
-	Motor_All_Pid_init();
-	//EepromWrite();
+	Motor_Pid_init();
 	//初始化之后读取flash并复制
 	EepromRead();
 	ips200_show_string(0, 16, "init success.");
 	system_delay_ms(100); 
 	ips200_clear();
-	//foresight_line=40;
 	//片上资源初始化
 	pit_ms_init(TIM2_PIT, 1); 
-	pit_ms_init(TIM7_PIT, 1);//100
+	pit_ms_init(TIM7_PIT, 100);
 	interrupt_set_priority(TIM2_IRQn, 0);
 	interrupt_set_priority(TIM7_IRQn, 1);
 	

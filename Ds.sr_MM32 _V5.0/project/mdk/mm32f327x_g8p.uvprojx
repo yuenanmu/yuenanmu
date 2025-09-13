@@ -465,6 +465,11 @@
               <FilePath>..\code\motor.c</FilePath>
             </File>
             <File>
+              <FileName>zf_device_dl1a.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\..\libraries\zf_device\zf_device_dl1a.h</FilePath>
+            </File>
+            <File>
               <FileName>motor.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\code\motor.h</FilePath>
@@ -488,26 +493,6 @@
               <FileName>cjson.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\code\cjson.h</FilePath>
-            </File>
-            <File>
-              <FileName>imu.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\code\imu.c</FilePath>
-            </File>
-            <File>
-              <FileName>imu.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\code\imu.h</FilePath>
-            </File>
-            <File>
-              <FileName>img_process.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\code\img_process.c</FilePath>
-            </File>
-            <File>
-              <FileName>img_process.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\code\img_process.h</FilePath>
             </File>
           </Files>
         </Group>
